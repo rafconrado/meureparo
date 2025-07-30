@@ -1,6 +1,7 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { RootStackParamList } from "./src/@types/navigation";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import SplashScreen from "./src/screens/SplashScreen";
@@ -10,8 +11,9 @@ import LoginProviderScreen from "./src/screens/LoginProviderScreen";
 import RegisterClient from "./src/screens/RegisterClient";
 import RegisterProvider from "./src/screens/RegisterProvider";
 import RegisterClientStep2 from "./src/screens/RegisterClientStep2";
+import HomeClient from "./src/screens/HomeClient";
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function App() {
   return (
@@ -27,7 +29,6 @@ export default function App() {
           <Stack.Screen name="LoginProvider" component={LoginProviderScreen} />
           <Stack.Screen name="RegisterClient" component={RegisterClient} />
           <Stack.Screen name="RegisterProvider" component={RegisterProvider} />
-
           <Stack.Screen
             name="RegisterClientStep2"
             component={RegisterClientStep2}
@@ -38,6 +39,7 @@ export default function App() {
               password: "senha123",
             }}
           />
+          <Stack.Screen name="HomeClient" component={HomeClient} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

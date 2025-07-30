@@ -2,7 +2,7 @@ import React from "react";
 import { StatusBar } from "react-native";
 import { Container, Title } from "./style";
 
-const HomeClienteScreen = () => {
+const HomeClient = () => {
   return (
     <Container>
       <StatusBar barStyle="dark-content" backgroundColor="#FFF8EC" />
@@ -11,4 +11,4 @@ const HomeClienteScreen = () => {
   );
 };
 
-export default HomeClienteScreen;
+export default HomeClient;

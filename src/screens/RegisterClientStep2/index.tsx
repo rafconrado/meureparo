@@ -5,6 +5,11 @@ import { Feather } from "@expo/vector-icons";
 import { Picker } from "@react-native-picker/picker";
 
 import {
+  RegisterClientStep2NavigationProp,
+  RegisterClientStep2RouteProp,
+} from "../../@types/navigation";
+
+import {
   Container,
   Header,
   HeaderContent,
@@ -30,7 +35,7 @@ interface RouteParams {
 }
 
 const motivos = [
-  { label: "Selecione uma opção...", value: "" },
+  { label: "Como nos conheceu?", value: "" },
   { label: "Indicação de um amigo ou familiar", value: "indicacao" },
   { label: "Pesquisa no Google", value: "google" },
   { label: "Redes Sociais (Instagram, Facebook...)", value: "redes_sociais" },
@@ -40,8 +45,8 @@ const motivos = [
 ];
 
 const RegisterClientStep2 = () => {
-  const navigation = useNavigation();
-  const route = useRoute();
+  const navigation = useNavigation<RegisterClientStep2NavigationProp>();
+  const route = useRoute<RegisterClientStep2RouteProp>();
   const { name, cpf, email, password } = route.params as RouteParams;
 
   const [phone, setPhone] = useState("");
@@ -122,8 +127,12 @@ const RegisterClientStep2 = () => {
       comoFicouSabendo,
     });
 
-    Alert.alert("Sucesso!", "Cadastro finalizado com sucesso.");
-    navigation.goBack();
+    Alert.alert("Sucesso!", "Cadastro finalizado com sucesso.", [
+      {
+        text: "OK",
+        onPress: () => navigation.navigate("HomeClient"),
+      },
+    ]);
   };
 
   return (
