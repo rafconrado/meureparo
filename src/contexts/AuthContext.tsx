@@ -1,64 +1,69 @@
-// src/contexts/AuthContext.tsx
-import React, { createContext, useState, useEffect, useContext } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Alert } from "react-native";
 
-interface User {
+interface UserData {
   name: string;
   email: string;
+  token: string;
 }
 
+type UserType = "client" | "provider";
+
 interface AuthContextData {
-  user: User | null;
+  user: UserData | null;
+  userType: UserType | null;
   loading: boolean;
-  signIn(email: string, password: string): Promise<void>;
-  signOut(): void;
+  signIn: (data: UserData, type: UserType) => Promise<void>;
+  signOut: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
-  const [user, setUser] = useState<User | null>(null);
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [user, setUser] = useState<UserData | null>(null);
+  const [userType, setUserType] = useState<UserType | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function loadStorageData() {
+    async function loadStorage() {
       const storedUser = await AsyncStorage.getItem("@app:user");
-      if (storedUser) setUser(JSON.parse(storedUser));
+      const storedType = await AsyncStorage.getItem("@app:userType");
+      if (storedUser && storedType) {
+        setUser(JSON.parse(storedUser));
+        setUserType(storedType as UserType);
+      }
       setLoading(false);
     }
-    loadStorageData();
+    loadStorage();
   }, []);
 
-  const signIn = async (email: string, password: string) => {
-    try {
-      // simula um login com backend
-      if (email === "teste@exemplo.com" && password === "senha123") {
-        const loggedUser = { name: "Usuário Teste", email };
-        setUser(loggedUser);
-        await AsyncStorage.setItem("@app:user", JSON.stringify(loggedUser));
-      } else {
-        Alert.alert("Erro", "E-mail ou senha inválidos");
-      }
-    } catch (err) {
-      Alert.alert("Erro", "Não foi possível fazer login");
-    }
-  };
+  async function signIn(data: UserData, type: UserType) {
+    setUser(data);
+    setUserType(type);
+    await AsyncStorage.setItem("@app:user", JSON.stringify(data));
+    await AsyncStorage.setItem("@app:userType", type);
+  }
 
-  const signOut = async () => {
-    await AsyncStorage.removeItem("@app:user");
+  async function signOut() {
     setUser(null);
-  };
+    setUserType(null);
+    await AsyncStorage.removeItem("@app:user");
+    await AsyncStorage.removeItem("@app:userType");
+  }
 
   return (
-    <AuthContext.Provider value={{ user, loading, signIn, signOut }}>
+    <AuthContext.Provider value={{ user, userType, loading, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   );
-};
+}
 
-export function useAuth(): AuthContextData {
+export function useAuth() {
   return useContext(AuthContext);
 }

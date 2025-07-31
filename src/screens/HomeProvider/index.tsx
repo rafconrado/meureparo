@@ -4,14 +4,14 @@ import { Container, Title } from "./style";
 
 import { BackButton } from "../../components/BackButton";
 
-const HomeClient = () => {
+const HomeProvider = () => {
   return (
     <Container>
       <StatusBar barStyle="dark-content" backgroundColor="#FFF8EC" />
       <BackButton color="#000" />
-      <Title>Bem-vindo, cliente!</Title>
+      <Title>Bem-vindo, prestador!</Title>
     </Container>
   );
 };
 
-export default HomeClient;
+export default HomeProvider;
