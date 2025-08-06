@@ -5,11 +5,6 @@ import { Feather } from "@expo/vector-icons";
 import { Picker } from "@react-native-picker/picker";
 
 import {
-  RegisterClientStep2NavigationProp,
-  RegisterClientStep2RouteProp,
-} from "../../@types/navigation";
-
-import {
   Container,
   Header,
   HeaderContent,
@@ -21,33 +16,30 @@ import {
   StyledInput,
   RegisterButton,
   ButtonText,
-  PickerContainer,
   StyledPicker,
+  PickerContainer,
 } from "./style";
 
 import { BackButton } from "../../components/BackButton";
 
-interface RouteParams {
-  name: string;
-  cpf: string;
-  email: string;
-  password: string;
-}
-
-const motivos = [
-  { label: "Como nos conheceu?", value: "" },
-  { label: "Indicação de um amigo ou familiar", value: "indicacao" },
-  { label: "Pesquisa no Google", value: "google" },
-  { label: "Redes Sociais (Instagram, Facebook...)", value: "redes_sociais" },
-  { label: "Anúncio na internet", value: "anuncio_online" },
-  { label: "Rádio ou TV", value: "radio_tv" },
+const servicos = [
+  { label: "Qual serviço você oferece?", value: "" },
+  { label: "Pintor", value: "pintor" },
+  { label: "Encanador", value: "encanador" },
+  { label: "Eletricista", value: "eletricista" },
+  { label: "Montador de móveis", value: "montador" },
   { label: "Outro", value: "outro" },
 ];
 
-const RegisterClientStep2 = () => {
-  const navigation = useNavigation<RegisterClientStep2NavigationProp>();
-  const route = useRoute<RegisterClientStep2RouteProp>();
-  const { name, cpf, email, password } = route.params as RouteParams;
+const RegisterProviderStep2 = () => {
+  const navigation = useNavigation();
+  const route = useRoute();
+  const { name, cnpj, email, password } = route.params as {
+    name: string;
+    cnpj: string;
+    email: string;
+    password: string;
+  };
 
   const [phone, setPhone] = useState("");
   const [cep, setCep] = useState("");
@@ -57,11 +49,10 @@ const RegisterClientStep2 = () => {
   const [bairro, setBairro] = useState("");
   const [cidade, setCidade] = useState("");
   const [uf, setUf] = useState("");
-  const [comoFicouSabendo, setComoFicouSabendo] = useState("");
+  const [servico, setServico] = useState("");
 
   const formatPhone = (value: string) => {
-    const cleaned = value.replace(/\D/g, ""); // remove tudo que não for número
-
+    const cleaned = value.replace(/\D/g, "");
     if (cleaned.length <= 2) return `(${cleaned}`;
     if (cleaned.length <= 6)
       return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2)}`;
@@ -76,7 +67,7 @@ const RegisterClientStep2 = () => {
   };
 
   const formatCep = (value: string) => {
-    const cep = value.replace(/\D/g, ""); // remove tudo que não for número
+    const cep = value.replace(/\D/g, "");
     if (cep.length <= 5) return cep;
     return `${cep.slice(0, 5)}-${cep.slice(5, 8)}`;
   };
@@ -89,7 +80,7 @@ const RegisterClientStep2 = () => {
     if (rawCep.length === 8) {
       try {
         const response = await fetch(
-          `https://viacep.com.br/ws/${formattedCep}/json/`
+          `https://viacep.com.br/ws/${rawCep}/json/`
         );
         const data = await response.json();
 
@@ -106,7 +97,7 @@ const RegisterClientStep2 = () => {
         setBairro(data.bairro || "");
         setCidade(data.localidade || "");
         setUf(data.uf || "");
-      } catch (error) {
+      } catch {
         Alert.alert("Erro", "Não foi possível buscar o endereço.");
       }
     } else {
@@ -117,42 +108,40 @@ const RegisterClientStep2 = () => {
     }
   };
 
-  const handleFinishRegister = () => {
+  const handleSubmit = () => {
     if (
-      !phone.replace(/\D/g, "") || // verifica se o telefone tem números
+      !phone.replace(/\D/g, "") ||
       !cep ||
       !logradouro ||
       !numero ||
       !bairro ||
       !cidade ||
       !uf ||
-      !comoFicouSabendo
+      !servico
     ) {
-      Alert.alert(
-        "Campos obrigatórios",
-        "Preencha todos os campos obrigatórios."
-      );
+      Alert.alert("Campos obrigatórios", "Preencha todos os campos.");
       return;
     }
+
     const enderecoCompleto = `${logradouro}, ${numero}${
       complemento ? `, ${complemento}` : ""
     } - ${bairro}, ${cidade} - ${uf}`;
 
-    console.log("Dados finais:", {
+    console.log({
       name,
-      cpf,
+      cnpj,
       email,
       password,
       phone: phone.replace(/\D/g, ""),
       cep: cep.replace(/\D/g, ""),
       enderecoCompleto,
-      comoFicouSabendo,
+      servico,
     });
 
     Alert.alert("Sucesso!", "Cadastro finalizado com sucesso.", [
       {
         text: "OK",
-        onPress: () => navigation.navigate("HomeClient"),
+        onPress: () => navigation.navigate("LoginProvider" as never),
       },
     ]);
   };
@@ -160,7 +149,7 @@ const RegisterClientStep2 = () => {
   return (
     <Container>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <StatusBar barStyle="light-content" backgroundColor="#df692b" />
+        <StatusBar barStyle="light-content" backgroundColor="#57B2C5" />
         <BackButton />
 
         <Header>
@@ -254,25 +243,23 @@ const RegisterClientStep2 = () => {
           </InputContainer>
 
           <PickerContainer>
-            <Feather name="help-circle" size={20} color="white" />
+            <Feather name="tool" size={20} color="white" />
             <StyledPicker
-              selectedValue={comoFicouSabendo}
-              onValueChange={(itemValue) =>
-                setComoFicouSabendo(itemValue as string)
-              }
+              selectedValue={servico}
+              onValueChange={(itemValue) => setServico(itemValue as string)}
               dropdownIconColor={"#FFF"}
             >
-              {motivos.map((motivo) => (
+              {servicos.map((item) => (
                 <Picker.Item
-                  key={motivo.value}
-                  label={motivo.label}
-                  value={motivo.value}
+                  key={item.value}
+                  label={item.label}
+                  value={item.value}
                 />
               ))}
             </StyledPicker>
           </PickerContainer>
 
-          <RegisterButton onPress={handleFinishRegister}>
+          <RegisterButton onPress={handleSubmit}>
             <ButtonText>Finalizar Cadastro</ButtonText>
           </RegisterButton>
         </FormContainer>
@@ -281,4 +268,4 @@ const RegisterClientStep2 = () => {
   );
 };
 
-export default RegisterClientStep2;
+export default RegisterProviderStep2;

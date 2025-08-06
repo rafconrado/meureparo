@@ -44,7 +44,6 @@ type RegisterProviderScreenProp = NativeStackNavigationProp<
   "RegisterProviderStep2"
 >;
 
-// ✨ Função de validação para CNPJ
 const isValidCNPJ = (cnpj: string): boolean => {
   cnpj = cnpj.replace(/[^\d]+/g, "");
 
@@ -85,6 +84,32 @@ const isValidEmail = (email: string) => {
   return regex.test(email.toLowerCase());
 };
 
+const capitalizeName = (text: string) => {
+  return text
+    .toLowerCase()
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+};
+
+const formatCNPJ = (value: string): string => {
+  const cnpj = value.replace(/\D/g, "");
+
+  if (cnpj.length <= 2) return cnpj;
+  if (cnpj.length <= 5) return `${cnpj.slice(0, 2)}.${cnpj.slice(2)}`;
+  if (cnpj.length <= 8)
+    return `${cnpj.slice(0, 2)}.${cnpj.slice(2, 5)}.${cnpj.slice(5)}`;
+  if (cnpj.length <= 12)
+    return `${cnpj.slice(0, 2)}.${cnpj.slice(2, 5)}.${cnpj.slice(
+      5,
+      8
+    )}/${cnpj.slice(8)}`;
+  return `${cnpj.slice(0, 2)}.${cnpj.slice(2, 5)}.${cnpj.slice(
+    5,
+    8
+  )}/${cnpj.slice(8, 12)}-${cnpj.slice(12, 14)}`;
+};
+
 const RegisterProvider = () => {
   const navigation = useNavigation<RegisterProviderScreenProp>();
 
@@ -122,7 +147,7 @@ const RegisterProvider = () => {
 
     navigation.navigate("RegisterProviderStep2", {
       name,
-      cnpj,
+      cnpj: cnpj.replace(/\D/g, ""),
       email,
       password,
     });
@@ -158,7 +183,7 @@ const RegisterProvider = () => {
               <StyledInput
                 placeholder="Nome completo ou Razão Social"
                 value={name}
-                onChangeText={setName}
+                onChangeText={(text) => setName(capitalizeName(text))}
                 returnKeyType="next"
               />
             </InputContainer>
@@ -168,9 +193,9 @@ const RegisterProvider = () => {
               <StyledInput
                 placeholder="CNPJ"
                 keyboardType="number-pad"
-                maxLength={14}
+                maxLength={18}
                 value={cnpj}
-                onChangeText={(text) => setCnpj(text.replace(/[^0-9]/g, ""))}
+                onChangeText={(text) => setCnpj(formatCNPJ(text))}
               />
             </InputContainer>
 

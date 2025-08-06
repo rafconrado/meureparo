@@ -1,14 +1,16 @@
 import React from "react";
 import { StatusBar } from "react-native";
 import { Container, Title } from "./style";
-
-import { BackButton } from "../../components/BackButton";
+import { LogoutButton } from "../../components/LogoutButton";
 
 const HomeClient = () => {
   return (
     <Container>
+      <LogoutButton
+        size={20}
+        style={{ position: "absolute", top: 40, right: 20, zIndex: 10 }}
+      />
       <StatusBar barStyle="dark-content" backgroundColor="#FFF8EC" />
-      <BackButton color="#000" />
       <Title>Bem-vindo, cliente!</Title>
     </Container>
   );

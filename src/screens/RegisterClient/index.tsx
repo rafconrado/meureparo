@@ -44,6 +44,14 @@ type RegisterClientScreenProp = NativeStackNavigationProp<
   "RegisterClientStep2"
 >;
 
+const capitalizeName = (text: string) => {
+  return text
+    .toLowerCase()
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+};
+
 const isValidCPF = (cpf: string) => {
   cpf = cpf.replace(/[^\d]+/g, "");
   if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
@@ -67,6 +75,19 @@ const isValidCPF = (cpf: string) => {
   if (rev !== parseInt(cpf.charAt(10))) return false;
 
   return true;
+};
+
+const formatCPF = (value: string) => {
+  const cpf = value.replace(/\D/g, ""); // remove tudo que não é número
+
+  if (cpf.length <= 3) return cpf;
+  if (cpf.length <= 6) return `${cpf.slice(0, 3)}.${cpf.slice(3)}`;
+  if (cpf.length <= 9)
+    return `${cpf.slice(0, 3)}.${cpf.slice(3, 6)}.${cpf.slice(6)}`;
+  return `${cpf.slice(0, 3)}.${cpf.slice(3, 6)}.${cpf.slice(6, 9)}-${cpf.slice(
+    9,
+    11
+  )}`;
 };
 
 const isValidEmail = (email: string) => {
@@ -146,7 +167,7 @@ const RegisterClient = () => {
               <StyledInput
                 placeholder="Nome completo"
                 value={name}
-                onChangeText={setName}
+                onChangeText={(text) => setName(capitalizeName(text))}
                 returnKeyType="next"
               />
             </InputContainer>
@@ -156,9 +177,9 @@ const RegisterClient = () => {
               <StyledInput
                 placeholder="CPF"
                 keyboardType="number-pad"
-                maxLength={11}
+                maxLength={14}
                 value={cpf}
-                onChangeText={(text) => setCpf(text.replace(/[^0-9]/g, ""))}
+                onChangeText={(text) => setCpf(formatCPF(text))}
               />
             </InputContainer>
 

@@ -4,9 +4,10 @@ import { useNavigation } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
 import { ButtonContainer } from "./style";
 
-interface BackButtonProps {
+export interface BackButtonProps {
   color?: string;
   size?: number;
+  onPress?: () => void;
 }
 
 export const BackButton: React.FC<BackButtonProps> = ({

@@ -7,7 +7,6 @@ export function ClientStack() {
   return (
     <Client.Navigator screenOptions={{ headerShown: false }}>
       <Client.Screen name="HomeClient" component={HomeClient} />
-      {/* outras telas do cliente aqui */}
     </Client.Navigator>
   );
 }
