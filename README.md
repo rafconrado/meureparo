@@ -2,8 +2,7 @@
 
 *Conectando clientes a prestadores de serviços de forma rápida e confiável.*
 
-![Status](https://img.shields.io/badge/status-em%20desenvolvimento-yellow)
-![License](https://img.shields.io/badge/license-ISC-blue)
+![Status](https://img.shields.io/badge/Status-Em%20desenvolvimento-yellow)
 
 ---
 
