@@ -4,6 +4,9 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
 import { Picker } from "@react-native-picker/picker";
 
+// 1. ADICIONE A IMPORTAÇÃO DO useAuth
+import { useAuth } from "../../contexts/AuthContext";
+
 import {
   RegisterClientStep2NavigationProp,
   RegisterClientStep2RouteProp,
@@ -35,6 +38,7 @@ interface RouteParams {
 }
 
 const motivos = [
+  // ... (seu array de motivos continua igual)
   { label: "Como nos conheceu?", value: "" },
   { label: "Indicação de um amigo ou familiar", value: "indicacao" },
   { label: "Pesquisa no Google", value: "google" },
@@ -49,6 +53,9 @@ const RegisterClientStep2 = () => {
   const route = useRoute<RegisterClientStep2RouteProp>();
   const { name, cpf, email, password } = route.params as RouteParams;
 
+  // 2. PEGUE A FUNÇÃO DE REGISTRO DO CONTEXTO
+  const { register } = useAuth();
+
   const [phone, setPhone] = useState("");
   const [cep, setCep] = useState("");
   const [logradouro, setLogradouro] = useState("");
@@ -59,9 +66,9 @@ const RegisterClientStep2 = () => {
   const [uf, setUf] = useState("");
   const [comoFicouSabendo, setComoFicouSabendo] = useState("");
 
+  // Suas funções formatPhone, formatCep e handleCepChange continuam iguais...
   const formatPhone = (value: string) => {
-    const cleaned = value.replace(/\D/g, ""); // remove tudo que não for número
-
+    const cleaned = value.replace(/\D/g, "");
     if (cleaned.length <= 2) return `(${cleaned}`;
     if (cleaned.length <= 6)
       return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2)}`;
@@ -74,25 +81,21 @@ const RegisterClientStep2 = () => {
       11
     )}`;
   };
-
   const formatCep = (value: string) => {
-    const cep = value.replace(/\D/g, ""); // remove tudo que não for número
+    const cep = value.replace(/\D/g, "");
     if (cep.length <= 5) return cep;
     return `${cep.slice(0, 5)}-${cep.slice(5, 8)}`;
   };
-
   const handleCepChange = async (text: string) => {
     const rawCep = text.replace(/\D/g, "");
     const formattedCep = formatCep(rawCep);
     setCep(formattedCep);
-
     if (rawCep.length === 8) {
       try {
         const response = await fetch(
           `https://viacep.com.br/ws/${formattedCep}/json/`
         );
         const data = await response.json();
-
         if (data.erro) {
           Alert.alert("CEP não encontrado", "Verifique o CEP informado.");
           setLogradouro("");
@@ -101,7 +104,6 @@ const RegisterClientStep2 = () => {
           setUf("");
           return;
         }
-
         setLogradouro(data.logradouro || "");
         setBairro(data.bairro || "");
         setCidade(data.localidade || "");
@@ -117,9 +119,10 @@ const RegisterClientStep2 = () => {
     }
   };
 
-  const handleFinishRegister = () => {
+  // 3. MODIFIQUE A FUNÇÃO handleFinishRegister
+  const handleFinishRegister = async () => {
     if (
-      !phone.replace(/\D/g, "") || // verifica se o telefone tem números
+      !phone.replace(/\D/g, "") ||
       !cep ||
       !logradouro ||
       !numero ||
@@ -134,30 +137,31 @@ const RegisterClientStep2 = () => {
       );
       return;
     }
-    const enderecoCompleto = `${logradouro}, ${numero}${
-      complemento ? `, ${complemento}` : ""
-    } - ${bairro}, ${cidade} - ${uf}`;
 
-    console.log("Dados finais:", {
-      name,
-      cpf,
-      email,
-      password,
-      phone: phone.replace(/\D/g, ""),
-      cep: cep.replace(/\D/g, ""),
-      enderecoCompleto,
-      comoFicouSabendo,
-    });
+    try {
+      // É AQUI QUE O REGISTRO ACONTECE!
+      await register(name, email, password, "client");
 
-    Alert.alert("Sucesso!", "Cadastro finalizado com sucesso.", [
-      {
-        text: "OK",
-        onPress: () => navigation.navigate("HomeClient"),
-      },
-    ]);
+      // Se o registro deu certo, mostramos o alerta de sucesso
+      Alert.alert("Sucesso!", "Cadastro finalizado com sucesso.", [
+        {
+          text: "OK",
+          // Ao clicar em OK, o usuário já estará logado e irá para a Home.
+          onPress: () => navigation.navigate("HomeClient"),
+        },
+      ]);
+    } catch (error: any) {
+      // Se deu erro (ex: e-mail já existe), mostramos o erro para o usuário
+      console.error("Erro ao finalizar cadastro:", error);
+      Alert.alert(
+        "Erro no Cadastro",
+        error.message || "Não foi possível concluir o cadastro."
+      );
+    }
   };
 
   return (
+    // Seu JSX (a parte visual do componente) continua exatamente igual.
     <Container>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <StatusBar barStyle="light-content" backgroundColor="#df692b" />
@@ -174,6 +178,7 @@ const RegisterClientStep2 = () => {
 
         <FormContainer>
           <Subtitle>Informações adicionais:</Subtitle>
+          {/* Todos os seus InputContainer e o Picker continuam aqui, sem alterações... */}
 
           <InputContainer>
             <Feather name="phone" size={20} color="white" />

@@ -6,7 +6,7 @@ import React, {
   ReactNode,
 } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { register as registerService } from "../services/authService"; // importe seu serviço
+import { register as registerService } from "../services/authService";
 
 interface UserData {
   name: string;
@@ -70,6 +70,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     password: string,
     type: UserType
   ) {
+    console.log("AuthContext.register foi chamado com:", { name, email, type });
     const newUser = await registerService({ name, email, password });
     await signIn(newUser, type);
   }

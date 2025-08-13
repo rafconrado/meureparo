@@ -10,6 +10,7 @@ import {
 import { useNavigation } from "@react-navigation/native";
 
 import { useAuth } from "../../contexts/AuthContext";
+import { login as loginService } from "../../services/authService";
 
 import {
   Container,
@@ -44,25 +45,21 @@ const LoginClienteScreen = () => {
   const navigation = useNavigation();
 
   async function handleLogin() {
+    console.log("Cliquei no login"); 
     if (!email || !password) {
       Alert.alert("Erro", "Por favor, preencha e-mail e senha.");
       return;
     }
 
     try {
-      // Aqui você deve chamar seu serviço de login para validar credenciais
-      // Exemplo:
-      // const user = await login(email, password);
-      // await signIn(user, "client");
+      console.log("Chamando loginService...");
+      const user = await loginService(email, password);
+      console.log("Usuário retornado:", user);
 
-      // Como você ainda não tem o serviço implementado, vou simular:
-      const user = {
-        name: "Usuário Simulado",
-        email,
-        token: "token_simulado",
-      };
       await signIn(user, "client");
+      Alert.alert("Sucesso", "Login realizado!");
     } catch (error: any) {
+      console.error("Erro no login:", error);
       Alert.alert("Erro", error.message || "Falha no login");
     }
   }
@@ -118,11 +115,9 @@ const LoginClienteScreen = () => {
               <ForgotPasswordText>Esqueceu sua senha?</ForgotPasswordText>
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={handleLogin}>
-              <LoginButton>
-                <ButtonText>Login</ButtonText>
-              </LoginButton>
-            </TouchableOpacity>
+            <LoginButton onPress={handleLogin}>
+              <ButtonText>Login</ButtonText>
+            </LoginButton>
 
             <DividerContainer>
               <DividerLine />

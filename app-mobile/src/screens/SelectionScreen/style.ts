@@ -46,8 +46,6 @@ export const OptionCard = styled.View({
   shadowOpacity: 0.1,
   shadowRadius: 8,
   elevation: 5,
-
-  gap: 15,
 });
 
 export const ClientText = styled.Text`
