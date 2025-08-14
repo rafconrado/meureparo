@@ -1,5 +1,3 @@
-// src/@types/navigation.d.ts
-
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RouteProp } from "@react-navigation/native";
 

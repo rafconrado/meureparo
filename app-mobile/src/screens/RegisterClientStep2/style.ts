@@ -80,7 +80,6 @@ export const ButtonText = styled.Text`
   font-weight: bold;
 `;
 
-// NOVOS ESTILOS PARA O PICKER
 export const PickerContainer = styled.View`
   flex-direction: row;
   align-items: center;

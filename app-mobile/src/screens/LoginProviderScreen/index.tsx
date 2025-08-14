@@ -50,7 +50,6 @@ const LoginProviderScreen = () => {
     }
 
     try {
-      // Simulação de login, substitua pelo seu serviço real
       const user = {
         name: "Prestador Simulado",
         email,

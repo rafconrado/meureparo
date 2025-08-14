@@ -6,7 +6,10 @@ import React, {
   ReactNode,
 } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { register as registerService } from "../services/authService";
+import {
+  register as registerService,
+  login as loginService,
+} from "../services/authService";
 
 interface UserData {
   name: string;
@@ -14,7 +17,24 @@ interface UserData {
   token: string;
 }
 
-type UserType = "client" | "provider";
+export type UserType = "client" | "provider";
+
+export interface RegisterDTO {
+  name: string;
+  cpf: string;
+  email: string;
+  password: string;
+  phone: string;
+  cep: string;
+  logradouro: string;
+  numero: string;
+  complemento?: string;
+  bairro: string;
+  cidade: string;
+  uf: string;
+  comoFicouSabendo: string;
+  userType: UserType;
+}
 
 interface AuthContextData {
   user: UserData | null;
@@ -22,12 +42,7 @@ interface AuthContextData {
   loading: boolean;
   signIn: (data: UserData, type: UserType) => Promise<void>;
   signOut: () => Promise<void>;
-  register: (
-    name: string,
-    email: string,
-    password: string,
-    type: UserType
-  ) => Promise<void>;
+  register: (data: RegisterDTO) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
@@ -38,41 +53,54 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function loadStorage() {
-      const storedUser = await AsyncStorage.getItem("@app:user");
-      const storedType = await AsyncStorage.getItem("@app:userType");
-      if (storedUser && storedType) {
-        setUser(JSON.parse(storedUser));
-        setUserType(storedType as UserType);
+    (async () => {
+      try {
+        const storedUser = await AsyncStorage.getItem("@app:user");
+        const storedType = await AsyncStorage.getItem("@app:userType");
+        if (storedUser && storedType) {
+          setUser(JSON.parse(storedUser));
+          setUserType(storedType as UserType);
+        }
+      } catch (error) {
+        console.error("Erro ao carregar dados do AsyncStorage:", error);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
-    }
-    loadStorage();
+    })();
   }, []);
 
   async function signIn(data: UserData, type: UserType) {
-    setUser(data);
-    setUserType(type);
-    await AsyncStorage.setItem("@app:user", JSON.stringify(data));
-    await AsyncStorage.setItem("@app:userType", type);
+    try {
+      setUser(data);
+      setUserType(type);
+      await AsyncStorage.setItem("@app:user", JSON.stringify(data));
+      await AsyncStorage.setItem("@app:userType", type);
+    } catch (error) {
+      console.error("Erro ao salvar dados no AsyncStorage:", error);
+      throw new Error("Falha ao salvar dados do usuário localmente.");
+    }
   }
 
   async function signOut() {
     setUser(null);
     setUserType(null);
-    await AsyncStorage.removeItem("@app:user");
-    await AsyncStorage.removeItem("@app:userType");
+    try {
+      await AsyncStorage.removeItem("@app:user");
+      await AsyncStorage.removeItem("@app:userType");
+    } catch (error) {
+      console.error("Erro ao remover dados do AsyncStorage:", error);
+    }
   }
 
-  async function register(
-    name: string,
-    email: string,
-    password: string,
-    type: UserType
-  ) {
-    console.log("AuthContext.register foi chamado com:", { name, email, type });
-    const newUser = await registerService({ name, email, password });
-    await signIn(newUser, type);
+  async function register(data: RegisterDTO) {
+    try {
+      console.log("AuthContext.register chamado com:", data);
+      const newUser = await registerService(data);
+      await signIn(newUser, data.userType);
+    } catch (error: any) {
+      console.error("Erro ao registrar usuário:", error.message || error);
+      throw new Error(error.message || "Não foi possível concluir o cadastro.");
+    }
   }
 
   return (

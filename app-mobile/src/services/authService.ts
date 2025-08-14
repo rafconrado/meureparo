@@ -1,60 +1,68 @@
-import { v4 as uuidv4 } from "uuid";
-import bcrypt from "bcryptjs";
-import { findUserByEmail, saveUser } from "./userService";
+import axios from "axios";
 
 interface RegisterDTO {
   name: string;
+  cpf: string;
   email: string;
   password: string;
+  phone: string;
+  cep: string;
+  logradouro: string;
+  numero: string;
+  complemento?: string;
+  bairro: string;
+  cidade: string;
+  uf: string;
+  comoFicouSabendo: string;
+  userType: "client" | "provider";
 }
 
-export async function register({ name, email, password }: RegisterDTO) {
-  console.log("authService.register foi chamado");
-
-  const normalizedEmail = email.trim().toLowerCase();
-  const existingUser = await findUserByEmail(normalizedEmail);
-
-  if (existingUser) {
-    console.error("Erro: E-mail já existente.");
-    throw new Error("E-mail já cadastrado.");
-  }
-
-  // Define o "custo" do hashing. 10 é um valor padrão e seguro.
-  const saltRounds = 10;
-  // Cria o hash seguro a partir da senha digitada.
-  const hashedPassword = bcrypt.hashSync(password.trim(), saltRounds);
-
-  const newUser = {
-    id: uuidv4(),
-    name,
-    email: normalizedEmail,
-    // Salva o hash no lugar da senha em texto puro.
-    password: hashedPassword,
-  };
-
-  await saveUser(newUser);
-
-  return {
-    id: newUser.id,
-    name: newUser.name,
-    email: newUser.email,
-    token: newUser.id,
-  };
+interface LoginResponse {
+  id: string;
+  name: string;
+  email: string;
+  userType: "client" | "provider";
+  token: string;
 }
 
-export async function login(email: string, password: string) {
-  const user = await findUserByEmail(email);
+export async function register(data: RegisterDTO): Promise<LoginResponse> {
+  console.log("authService.register chamado com:", data);
 
-  // A condição agora verifica se o usuário não existe OU se a senha digitada
-  // não corresponde ao hash que está salvo no banco de dados.
-  if (!user || !bcrypt.compareSync(password.trim(), user.password)) {
-    throw new Error("E-mail ou senha inválidos.");
+  try {
+    const normalizedEmail = data.email.trim().toLowerCase();
+
+    const response = await axios.post(
+      "http://192.168.1.16:3000/auth/register",
+      {
+        ...data,
+        email: normalizedEmail,
+      }
+    );
+
+    return response.data;
+  } catch (error: any) {
+    console.error("Erro ao registrar:", error.response?.data || error.message);
+    throw new Error(
+      error.response?.data?.message || "Erro ao registrar usuário"
+    );
   }
+}
 
-  return {
-    id: user.id,
-    name: user.name,
-    email: user.email,
-    token: user.id,
-  };
+export async function login(
+  email: string,
+  password: string
+): Promise<LoginResponse> {
+  try {
+    const normalizedEmail = email.trim().toLowerCase();
+
+    const response = await axios.post("http://192.168.1.16:3000/auth/login", {
+      email: normalizedEmail,
+      password,
+    });
+
+    return response.data;
+  } catch (error: any) {
+    console.error("Erro ao logar:", error.response?.data || error.message);
+    throw new Error(error.response?.data?.message || "Erro ao fazer login");
+  }
 }
