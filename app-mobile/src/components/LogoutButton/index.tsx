@@ -19,11 +19,13 @@ type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 interface LogoutButtonProps {
   size?: number;
   style?: StyleProp<ViewStyle>;
+  userType?: "client" | "provider"; // para identificar o tipo
 }
 
 export const LogoutButton: React.FC<LogoutButtonProps> = ({
   size = 20,
   style,
+  userType = "client",
 }) => {
   const { signOut } = useAuth();
   const navigation = useNavigation<NavigationProp>();
@@ -31,10 +33,24 @@ export const LogoutButton: React.FC<LogoutButtonProps> = ({
   const handleLogout = async () => {
     try {
       await signOut();
-      navigation.reset({
-        index: 0,
-        routes: [{ name: "LoginCliente" }],
-      });
+
+      if (userType === "client") {
+        navigation.reset({
+          index: 1,
+          routes: [
+            { name: "Selection" as never },
+            { name: "LoginCliente" as never },
+          ],
+        });
+      } else if (userType === "provider") {
+        navigation.reset({
+          index: 1,
+          routes: [
+            { name: "Selection" as never },
+            { name: "LoginProvider" as never },
+          ],
+        });
+      }
     } catch (error) {
       Alert.alert("Erro", "Não foi possível fazer logout. Tente novamente.");
     }

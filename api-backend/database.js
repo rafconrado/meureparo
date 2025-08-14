@@ -8,49 +8,34 @@ const db = new sqlite3.Database(DBSOURCE, (err) => {
   }
   console.log("Connected to SQLite database.");
 
-  
-  db.run(
-    `CREATE TABLE IF NOT EXISTS users (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT,
-      email TEXT UNIQUE,
-      password TEXT,
-      userType TEXT
-    )`,
-    (err) => {
-      if (err) console.error(err.message);
-      else {
-        
-        const newColumns = [
-          { name: "cpf", type: "TEXT" },
-          { name: "phone", type: "TEXT" },
-          { name: "cep", type: "TEXT" },
-          { name: "logradouro", type: "TEXT" },
-          { name: "numero", type: "TEXT" },
-          { name: "complemento", type: "TEXT" },
-          { name: "bairro", type: "TEXT" },
-          { name: "cidade", type: "TEXT" },
-          { name: "uf", type: "TEXT" },
-          { name: "comoFicouSabendo", type: "TEXT" },
-        ];
-
-        newColumns.forEach((col) => {
-          db.get(`PRAGMA table_info(users)`, [], (err, rows) => {
-            if (err) console.error(err.message);
-          });
-
-          db.run(
-            `ALTER TABLE users ADD COLUMN ${col.name} ${col.type}`,
-            (err) => {
-              if (err && !err.message.includes("duplicate column name")) {
-                console.error(err.message);
-              }
-            }
-          );
-        });
+  const createTable = (tableName, docColumn) => {
+    db.run(
+      `CREATE TABLE IF NOT EXISTS ${tableName} (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT,
+        ${docColumn} TEXT UNIQUE,
+        email TEXT UNIQUE,
+        password TEXT,
+        phone TEXT,
+        cep TEXT,
+        logradouro TEXT,
+        numero TEXT,
+        complemento TEXT,
+        bairro TEXT,
+        cidade TEXT,
+        uf TEXT,
+        comoFicouSabendo TEXT,
+        userType TEXT
+      )`,
+      (err) => {
+        if (err) console.error(`Erro criando tabela ${tableName}:`, err.message);
+        else console.log(`Tabela ${tableName} verificada/criada`);
       }
-    }
-  );
+    );
+  };
+
+  createTable("clients", "cpf");
+  createTable("providers", "cnpj");
 });
 
 module.exports = db;

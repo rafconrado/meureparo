@@ -45,21 +45,16 @@ const LoginClienteScreen = () => {
   const navigation = useNavigation();
 
   async function handleLogin() {
-    console.log("Cliquei no login"); 
     if (!email || !password) {
       Alert.alert("Erro", "Por favor, preencha e-mail e senha.");
       return;
     }
 
     try {
-      console.log("Chamando loginService...");
       const user = await loginService(email, password);
-      console.log("Usuário retornado:", user);
-
       await signIn(user, "client");
       Alert.alert("Sucesso", "Login realizado!");
     } catch (error: any) {
-      console.error("Erro no login:", error);
       Alert.alert("Erro", error.message || "Falha no login");
     }
   }
