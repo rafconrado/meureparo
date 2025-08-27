@@ -3,14 +3,14 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import SplashScreen from "../screens/SplashScreen";
 import SelectionScreen from "../screens/SelectionScreen";
 
-import LoginClienteScreen from "../screens/LoginClientScreen";
-import RegisterClient from "../screens/RegisterClient";
-import RegisterClientStep2 from "../screens/RegisterClientStep2";
-import HomeClient from "../screens/HomeClient";
+import LoginClienteScreen from "../screens/client/LoginClientScreen";
+import RegisterClient from "../screens/client/RegisterClient";
+import RegisterClientStep2 from "../screens/client/RegisterClientStep2";
+import HomeClient from "../screens/client/HomeClient";
 
-import LoginProviderScreen from "../screens/LoginProviderScreen";
-import RegisterProvider from "../screens/RegisterProvider";
-import RegisterProviderStep2 from "../screens/RegisterProviderStep2";
+import LoginProviderScreen from "../screens/provider/LoginProviderScreen";
+import RegisterProvider from "../screens/provider/RegisterProvider";
+import RegisterProviderStep2 from "../screens/provider/RegisterProviderStep2";
 
 const Stack = createNativeStackNavigator();
 

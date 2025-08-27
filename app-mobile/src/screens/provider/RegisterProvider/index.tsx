@@ -28,7 +28,7 @@ import {
   LoginLink,
 } from "./style";
 
-import { BackButton } from "../../components/BackButton";
+import { BackButton } from "../../../components/BackButton";
 
 type RootStackParamList = {
   RegisterProviderStep2: {

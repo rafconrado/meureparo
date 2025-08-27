@@ -20,7 +20,7 @@ import {
   PickerContainer,
 } from "./style";
 
-import { BackButton } from "../../components/BackButton";
+import { BackButton } from "../../../components/BackButton";
 
 const servicos = [
   { label: "Qual serviço você oferece?", value: "" },

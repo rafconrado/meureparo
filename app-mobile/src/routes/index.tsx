@@ -1,7 +1,7 @@
 import { View, ActivityIndicator } from "react-native";
 import AuthStack from "./AuthStack";
-import { ClientStack } from "./ClientStack";
-import { ProviderStack } from "./ProviderStack";
+import { ClientTabs } from "./ClientTabs";
+import { ProviderTabs } from "./ProviderTabs";
 import { useAuth } from "../contexts/AuthContext";
 
 export default function Routes() {
@@ -16,8 +16,8 @@ export default function Routes() {
   }
 
   if (!user) return <AuthStack />;
-  if (userType === "client") return <ClientStack />;
-  if (userType === "provider") return <ProviderStack />;
+  if (userType === "client") return <ClientTabs />;
+  if (userType === "provider") return <ProviderTabs />;
 
   return <AuthStack />;
 }

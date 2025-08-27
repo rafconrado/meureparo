@@ -1,5 +1,5 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import HomeClient from "../screens/HomeClient";
+import HomeClient from "../screens/client/HomeClient";
 
 const Client = createNativeStackNavigator();
 

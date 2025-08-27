@@ -10,7 +10,7 @@ import {
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
-import { register } from "../../services/authService";
+import { register } from "../../../services/authService";
 
 import {
   Container,
@@ -29,7 +29,7 @@ import {
   LoginLink,
 } from "./style";
 
-import { BackButton } from "../../components/BackButton";
+import { BackButton } from "../../../components/BackButton";
 
 type RootStackParamList = {
   RegisterClientStep2: {

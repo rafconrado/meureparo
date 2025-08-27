@@ -1,7 +1,7 @@
 import React from "react";
 import { StatusBar } from "react-native";
 import { Container, Title } from "./style";
-import { LogoutButton } from "../../components/LogoutButton";
+import { LogoutButton } from "../../../components/LogoutButton";
 
 const HomeProvider = () => {
   return (

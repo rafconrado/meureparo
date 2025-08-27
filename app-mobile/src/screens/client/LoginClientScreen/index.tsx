@@ -9,12 +9,16 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
-import { useAuth } from "../../contexts/AuthContext";
+import { useAuth } from "../../../contexts/AuthContext";
+import { login as loginService } from "../../../services/authService";
 
 import {
   Container,
+  Header,
   FormContainer,
-  BlueFooter,
+  HeaderContent,
+  Logo,
+  HeaderTitle,
   Subtitle,
   InputContainer,
   StyledInput,
@@ -25,9 +29,6 @@ import {
   DividerLine,
   DividerText,
   SocialLoginContainer,
-  FooterContent,
-  Logo,
-  FooterTitle,
   SignUpContainer,
   SignUpText,
   SignUpLink,
@@ -35,9 +36,9 @@ import {
 
 import { AntDesign, Feather } from "@expo/vector-icons";
 
-import { BackButton } from "../../components/BackButton";
+import { BackButton } from "../../../components/BackButton";
 
-const LoginProviderScreen = () => {
+const LoginClienteScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { signIn } = useAuth();
@@ -50,12 +51,9 @@ const LoginProviderScreen = () => {
     }
 
     try {
-      const user = {
-        name: "Prestador Simulado",
-        email,
-        token: "token_simulado",
-      };
-      await signIn(user, "provider");
+      const user = await loginService(email, password);
+      await signIn(user, "client");
+      Alert.alert("Sucesso", "Login realizado!");
     } catch (error: any) {
       Alert.alert("Erro", error.message || "Falha no login");
     }
@@ -63,9 +61,9 @@ const LoginProviderScreen = () => {
 
   return (
     <Container>
-      <StatusBar barStyle="dark-content" backgroundColor="#fff8ec" />
+      <StatusBar barStyle="light-content" backgroundColor="#df692b" />
 
-      <BackButton color="#57b2c5" />
+      <BackButton />
 
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -75,8 +73,17 @@ const LoginProviderScreen = () => {
           contentContainerStyle={{ flexGrow: 1 }}
           keyboardShouldPersistTaps="handled"
         >
+          <Header>
+            <HeaderContent>
+              <Logo source={require("../../assets/images/logo.png")} />
+              <HeaderTitle>
+                Sua necessidade a um clique de ser resolvida.
+              </HeaderTitle>
+            </HeaderContent>
+          </Header>
+
           <FormContainer>
-            <Subtitle>Sou prestador:</Subtitle>
+            <Subtitle>Login para clientes:</Subtitle>
 
             <InputContainer>
               <Feather name="user" size={20} color="white" />
@@ -103,11 +110,9 @@ const LoginProviderScreen = () => {
               <ForgotPasswordText>Esqueceu sua senha?</ForgotPasswordText>
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={handleLogin}>
-              <LoginButton>
-                <ButtonText>Login</ButtonText>
-              </LoginButton>
-            </TouchableOpacity>
+            <LoginButton onPress={handleLogin}>
+              <ButtonText>Login</ButtonText>
+            </LoginButton>
 
             <DividerContainer>
               <DividerLine />
@@ -130,23 +135,16 @@ const LoginProviderScreen = () => {
             <SignUpContainer>
               <SignUpText>Não tem uma conta?</SignUpText>
               <TouchableOpacity
-                onPress={() => navigation.navigate("RegisterProvider" as never)}
+                onPress={() => navigation.navigate("RegisterClient" as never)}
               >
                 <SignUpLink>Cadastre-se</SignUpLink>
               </TouchableOpacity>
             </SignUpContainer>
           </FormContainer>
-
-          <BlueFooter>
-            <FooterContent>
-              <Logo source={require("../../assets/images/logo.png")} />
-              <FooterTitle>Conectando você a novas oportunidades.</FooterTitle>
-            </FooterContent>
-          </BlueFooter>
         </ScrollView>
       </KeyboardAvoidingView>
     </Container>
   );
 };
 
-export default LoginProviderScreen;
+export default LoginClienteScreen;

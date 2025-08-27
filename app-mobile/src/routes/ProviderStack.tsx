@@ -1,5 +1,5 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import HomeProvider from "../screens/HomeProvider/index";
+import HomeProvider from "../screens/provider/HomeProvider";
 
 const Provider = createNativeStackNavigator();
 

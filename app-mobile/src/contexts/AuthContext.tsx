@@ -8,7 +8,6 @@ import React, {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   register as registerService,
-  login as loginService,
 } from "../services/authService";
 
 interface UserData {

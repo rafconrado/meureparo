@@ -4,8 +4,8 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
 import { Picker } from "@react-native-picker/picker";
 
-import { useAuth } from "../../contexts/AuthContext";
-import { BackButton } from "../../components/BackButton";
+import { useAuth } from "../../../contexts/AuthContext";
+import { BackButton } from "../../../components/BackButton";
 
 import {
   Container,
@@ -26,7 +26,7 @@ import {
 import {
   RegisterClientStep2NavigationProp,
   RegisterClientStep2RouteProp,
-} from "../../@types/navigation";
+} from "../../../@types/navigation";
 
 interface RouteParams {
   name: string;
