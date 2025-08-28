@@ -101,7 +101,7 @@ Para rodar este projeto localmente, você precisará ter `Node.js`, `npm` (ou `y
 ## 🗺️ Roadmap do Projeto
 
 * [x] Estruturação dos projetos `backend` e `frontend`.
-* [ ] Finalizar fluxo de Cadastro e Login ponta a ponta.
+* [x] Finalizar fluxo de Cadastro e Login ponta a ponta.
 * [ ] Desenvolver os endpoints para CRUD de Serviços.
 * [ ] Criar as telas de Perfil de Usuário (Cliente e Prestador).
 * [ ] Implementar o sistema de busca e listagem de serviços no app.
