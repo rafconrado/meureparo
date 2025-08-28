@@ -154,7 +154,7 @@ const RegisterClient = () => {
         >
           <Header>
             <HeaderContent>
-              <Logo source={require("../../assets/images/logo.png")} />
+              <Logo source={require("../../../assets/images/logo.png")} />
               <HeaderTitle>
                 Cadastre-se para encontrar o profissional certo para você.
               </HeaderTitle>

@@ -22,7 +22,7 @@ export default function ProfileScreen() {
         <Value>rafconradoo@gmail.com</Value>
 
         <Label>Tipo de Usuário:</Label>
-        <Value>Cliente / Prestador</Value>
+        <Value>Cliente </Value>
       </Card>
 
       <Button>

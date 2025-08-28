@@ -139,7 +139,7 @@ const LoginProviderScreen = () => {
 
           <BlueFooter>
             <FooterContent>
-              <Logo source={require("../../assets/images/logo.png")} />
+              <Logo source={require("../../../assets/images/logo.png")} />
               <FooterTitle>Conectando você a novas oportunidades.</FooterTitle>
             </FooterContent>
           </BlueFooter>

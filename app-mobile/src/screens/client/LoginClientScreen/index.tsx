@@ -75,7 +75,7 @@ const LoginClienteScreen = () => {
         >
           <Header>
             <HeaderContent>
-              <Logo source={require("../../assets/images/logo.png")} />
+              <Logo source={require("../../../assets/images/logo.png")} />
               <HeaderTitle>
                 Sua necessidade a um clique de ser resolvida.
               </HeaderTitle>

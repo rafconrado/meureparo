@@ -168,7 +168,7 @@ const RegisterProvider = () => {
         >
           <Header>
             <HeaderContent>
-              <Logo source={require("../../assets/images/logo.png")} />
+              <Logo source={require("../../../assets/images/logo.png")} />
               <HeaderTitle>
                 Ofereça seus serviços e encontre novos clientes.
               </HeaderTitle>
