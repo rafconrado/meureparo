@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { useAuth } from "../../contexts/AuthContext";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, CommonActions } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../@types/navigation";
 
@@ -19,7 +19,7 @@ type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 interface LogoutButtonProps {
   size?: number;
   style?: StyleProp<ViewStyle>;
-  userType?: "client" | "provider"; // para identificar o tipo
+  userType?: "client" | "provider";
 }
 
 export const LogoutButton: React.FC<LogoutButtonProps> = ({
@@ -34,23 +34,16 @@ export const LogoutButton: React.FC<LogoutButtonProps> = ({
     try {
       await signOut();
 
-      if (userType === "client") {
-        navigation.reset({
-          index: 1,
-          routes: [
-            { name: "Selection" as never },
-            { name: "LoginCliente" as never },
-          ],
-        });
-      } else if (userType === "provider") {
-        navigation.reset({
-          index: 1,
-          routes: [
-            { name: "Selection" as never },
-            { name: "LoginProvider" as never },
-          ],
-        });
-      }
+
+      const loginRoute =
+        userType === "client" ? "LoginCliente" : "LoginProvider";
+
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: loginRoute as never }],
+        })
+      );
     } catch (error) {
       Alert.alert("Erro", "Não foi possível fazer logout. Tente novamente.");
     }
