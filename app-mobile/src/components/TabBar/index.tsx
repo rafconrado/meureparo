@@ -1,6 +1,7 @@
 import React from "react";
 import { View, TouchableOpacity, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { styles } from "./style";
 
 type TabItem = {
   label: string;
@@ -15,33 +16,24 @@ type Props = {
 
 export function TabBar({ tabs, activeIndex }: Props) {
   return (
-    <View
-      style={{
-        flexDirection: "row",
-        justifyContent: "space-around",
-        paddingVertical: 10,
-        backgroundColor: "#FFF8EC", 
-        borderTopWidth: 1,
-        borderColor: "#D9D9D9",
-      }}
-    >
+    <View style={styles.container}>
       {tabs.map((tab, index) => (
         <TouchableOpacity
           key={index}
           onPress={tab.onPress}
-          style={{ alignItems: "center" }}
+          style={styles.tabButton}
         >
           <Ionicons
             name={tab.icon}
             size={24}
             color={index === activeIndex ? "#57B2C5" : "#0C0C0C"}
+            style={styles.icon}
           />
           <Text
-            style={{
-              fontSize: 12,
-              color: index === activeIndex ? "#57B2C5" : "#0C0C0C",
-              fontFamily: "Inter-Bold",
-            }}
+            style={[
+              styles.label,
+              { color: index === activeIndex ? "#57B2C5" : "#0C0C0C" },
+            ]}
           >
             {tab.label}
           </Text>

@@ -32,7 +32,7 @@ export async function register(data: RegisterDTO): Promise<LoginResponse> {
     const normalizedEmail = data.email.trim().toLowerCase();
 
     const response = await axios.post(
-      "http://192.168.0.8:3000/auth/register",
+      "http://192.168.1.16:3000/auth/register",
       {
         ...data,
         email: normalizedEmail,
@@ -55,7 +55,7 @@ export async function login(
   try {
     const normalizedEmail = email.trim().toLowerCase();
 
-    const response = await axios.post("http://192.168.0.8:3000/auth/login", {
+    const response = await axios.post("http://192.168.1.16:3000/auth/login", {
       email: normalizedEmail,
       password,
     });
