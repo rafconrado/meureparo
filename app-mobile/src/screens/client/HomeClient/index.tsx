@@ -6,6 +6,7 @@ import { useAuth } from "../../../contexts/AuthContext";
 import {
   Container,
   Title,
+  Subtitle,
   Section,
   CarouselImage,
   ServiceCard,
@@ -43,13 +44,23 @@ const servicesData = [
 const partnersData = [
   {
     id: "1",
-    name: "Loja ABC",
-    logo: require("../../../assets/images/anuncios/ad1.png"),
+    name: "Amanco",
+    logo: require("../../../assets/images/logo/amanco.png"),
   },
   {
     id: "2",
-    name: "Loja XYZ",
-    logo: require("../../../assets/images/anuncios/ad2.png"),
+    name: "Tigre",
+    logo: require("../../../assets/images/logo/tigre logo.png"),
+  },
+  {
+    id: "3",
+    name: "Lorenzetti",
+    logo: require("../../../assets/images/logo/lorenzetti.png"),
+  },
+  {
+    id: "4",
+    name: "Suvinil",
+    logo: require("../../../assets/images/logo/suvinil.png"),
   },
 ];
 
@@ -60,14 +71,15 @@ const HomeClient = () => {
 
   return (
     <Container>
-      <StatusBar barStyle="dark-content" backgroundColor="#FFF8EC" />
+      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
 
       <ScrollView showsVerticalScrollIndicator={false}>
-        <Title>Bem-vindo(a) {user?.name || "Usuário"}!</Title>
+        <Title>Olá, {user?.name || "Usuário"} 👋</Title>
+        <Subtitle>Encontre serviços de confiança perto de você</Subtitle>
 
         <Section>
           <CustomCarousel
-            title="Anúncios"
+            title="Destaques"
             data={adsData}
             renderItem={(item) => (
               <CarouselImage source={item.image} resizeMode="cover" />
@@ -79,14 +91,14 @@ const HomeClient = () => {
           <CustomCarousel
             title="Serviços Recomendados"
             data={servicesData}
-            height={220}
+            height={240}
             renderItem={(item) => (
               <ServiceCard>
                 <ServiceImage source={item.image} resizeMode="cover" />
                 <ServiceTitle>{item.title}</ServiceTitle>
-                <ServiceFromText>A partir de:</ServiceFromText>
+                <ServiceFromText>A partir de</ServiceFromText>
                 <ServicePrice>{item.price}</ServicePrice>
-                <ServiceButton>
+                <ServiceButton activeOpacity={0.8}>
                   <ServiceButtonText>Contratar</ServiceButtonText>
                 </ServiceButton>
               </ServiceCard>
@@ -96,9 +108,9 @@ const HomeClient = () => {
 
         <Section>
           <CustomCarousel
-            title="Quem acredita, confia:"
+            title="Parceiros de confiança"
             data={partnersData}
-            height={150}
+            height={140} // ajuste de altura para caber o logo
             renderItem={(item) => (
               <PartnerContainer>
                 <PartnerLogo source={item.logo} />

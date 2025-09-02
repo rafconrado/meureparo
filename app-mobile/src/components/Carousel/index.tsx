@@ -19,7 +19,6 @@ export function CustomCarousel<T>({
 }: Props<T>) {
   return (
     <View style={{ marginBottom: 24 }}>
-      {/* Título acima do carrossel */}
       <Text
         style={{
           fontSize: 16,
@@ -32,7 +31,6 @@ export function CustomCarousel<T>({
         {title}
       </Text>
 
-      {/* Carrossel genérico */}
       <Carousel
         loop
         width={width}

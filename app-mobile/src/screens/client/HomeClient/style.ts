@@ -6,95 +6,114 @@ export const Container = styled.View`
 `;
 
 export const Title = styled.Text`
-  font-size: 24px;
+  font-size: 28px;
   color: #0c0c0c;
   font-family: "Inter-Bold";
-  margin: 16px;
+  margin: 32px 16px 4px 16px;
+`;
+
+export const Subtitle = styled.Text`
+  font-size: 15px;
+  color: #6e6e6e;
+  font-family: "Inter-Regular";
+  margin: 0 16px 20px 16px;
 `;
 
 export const Section = styled.View`
-  margin-top: 16px;
-  margin-bottom: 16px;
-`;
-
-export const CarouselItemContainer = styled.View`
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
-  padding-left: 16px;
-`;
-
-export const CarouselItemWrapper = styled.View`
-  margin-right: 16px;
+  margin-bottom: 32px;
 `;
 
 export const CarouselImage = styled.Image<{ height?: number }>`
-  width: 95%;
-  height: ${({ height }) => (height ? `${height}px` : "180px")};
-  border-radius: 12px;
+  width: 92%;
+  height: ${({ height }) => (height ? `${height}px` : "190px")};
+  border-radius: 20px;
+  margin-left: 12px;
+  elevation: 5;
+  shadow-color: #000;
+  shadow-opacity: 0.08;
+  shadow-radius: 6px;
 `;
-
-/* serviços */
 
 export const ServiceCard = styled.View`
-  width: 90%;
+  width: 92%;
   padding: 16px;
-  border-radius: 12px;
-  background-color: #fff;
-`;
-
-export const ServiceFromText = styled.Text`
-  font-size: 12px;
-  color: #0c0c0c;
-  font-family: "Inter-Regular";
-  margin-top: 4px;
-  position: relative;
+  padding-bottom: 50px; 
+  border-radius: 20px;
+  background-color: #fff8ec;
+  margin-left: 12px;
+  elevation: 4;
+  shadow-color: #000;
+  shadow-opacity: 0.06;
+  shadow-radius: 5px;
 `;
 
 export const ServiceImage = styled.Image`
   width: 100%;
-  height: 100px;
-  border-radius: 8px;
+  height: 120px;
+  border-radius: 16px;
 `;
 
 export const ServiceTitle = styled.Text`
-  font-size: 14px;
+  font-size: 16px;
   font-family: "Inter-Bold";
-  margin-top: 8px;
+  margin-top: 10px;
+  color: #0c0c0c;
+`;
+
+export const ServiceFromText = styled.Text`
+  font-size: 12px;
+  color: #808080;
+  font-family: "Inter-Regular";
+  margin-top: 4px;
 `;
 
 export const ServicePrice = styled.Text`
-  font-size: 12px;
-  color: #57b2c5;
-  margin-top: 4px;
-  margin-bottom: 4px;
+  font-size: 15px;
+  color: #ff8724;
+  font-family: "Inter-Bold";
+  margin-top: 2px;
+  margin-bottom: 8px;
 `;
 
 export const ServiceButton = styled.TouchableOpacity`
-  background-color: #57b2c5;
-  padding: 8px;
-  border-radius: 8px;
+  background-color: #ff8724;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  border-radius: 12px;
   align-items: center;
-  margin-top: 8px;
+  justify-content: center;
+  margin-top: 14px;
+  width: 100%;
 `;
 
 export const ServiceButtonText = styled.Text`
   color: #fff;
+  font-size: 15px; 
   font-family: "Inter-Bold";
+  line-height: 20px;
+  text-align: center;
 `;
 
 /* parceiros */
 export const PartnerContainer = styled.View`
   align-items: center;
+  justify-content: center;
+  width: 120px;
+  margin-left: 16px;
 `;
 
 export const PartnerLogo = styled.Image`
-  width: 80px;
-  height: 80px;
-  border-radius: 40px;
-  margin-bottom: 8px;
+  width: 90px;
+  height: 90px;
+  border-radius: 45px;
+  margin-bottom: 10px;
+  border-width: 2px;
+  border-color: #ff8724;
 `;
 
 export const PartnerName = styled.Text`
   font-family: "Inter-Bold";
+  font-size: 14px;
+  text-align: center;
+  color: #0c0c0c;
 `;

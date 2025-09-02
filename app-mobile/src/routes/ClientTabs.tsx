@@ -11,6 +11,7 @@ import HomeClientScreen from "../screens/client/HomeClient";
 import ProfileScreen from "../screens/client/ProfileScreen";
 import MessagesScreen from "../screens/client/MessagesScreen";
 import HistoryScreen from "../screens/client/HistoryScreen";
+import InvoicesClients from "../screens/client/InvoicesClients";
 
 const Tab = createBottomTabNavigator();
 
@@ -43,12 +44,14 @@ export function ClientTabs() {
                 iconName = "chatbubble-ellipses-outline";
               if (route.name === "Histórico") iconName = "time-outline";
               if (route.name === "Perfil") iconName = "person-outline";
+              if (route.name === "Pedidos") iconName = "file-tray-outline";
 
               return <Ionicons name={iconName} size={size} color={color} />;
             },
           })}
         >
           <Tab.Screen name="Início" component={HomeClientScreen} />
+          <Tab.Screen name="Pedidos" component={InvoicesClients} />
           <Tab.Screen name="Mensagens" component={MessagesScreen} />
           <Tab.Screen name="Histórico" component={HistoryScreen} />
           <Tab.Screen name="Perfil" component={ProfileScreen} />
