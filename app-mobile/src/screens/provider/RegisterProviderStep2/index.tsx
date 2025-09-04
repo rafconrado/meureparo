@@ -1,8 +1,11 @@
-import React, { useState } from "react";
-import { StatusBar, Alert, ScrollView } from "react-native";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import React, { useState, useEffect } from "react";
+import { StatusBar, Alert, ScrollView, ActivityIndicator } from "react-native";
+import { useRoute } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
 import { Picker } from "@react-native-picker/picker";
+
+// CORREÇÃO 1: Importe o hook 'useAuth' em vez do 'AuthContext' diretamente.
+import { useAuth } from "../../../contexts/AuthContext";
 
 import {
   Container,
@@ -32,7 +35,6 @@ const servicos = [
 ];
 
 const RegisterProviderStep2 = () => {
-  const navigation = useNavigation();
   const route = useRoute();
   const { name, cnpj, email, password } = route.params as {
     name: string;
@@ -41,6 +43,10 @@ const RegisterProviderStep2 = () => {
     password: string;
   };
 
+  // CORREÇÃO 2: Use o hook 'useAuth()' e pegue a função com o nome correto: 'registerProvider'.
+  const { registerProvider } = useAuth();
+
+  const [loading, setLoading] = useState(false);
   const [phone, setPhone] = useState("");
   const [cep, setCep] = useState("");
   const [logradouro, setLogradouro] = useState("");
@@ -67,48 +73,56 @@ const RegisterProviderStep2 = () => {
   };
 
   const formatCep = (value: string) => {
-    const cep = value.replace(/\D/g, "");
+    const cep = value.replace(/\D/g, "").slice(0, 8);
     if (cep.length <= 5) return cep;
-    return `${cep.slice(0, 5)}-${cep.slice(5, 8)}`;
+    return `${cep.slice(0, 5)}-${cep.slice(5)}`;
   };
 
-  const handleCepChange = async (text: string) => {
-    const rawCep = text.replace(/\D/g, "");
-    const formattedCep = formatCep(rawCep);
+  const handleCepInput = (text: string) => {
+    const formattedCep = formatCep(text);
     setCep(formattedCep);
+  };
 
-    if (rawCep.length === 8) {
-      try {
-        const response = await fetch(
-          `https://viacep.com.br/ws/${rawCep}/json/`
-        );
-        const data = await response.json();
+  useEffect(() => {
+    const rawCep = cep.replace(/\D/g, "");
 
-        if (data.erro) {
-          Alert.alert("CEP não encontrado", "Verifique o CEP informado.");
-          setLogradouro("");
-          setBairro("");
-          setCidade("");
-          setUf("");
-          return;
-        }
-
-        setLogradouro(data.logradouro || "");
-        setBairro(data.bairro || "");
-        setCidade(data.localidade || "");
-        setUf(data.uf || "");
-      } catch {
-        Alert.alert("Erro", "Não foi possível buscar o endereço.");
-      }
-    } else {
+    const clearAddressFields = () => {
       setLogradouro("");
       setBairro("");
       setCidade("");
       setUf("");
-    }
-  };
+    };
 
-  const handleSubmit = () => {
+    if (rawCep.length === 8) {
+      const fetchAddress = async () => {
+        try {
+          const response = await fetch(
+            `https://viacep.com.br/ws/${rawCep}/json/`
+          );
+          const data = await response.json();
+
+          if (data.erro) {
+            Alert.alert("CEP não encontrado", "Verifique o CEP informado.");
+            clearAddressFields();
+            return;
+          }
+
+          setLogradouro(data.logradouro || "");
+          setBairro(data.bairro || "");
+          setCidade(data.localidade || "");
+          setUf(data.uf || "");
+        } catch {
+          Alert.alert("Erro", "Não foi possível buscar o endereço.");
+          clearAddressFields();
+        }
+      };
+      fetchAddress();
+    } else if (rawCep.length > 0) {
+      clearAddressFields();
+    }
+  }, [cep]);
+
+  const handleSubmit = async () => {
     if (
       !phone.replace(/\D/g, "") ||
       !cep ||
@@ -123,32 +137,46 @@ const RegisterProviderStep2 = () => {
       return;
     }
 
-    const enderecoCompleto = `${logradouro}, ${numero}${
-      complemento ? `, ${complemento}` : ""
-    } - ${bairro}, ${cidade} - ${uf}`;
+    setLoading(true);
 
-    console.log({
-      name,
-      cnpj,
-      email,
-      password,
-      phone: phone.replace(/\D/g, ""),
-      cep: cep.replace(/\D/g, ""),
-      enderecoCompleto,
-      servico,
-    });
+    try {
+      const providerData = {
+        name,
+        cnpj,
+        email,
+        password,
+        phone: phone.replace(/\D/g, ""),
+        cep: cep.replace(/\D/g, ""),
+        logradouro,
+        numero,
+        complemento,
+        bairro,
+        cidade,
+        uf,
+        servico,
+        // CORREÇÃO 3: O objeto de dados precisa incluir o 'userType' para o DTO funcionar.
+        userType: "provider" as const,
+      };
 
-    Alert.alert("Sucesso!", "Cadastro finalizado com sucesso.", [
-      {
-        text: "OK",
-        onPress: () => navigation.navigate("LoginProvider" as never),
-      },
-    ]);
+      // CORREÇÃO 4: Chame a função 'registerProvider' que pegamos do contexto.
+      await registerProvider(providerData);
+    } catch (error) {
+      console.error(error);
+      Alert.alert(
+        "Erro no Cadastro",
+        "Não foi possível criar a conta. Verifique os dados e tente novamente."
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <Container>
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        keyboardShouldPersistTaps="handled"
+      >
         <StatusBar barStyle="light-content" backgroundColor="#57B2C5" />
         <BackButton />
 
@@ -181,7 +209,7 @@ const RegisterProviderStep2 = () => {
               placeholder="CEP"
               keyboardType="number-pad"
               value={cep}
-              onChangeText={handleCepChange}
+              onChangeText={handleCepInput}
               maxLength={9}
             />
           </InputContainer>
@@ -239,6 +267,7 @@ const RegisterProviderStep2 = () => {
               value={uf}
               onChangeText={setUf}
               maxLength={2}
+              autoCapitalize="characters"
             />
           </InputContainer>
 
@@ -259,8 +288,12 @@ const RegisterProviderStep2 = () => {
             </StyledPicker>
           </PickerContainer>
 
-          <RegisterButton onPress={handleSubmit}>
-            <ButtonText>Finalizar Cadastro</ButtonText>
+          <RegisterButton onPress={handleSubmit} disabled={loading}>
+            {loading ? (
+              <ActivityIndicator color="#FFF" />
+            ) : (
+              <ButtonText>Finalizar Cadastro</ButtonText>
+            )}
           </RegisterButton>
         </FormContainer>
       </ScrollView>

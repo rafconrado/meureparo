@@ -10,14 +10,14 @@ export const styles = StyleSheet.create({
     backgroundColor: "#FFF8EC",
     borderTopWidth: 1,
     borderColor: "#D9D9D9",
-    width: width, // responsivo à largura da tela
+    width: width,
   },
   tabButton: {
     alignItems: "center",
-    flex: 1, // distribui igualmente os botões
+    flex: 1,
   },
   icon: {
-    marginBottom: -2, // sobe um pouco o ícone
+    marginBottom: -2,
   },
   label: {
     fontSize: 12,
