@@ -1,91 +1,132 @@
 import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import {
   RegisterClientDTO,
   RegisterProviderDTO,
-} from "../contexts/AuthContext";
-
-// A API base para evitar repetição
+  UpdateUserData,
+} from "./../@types/auth";
+// --- CONFIGURAÇÃO DA API ---
 const api = axios.create({
-  baseURL: "http://192.168.1.16:3000/api-backend", // Configure sua URL base aqui
+  baseURL: "http://192.168.1.16:3000/api-backend/auth",
 });
 
-interface LoginResponse {
-  id: string;
-  name: string;
-  email: string;
-  userType: "client" | "provider";
+// --- INTERCEPTOR ---
+api.interceptors.request.use(async (config) => {
+  try {
+    const storedUser = await AsyncStorage.getItem("@app:user");
+    if (storedUser) {
+      const userData = JSON.parse(storedUser);
+      const token = userData?.token;
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    }
+    return config;
+  } catch (error) {
+    console.error("Erro no interceptor do Axios:", error);
+    return Promise.reject(error);
+  }
+});
+
+// --- INTERFACE DE RESPOSTA ---
+interface ApiResponse {
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    userType: "client" | "provider";
+  };
   token: string;
+  message?: string;
 }
 
-// 2. Função específica para registrar CLIENTES
+// --- FUNÇÕES DE SERVIÇO ---
+
 export async function registerClient(
   data: RegisterClientDTO
-): Promise<LoginResponse> {
-  console.log("authService.registerClient chamado com:", data);
+): Promise<ApiResponse> {
   try {
-    // Normalizar o email é uma ótima prática
     const normalizedEmail = data.email.trim().toLowerCase();
-
-    // Chama o endpoint específico para clientes
-    const response = await api.post("/auth/register/client", {
+    // ✅ ROTA CORRIGIDA: Sem o /auth no início
+    const response = await api.post("/register/client", {
       ...data,
       email: normalizedEmail,
     });
-
     return response.data;
   } catch (error: any) {
-    console.error(
-      "Erro ao registrar cliente:",
-      error.response?.data || error.message
-    );
     throw new Error(
       error.response?.data?.message || "Erro ao registrar cliente"
     );
   }
 }
 
-// 3. Função específica para registrar PRESTADORES
 export async function registerProvider(
   data: RegisterProviderDTO
-): Promise<LoginResponse> {
-  console.log("authService.registerProvider chamado com:", data);
+): Promise<ApiResponse> {
   try {
     const normalizedEmail = data.email.trim().toLowerCase();
 
-    // Chama o endpoint específico para prestadores
-    const response = await api.post("/auth/register/provider", {
+    const response = await api.post("/register/provider", {
       ...data,
       email: normalizedEmail,
     });
-
     return response.data;
   } catch (error: any) {
-    console.error(
-      "Erro ao registrar prestador:",
-      error.response?.data || error.message
-    );
     throw new Error(
       error.response?.data?.message || "Erro ao registrar prestador"
     );
   }
 }
 
-export async function login(
+export async function loginClient(
   email: string,
   password: string
-): Promise<LoginResponse> {
+): Promise<ApiResponse> {
   try {
     const normalizedEmail = email.trim().toLowerCase();
 
-    const response = await api.post("/auth/login", {
+    const response = await api.post("/login/client", {
       email: normalizedEmail,
       password,
     });
-
     return response.data;
   } catch (error: any) {
-    console.error("Erro ao logar:", error.response?.data || error.message);
-    throw new Error(error.response?.data?.message || "Erro ao fazer login");
+    throw new Error(
+      error.response?.data?.message || "Usuário ou senha inválidos."
+    );
+  }
+}
+
+export async function loginProvider(
+  email: string,
+  password: string
+): Promise<ApiResponse> {
+  try {
+    const normalizedEmail = email.trim().toLowerCase();
+    // ✅ ROTA CORRIGIDA: Sem o /auth no início
+    const response = await api.post("/login/provider", {
+      email: normalizedEmail,
+      password,
+    });
+    return response.data;
+  } catch (error: any) {
+    throw new Error(
+      error.response?.data?.message || "Usuário ou senha inválidos."
+    );
+  }
+}
+
+export async function updateUser(
+  data: UpdateUserData
+): Promise<ApiResponse["user"]> {
+  try {
+    // ✅ ROTA CORRIGIDA: Sem o /auth no início
+    const response = await api.put("/profile", data);
+    return response.data;
+  } catch (error: any) {
+    throw new Error(
+      error.response?.data?.message || "Não foi possível conectar ao servidor."
+    );
   }
 }

@@ -1,160 +1,86 @@
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  ReactNode,
-} from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-// ATUALIZADO: Importaremos duas funções de registro do seu serviço
-import {
-  registerClient as registerClientService,
-  registerProvider as registerProviderService,
-} from "../services/authService";
 
-interface UserData {
-  name: string;
-  email: string;
-  token: string;
-}
+import { registerClient } from "../services/authService";
+import { UserData, RegisterClientDTO } from "../@types/auth";
 
-export type UserType = "client" | "provider";
-
-// DTO ANTIGO FOI SEPARADO EM DOIS
-
-// NOVO DTO: Apenas para o cadastro de Cliente
-export interface RegisterClientDTO {
-  name: string;
-  cpf: string;
-  email: string;
-  password: string;
-  phone: string;
-  cep: string;
-  logradouro: string;
-  numero: string;
-  complemento?: string;
-  bairro: string;
-  cidade: string;
-  uf: string;
-  comoFicouSabendo: string;
-  userType: "client"; // Tipo fixo para garantir a consistência
-}
-
-// NOVO DTO: Apenas para o cadastro de Prestador
-export interface RegisterProviderDTO {
-  name: string;
-  cnpj: string;
-  email: string;
-  password: string;
-  phone: string;
-  cep: string;
-  logradouro: string;
-  numero: string;
-  complemento?: string;
-  bairro: string;
-  cidade: string;
-  uf: string;
-  servico: string;
-  userType: "provider"; // Tipo fixo
-}
-
-// ATUALIZADO: A interface do contexto agora tem duas funções de registro
 interface AuthContextData {
   user: UserData | null;
-  userType: UserType | null;
   loading: boolean;
-  signIn: (data: UserData, type: UserType) => Promise<void>;
-  signOut: () => Promise<void>;
-  registerClient: (data: RegisterClientDTO) => Promise<void>;
-  registerProvider: (data: RegisterProviderDTO) => Promise<void>;
+  signIn(credentials: any, userType: string): Promise<void>;
+  signOut(): void;
+  // 2. ADICIONE A FUNÇÃO REGISTER À INTERFACE
+  register(data: RegisterClientDTO): Promise<void>;
 }
 
-export const AuthContext = createContext<AuthContextData>({} as AuthContextData);
+const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
-export function AuthProvider({ children }: { children: ReactNode }) {
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [user, setUser] = useState<UserData | null>(null);
-  const [userType, setUserType] = useState<UserType | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    (async () => {
-      try {
-        const storedUser = await AsyncStorage.getItem("@app:user");
-        const storedType = await AsyncStorage.getItem("@app:userType");
-        if (storedUser && storedType) {
-          setUser(JSON.parse(storedUser));
-          setUserType(storedType as UserType);
-        }
-      } catch (error) {
-        console.error("Erro ao carregar dados do AsyncStorage:", error);
-      } finally {
-        setLoading(false);
+    async function loadStoragedData() {
+      const storagedUser = await AsyncStorage.getItem("@app:user");
+      if (storagedUser) {
+        setUser(JSON.parse(storagedUser));
       }
-    })();
+      setLoading(false);
+    }
+    loadStoragedData();
   }, []);
 
-  async function signIn(data: UserData, type: UserType) {
-    try {
-      setUser(data);
-      setUserType(type);
-      await AsyncStorage.setItem("@app:user", JSON.stringify(data));
-      await AsyncStorage.setItem("@app:userType", type);
-    } catch (error) {
-      console.error("Erro ao salvar dados no AsyncStorage:", error);
-      throw new Error("Falha ao salvar dados do usuário localmente.");
-    }
+  // Sua função de login existente
+  async function signIn(data: UserData, userType: string) {
+    setUser(data);
+    await AsyncStorage.setItem("@app:user", JSON.stringify(data));
   }
 
   async function signOut() {
+    await AsyncStorage.clear();
     setUser(null);
-    setUserType(null);
+  }
+
+  // 3. IMPLEMENTE A FUNÇÃO REGISTER
+  async function register(data: RegisterClientDTO) {
     try {
-      await AsyncStorage.removeItem("@app:user");
-      await AsyncStorage.removeItem("@app:userType");
+      // Chama o serviço de API para criar o usuário no backend
+      const apiResponse = await registerClient(data);
+
+      // Após o sucesso, formata os dados para o padrão do app
+      const userData = {
+        ...apiResponse.user,
+        token: apiResponse.token,
+      };
+
+      // Efetua o login automaticamente para o usuário não precisar digitar tudo de novo
+      await signIn(userData, "client");
     } catch (error) {
-      console.error("Erro ao remover dados do AsyncStorage:", error);
-    }
-  }
-
-  // NOVA FUNÇÃO: Específica para registrar clientes
-  async function registerClient(data: RegisterClientDTO) {
-    try {
-      const newUser = await registerClientService(data);
-      await signIn(newUser, data.userType); // Faz o login automático após o cadastro
-    } catch (error: any) {
-      console.error("Erro ao registrar cliente:", error.message || error);
-      throw new Error(error.message || "Não foi possível concluir o cadastro.");
-    }
-  }
-
-  // NOVA FUNÇÃO: Específica para registrar prestadores
-  async function registerProvider(data: RegisterProviderDTO) {
-    try {
-      const newUser = await registerProviderService(data);
-      await signIn(newUser, data.userType); // Faz o login automático após o cadastro
-    } catch (error: any) {
-      console.error("Erro ao registrar prestador:", error.message || error);
-      throw new Error(error.message || "Não foi possível concluir o cadastro.");
+      console.error("Erro no contexto de registro:", error);
+      // Relança o erro para que a tela de cadastro possa mostrá-lo ao usuário
+      throw error;
     }
   }
 
   return (
+    // 4. FORNEÇA A FUNÇÃO REGISTER NO VALUE DO PROVIDER
     <AuthContext.Provider
       value={{
         user,
-        userType,
         loading,
         signIn,
         signOut,
-        registerClient, // Exporta a nova função
-        registerProvider, // Exporta a nova função
+        register,
       }}
     >
       {children}
     </AuthContext.Provider>
   );
-}
+};
 
-export function useAuth() {
-  return useContext(AuthContext);
+export function useAuth(): AuthContextData {
+  const context = useContext(AuthContext);
+  return context;
 }

@@ -10,7 +10,7 @@ import {
 import { useNavigation } from "@react-navigation/native";
 
 import { useAuth } from "../../../contexts/AuthContext";
-import { login as loginService } from "../../../services/authService";
+import { loginClient as loginService } from "../../../services/authService";
 
 import {
   Container,
@@ -51,11 +51,23 @@ const LoginClienteScreen = () => {
     }
 
     try {
-      const user = await loginService(email, password);
-      await signIn(user, "client");
+      const apiResponse = await loginService(email, password);
+
+      const userData = {
+        ...apiResponse.user, // Copia id, name, email, etc.
+        token: apiResponse.token, // Adiciona o token
+      };
+
+      await signIn(userData, "client");
+
       Alert.alert("Sucesso", "Login realizado!");
+      // O ideal é navegar para a próxima tela após o sucesso
+      // Ex: navigation.navigate('Home');
     } catch (error: any) {
-      Alert.alert("Erro", error.message || "Falha no login");
+      Alert.alert(
+        "Erro de Login",
+        error.message || "Usuário ou senha inválidos."
+      );
     }
   }
 

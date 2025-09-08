@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentação da API - Find & Fix</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .font-mono {
+            font-family: 'Roboto Mono', monospace;
+        }
+        .nav-link.active {
+            background-color: #e2e8f0;
+            color: #1e293b;
+            font-weight: 600;
+        }
+        .content-section { display: none; }
+        .content-section.active { display: block; }
+        .code-block {
+            position: relative;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: #e2e8f0;
+            color: #475569;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+        .copy-btn:hover {
+            background-color: #cbd5e1;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-700">
+    <div class="container mx-auto max-w-7xl px-4 py-8 md:py-12">
+        <header class="mb-10 border-b border-slate-200 pb-6">
+            <h1 class="text-4xl font-bold text-slate-800">Documentação - MeuReparo 🛠</h1>
+            <p class="mt-2 text-lg text-slate-500">Endpoints para o módulo de Autenticação Find & Fix.</p>
+            <p class="mt-4 text-sm bg-slate-100 p-3 rounded-md font-mono text-slate-600">URL Base: <span class="font-semibold text-slate-800">/api-backend/auth</span></p>
+        </header>
+        <main class="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <aside class="md:col-span-1 md:sticky md:top-8 self-start">
+                <nav id="api-nav">
+                    <h3 class="text-sm font-semibold uppercase text-slate-500 tracking-wider mb-3">Cliente</h3>
+                    <ul class="space-y-1 mb-6">
+                        <li><a href="#register-client" class="nav-link block w-full text-left px-3 py-2 rounded-md text-slate-600 hover:bg-slate-200 transition-colors">Registrar Cliente</a></li>
+                        <li><a href="#login-client" class="nav-link block w-full text-left px-3 py-2 rounded-md text-slate-600 hover:bg-slate-200 transition-colors">Login de Cliente</a></li>
+                    </ul>
+                    <h3 class="text-sm font-semibold uppercase text-slate-500 tracking-wider mb-3">Prestador</h3>
+                    <ul class="space-y-1 mb-6">
+                        <li><a href="#register-provider" class="nav-link block w-full text-left px-3 py-2 rounded-md text-slate-600 hover:bg-slate-200 transition-colors">Registrar Prestador</a></li>
+                        <li><a href="#login-provider" class="nav-link block w-full text-left px-3 py-2 rounded-md text-slate-600 hover:bg-slate-200 transition-colors">Login de Prestador</a></li>
+                    </ul>
+                    <h3 class="text-sm font-semibold uppercase text-slate-500 tracking-wider mb-3">Perfil</h3>
+                    <ul class="space-y-1">
+                        <li><a href="#update-profile" class="nav-link block w-full text-left px-3 py-2 rounded-md text-slate-600 hover:bg-slate-200 transition-colors">Atualizar Perfil</a></li>
+                    </ul>
+                </nav>
+            </aside>
+            <div id="api-content" class="md:col-span-3 space-y-12">
+                <section id="register-client" class="content-section">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="bg-green-100 text-green-800 text-sm font-semibold px-3 py-1 rounded-md">POST</span>
+                        <h2 class="text-2xl font-semibold text-slate-800 font-mono">/register/client</h2>
+                    </div>
+                    <p class="text-slate-500 mb-6">Cria um novo usuário do tipo "cliente". Rota não protegida.</p>
+                    <h4 class="font-semibold text-slate-800 mb-2">Corpo da Requisição (Request Body):</h4>
+                    <div class="code-block"><button class="copy-btn">Copiar</button><pre class="bg-slate-100 p-4 rounded-lg overflow-x-auto text-sm text-slate-800 font-mono"><code>{
+    "name": "string",
+    "cpf": "string",
+    "email": "string",
+    "password": "string",
+    "phone": "string",
+    "cep": "string",
+    "logradouro": "string",
+    "numero": "string",
+    "complemento": "string",
+    "bairro": "string",
+    "cidade": "string",
+    "uf": "string",
+    "comoFicouSabendo": "string"
+}</code></pre></div>
+                    <h4 class="font-semibold text-slate-800 mb-2 mt-4">Resposta de Sucesso (201 Created):</h4>
+                    <div class="code-block"><button class="copy-btn">Copiar</button><pre class="bg-slate-100 p-4 rounded-lg overflow-x-auto text-sm text-slate-800 font-mono"><code>{
+    "user": {
+        "id": "string",
+        "name": "string",
+        "email": "string",
+        "userType": "client"
+    },
+    "token": "string (JWT)"
+}</code></pre></div>
+                </section>
+                <section id="login-client" class="content-section">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="bg-green-100 text-green-800 text-sm font-semibold px-3 py-1 rounded-md">POST</span>
+                        <h2 class="text-2xl font-semibold text-slate-800 font-mono">/login/client</h2>
+                    </div>
+                    <p class="text-slate-500 mb-6">Autentica um "cliente" e retorna os dados do usuário com um token de acesso.</p>
+                    <h4 class="font-semibold text-slate-800 mb-2">Corpo da Requisição (Request Body):</h4>
+                    <div class="code-block"><button class="copy-btn">Copiar</button><pre class="bg-slate-100 p-4 rounded-lg overflow-x-auto text-sm text-slate-800 font-mono"><code>{
+    "email": "string",
+    "password": "string"
+}</code></pre></div>
+                    <h4 class="font-semibold text-slate-800 mb-2 mt-4">Resposta de Sucesso (200 OK):</h4>
+                    <div class="code-block"><button class="copy-btn">Copiar</button><pre class="bg-slate-100 p-4 rounded-lg overflow-x-auto text-sm text-slate-800 font-mono"><code>{
+    "user": {
+        "id": "string",
+        "name": "string",
+        "email": "string",
+        "userType": "client"
+    },
+    "token": "string (JWT)"
+}</code></pre></div>
+                </section>
+                <section id="register-provider" class="content-section">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="bg-green-100 text-green-800 text-sm font-semibold px-3 py-1 rounded-md">POST</span>
+                        <h2 class="text-2xl font-semibold text-slate-800 font-mono">/register/provider</h2>
+                    </div>
+                    <p class="text-slate-500 mb-6">Cria um novo usuário do tipo "prestador".</p>
+                    <h4 class="font-semibold text-slate-800 mb-2">Corpo da Requisição (Request Body):</h4>
+                    <div class="code-block"><button class="copy-btn">Copiar</button><pre class="bg-slate-100 p-4 rounded-lg overflow-x-auto text-sm text-slate-800 font-mono"><code>{
+    "name": "string",
+    "email": "string",
+    "password": "string",
+    "phone": "string"
+}</code></pre></div>
+                    <h4 class="font-semibold text-slate-800 mb-2 mt-4">Resposta de Sucesso (201 Created):</h4>
+                    <div class="code-block"><button class="copy-btn">Copiar</button><pre class="bg-slate-100 p-4 rounded-lg overflow-x-auto text-sm text-slate-800 font-mono"><code>{
+    "user": {
+        "id": "string",
+        "name": "string",
+        "email": "string",
+        "userType": "provider"
+    },
+    "token": "string (JWT)"
+}</code></pre></div>
+                </section>
+                <section id="login-provider" class="content-section">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="bg-green-100 text-green-800 text-sm font-semibold px-3 py-1 rounded-md">POST</span>
+                        <h2 class="text-2xl font-semibold text-slate-800 font-mono">/login/provider</h2>
+                    </div>
+                    <p class="text-slate-500 mb-6">Autentica um "prestador" e retorna os dados do usuário com um token de acesso.</p>
+                    <h4 class="font-semibold text-slate-800 mb-2">Corpo da Requisição (Request Body):</h4>
+                    <div class="code-block"><button class="copy-btn">Copiar</button><pre class="bg-slate-100 p-4 rounded-lg overflow-x-auto text-sm text-slate-800 font-mono"><code>{
+    "email": "string",
+    "password": "string"
+}</code></pre></div>
+                    <h4 class="font-semibold text-slate-800 mb-2 mt-4">Resposta de Sucesso (200 OK):</h4>
+                    <div class="code-block"><button class="copy-btn">Copiar</button><pre class="bg-slate-100 p-4 rounded-lg overflow-x-auto text-sm text-slate-800 font-mono"><code>{
+    "user": {
+        "id": "string",
+        "name": "string",
+        "email": "string",
+        "userType": "provider"
+    },
+    "token": "string (JWT)"
+}</code></pre></div>
+                </section>
+                <section id="update-profile" class="content-section">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="bg-blue-100 text-blue-800 text-sm font-semibold px-3 py-1 rounded-md">PUT</span>
+                        <h2 class="text-2xl font-semibold text-slate-800 font-mono">/profile</h2>
+                        <span class="flex items-center gap-1.5 bg-amber-100 text-amber-800 text-xs font-medium px-2 py-0.5 rounded-full"><svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" /></svg>Protegida</span>
+                    </div>
+                    <p class="text-slate-500 mb-6">Atualiza as informações do perfil do usuário atualmente logado. Requer Bearer Token.</p>
+                    <h4 class="font-semibold text-slate-800 mb-2">Corpo da Requisição (Request Body):</h4>
+                    <p class="text-slate-500 mb-2 text-sm">Todos os campos são opcionais.</p>
+                    <div class="code-block"><button class="copy-btn">Copiar</button><pre class="bg-slate-100 p-4 rounded-lg overflow-x-auto text-sm text-slate-800 font-mono"><code>{
+    "name": "string",
+    "phone": "string",
+    "cep": "string",
+    "logradouro": "string",
+    "numero": "string",
+    "bairro": "string",
+    "cidade": "string",
+    "uf": "string"
+}</code></pre></div>
+                    <h4 class="font-semibold text-slate-800 mb-2 mt-4">Resposta de Sucesso (200 OK):</h4>
+                    <div class="code-block"><button class="copy-btn">Copiar</button><pre class="bg-slate-100 p-4 rounded-lg overflow-x-auto text-sm text-slate-800 font-mono"><code>{
+    "id": "string",
+    "name": "string",
+    "email": "string",
+    "userType": "string"
+}</code></pre></div>
+                </section>
+            </div>
+        </main>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const contentSections = document.querySelectorAll('.content-section');
+            const copyButtons = document.querySelectorAll('.copy-btn');
+
+            function updateContent(hash) {
+                const targetHash = hash || '#register-client';
+                navLinks.forEach(link => {
+                    link.classList.toggle('active', link.getAttribute('href') === targetHash);
+                });
+                contentSections.forEach(section => {
+                    section.classList.toggle('active', section.id === targetHash.substring(1));
+                });
+            }
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetHash = this.getAttribute('href');
+                    history.pushState(null, null, targetHash);
+                    updateContent(targetHash);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            });
+
+            window.addEventListener('popstate', () => {
+                updateContent(window.location.hash);
+            });
+
+            copyButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const codeBlock = this.nextElementSibling;
+                    const codeToCopy = codeBlock.querySelector('code').innerText;
+                    navigator.clipboard.writeText(codeToCopy).then(() => {
+                        this.innerText = 'Copiado!';
+                        setTimeout(() => { this.innerText = 'Copiar'; }, 2000);
+                    }, () => {
+                        console.error('Falha ao copiar para a área de transferência.');
+                    });
+                });
+            });
+
+            updateContent(window.location.hash);
+        });
+    </script>
+</body>
+</html>

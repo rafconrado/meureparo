@@ -3,6 +3,9 @@
 /api-backend/node_modules
 /app-mobile/node_modules
 
+# dependencies
+node_modules/
+
 # Arquivos de ambiente
 .env
 *.env

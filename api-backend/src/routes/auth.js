@@ -2,21 +2,19 @@ const express = require("express");
 const router = express.Router();
 
 const authController = require("../controllers/authController");
+// Importando sua função de middleware com o nome correto
+const { verifyToken } = require("../middlewares/auth");
 
 // --- ROTAS PARA CLIENTES ---
-
-// Rota para registrar um novo cliente
-router.post("/client/register", authController.registerClient);
-
-// Rota para login de um cliente
-router.post("/client/login", authController.loginClient);
+router.post("/register/client", authController.registerClient); // Rota pública
+router.post("/login/client", authController.loginClient); // Rota pública
 
 // --- ROTAS PARA PRESTADORES (PROVIDERS) ---
+router.post("/register/provider", authController.registerProvider); // Rota pública
+router.post("/login/provider", authController.loginProvider); // Rota pública
 
-// Rota para registrar um novo prestador
-router.post("/register/provider", authController.registerProvider);
-
-// Rota para login de um prestador
-router.post("/login/provider", authController.loginProvider);
+// --- ROTA PROTEGIDA PARA USUÁRIO LOGADO ---
+// Só requisições com um token válido passarão por ele e chegarão ao controller.
+router.put("/profile", verifyToken, authController.updateProfile);
 
 module.exports = router;

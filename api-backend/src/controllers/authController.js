@@ -232,7 +232,11 @@ exports.registerProvider = async (req, res) => {
 };
 
 exports.loginProvider = async (req, res) => {
+  console.log(
+    "\n--- [BACKEND] ROTA /auth/login/provider RECEBEU UMA REQUISIÇÃO! ---"
+  );
   const { email, password } = req.body;
+  console.log(`[BACKEND] Tentando logar com o email: ${email}`); // Log adicional
 
   if (!email || !password) {
     return res.status(400).json({ message: "Preencha email e senha." });
@@ -268,6 +272,89 @@ exports.loginProvider = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       message: "Erro no servidor durante o login.",
+      error: error.message,
+    });
+  }
+};
+
+// --- LÓGICA UPDATE DE PERFIL ---
+exports.updateProfile = async (req, res) => {
+  console.log("\n--- [DEBUG] Iniciando updateProfile ---");
+  try {
+    // 1. O ID e o TIPO do usuário vêm do token
+    console.log("[DEBUG] Conteúdo do req.user (do token):", req.user);
+    const { id: userId, userType } = req.user;
+
+    // 2. Pegamos os novos dados que o app enviou
+    console.log("[DEBUG] Dados recebidos no req.body:", req.body);
+    const { name, email } = req.body;
+
+    // Verificação de segurança
+    if (!userId || !userType) {
+      console.error("[DEBUG] ERRO: ID ou userType faltando no token!");
+      return res.status(403).json({ message: "Token inválido ou malformado." });
+    }
+
+    if (!name || !email) {
+      return res
+        .status(400)
+        .json({ message: "Nome e e-mail são obrigatórios." });
+    }
+
+    let tableName;
+    // 3. Decidimos qual tabela usar
+    if (userType === "client") {
+      tableName = "clients";
+    } else if (userType === "provider") {
+      tableName = "providers";
+    } else {
+      console.error(
+        `[DEBUG] ERRO: userType ('${userType}') inválido no token.`
+      );
+      return res.status(403).json({ message: "Tipo de usuário inválido." });
+    }
+    console.log(`[DEBUG] Decisão: A tabela a ser atualizada é '${tableName}'`);
+
+    // 4. (Opcional, mas recomendado) Verifica se o novo e-mail já está em uso
+    const existingUser = await dbGet(
+      `SELECT id FROM ${tableName} WHERE email = ? AND id != ?`,
+      [email, userId]
+    );
+
+    if (existingUser) {
+      console.warn(
+        `[DEBUG] AVISO: Tentativa de atualizar para um e-mail que já existe ('${email}').`
+      );
+      return res.status(409).json({ message: "Este e-mail já está em uso." });
+    }
+
+    // 5. Executa o comando UPDATE na tabela correta
+    const updateSql = `UPDATE ${tableName} SET name = ?, email = ? WHERE id = ?`;
+    console.log(`[DEBUG] Executando SQL: ${updateSql}`);
+    console.log(`[DEBUG] Parâmetros: [${name}, ${email}, ${userId}]`);
+
+    // IMPORTANTE: Vamos ver o que o db.run realmente retorna
+    const result = await dbRun(updateSql, [name, email, userId]);
+    console.log("[DEBUG] Resultado da operação db.run:", result); // << MUITO IMPORTANTE
+
+    // 6. Busca os dados atualizados do usuário para retornar na resposta
+    const updatedUser = await dbGet(
+      `SELECT id, name, email, userType FROM ${tableName} WHERE id = ?`,
+      [userId]
+    );
+    console.log(
+      "[DEBUG] Dados encontrados no banco APÓS o update:",
+      updatedUser
+    );
+
+    // 7. Envia a resposta de sucesso de volta para o app
+    console.log("--- [DEBUG] Operação finalizada com sucesso. ---");
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    console.error("--- [DEBUG] ERRO CAPTURADO NO CATCH ---");
+    console.error(error);
+    res.status(500).json({
+      message: "Ocorreu um erro interno ao atualizar o perfil.",
       error: error.message,
     });
   }

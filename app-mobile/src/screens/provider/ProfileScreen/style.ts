@@ -18,12 +18,10 @@ export const Card = styled.View`
   padding: 15px;
   border-radius: 12px;
   elevation: 3;
-
   shadow-color: #000;
   shadow-opacity: 0.1;
   shadow-offset: 0px 2px;
   shadow-radius: 4px;
-
   margin-bottom: 30px;
 `;
 
@@ -37,6 +35,17 @@ export const Value = styled.Text`
   font-size: 16px;
   font-weight: 600;
   color: #0c0c0c;
+  padding: 10px 0;
+`;
+
+// NOVO: Estilo para o campo de input
+export const Input = styled.TextInput`
+  font-size: 16px;
+  color: #0c0c0c;
+  border-bottom-width: 1px;
+  border-color: #ccc;
+  padding: 8px 0;
+  margin-bottom: 5px;
 `;
 
 export const Button = styled.TouchableOpacity`
@@ -50,4 +59,10 @@ export const ButtonText = styled.Text`
   color: #fff;
   font-size: 16px;
   font-weight: bold;
+`;
+
+// NOVO: Container para alinhar botões lado a lado
+export const ButtonContainer = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
 `;
