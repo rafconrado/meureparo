@@ -16,7 +16,7 @@ const SplashScreen = () => {
   return (
     <Container>
       <Logo
-        source={require("../../assets/images/logo.png")}
+        source={require("../../../assets/images/logo.png")}
         resizeMode="contain"
       />
     </Container>

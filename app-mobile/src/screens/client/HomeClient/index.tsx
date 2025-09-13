@@ -19,6 +19,7 @@ import {
   PartnerContainer,
   PartnerLogo,
   PartnerName,
+  SectionTitle, // Importação do novo estilo
 } from "./style";
 
 const adsData = [
@@ -107,17 +108,19 @@ const HomeClient = () => {
         </Section>
 
         <Section>
-          <CustomCarousel
-            title="Parceiros de confiança"
-            data={partnersData}
-            height={140} // ajuste de altura para caber o logo
-            renderItem={(item) => (
-              <PartnerContainer>
-                <PartnerLogo source={item.logo} />
-                <PartnerName>{item.name}</PartnerName>
+          <SectionTitle>Parceiros de confiança</SectionTitle>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ paddingRight: 16 }}
+          >
+            {partnersData.map((partner) => (
+              <PartnerContainer key={partner.id}>
+                <PartnerLogo source={partner.logo} />
+                <PartnerName>{partner.name}</PartnerName>
               </PartnerContainer>
-            )}
-          />
+            ))}
+          </ScrollView>
         </Section>
       </ScrollView>
     </Container>

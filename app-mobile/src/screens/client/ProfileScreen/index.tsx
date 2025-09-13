@@ -1,4 +1,6 @@
 import React from "react";
+import { Alert } from "react-native";
+import { useAuth } from "../../../contexts/AuthContext";
 import {
   Container,
   Title,
@@ -8,29 +10,15 @@ import {
   Button,
   ButtonText,
 } from "./style";
-import { useAuth } from "../../../contexts/AuthContext";
-import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../../../@types/navigation";
-import { Alert } from "react-native";
-
-type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 export default function ProfileScreen() {
-  const { signOut } = useAuth();
-  const navigation = useNavigation<NavigationProp>();
+  const { user, signOut } = useAuth();
 
   const handleLogout = async () => {
     try {
       await signOut();
-      navigation.reset({
-        index: 1,
-        routes: [
-          { name: "Selection" as never },
-          { name: "LoginCliente" as never },
-        ],
-      });
     } catch (error) {
+      console.error("Logout error:", error);
       Alert.alert("Erro", "Não foi possível fazer logout. Tente novamente.");
     }
   };
@@ -41,10 +29,10 @@ export default function ProfileScreen() {
 
       <Card>
         <Label>Nome:</Label>
-        <Value>Rafael Conrado</Value>
+        <Value>{user?.name || "Nome não disponível"}</Value>
 
         <Label>E-mail:</Label>
-        <Value>rafconradoo@gmail.com</Value>
+        <Value>{user?.email || "E-mail não disponível"}</Value>
 
         <Label>Tipo de Usuário:</Label>
         <Value>Cliente</Value>

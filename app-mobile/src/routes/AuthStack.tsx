@@ -1,16 +1,16 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import SplashScreen from "../screens/SplashScreen";
-import SelectionScreen from "../screens/SelectionScreen";
+import SplashScreen from "../screens/auth/SplashScreen";
+import SelectionScreen from "../screens/auth/SelectionScreen";
 
-import LoginClienteScreen from "../screens/client/LoginClientScreen";
-import RegisterClient from "../screens/client/RegisterClient";
-import RegisterClientStep2 from "../screens/client/RegisterClientStep2";
+import LoginClienteScreen from "../screens/auth/LoginClientScreen";
+import RegisterClient from "../screens/auth/RegisterClient";
+import RegisterClientStep2 from "../screens/auth/RegisterClientStep2";
 import HomeClient from "../screens/client/HomeClient";
 
-import LoginProviderScreen from "../screens/provider/LoginProviderScreen";
-import RegisterProvider from "../screens/provider/RegisterProvider";
-import RegisterProviderStep2 from "../screens/provider/RegisterProviderStep2";
+import LoginProviderScreen from "../screens/auth/LoginProviderScreen";
+import RegisterProvider from "../screens/auth/RegisterProvider";
+import RegisterProviderStep2 from "../screens/auth/RegisterProviderStep2";
 
 const Stack = createNativeStackNavigator();
 

@@ -37,7 +37,7 @@ export const CarouselImage = styled.Image<{ height?: number }>`
 export const ServiceCard = styled.View`
   width: 92%;
   padding: 16px;
-  padding-bottom: 50px; 
+  padding-bottom: 50px;
   border-radius: 20px;
   background-color: #fff8ec;
   margin-left: 12px;
@@ -88,10 +88,19 @@ export const ServiceButton = styled.TouchableOpacity`
 
 export const ServiceButtonText = styled.Text`
   color: #fff;
-  font-size: 15px; 
+  font-size: 15px;
   font-family: "Inter-Bold";
   line-height: 20px;
   text-align: center;
+`;
+
+// Novo estilo adicionado para o título da seção
+export const SectionTitle = styled.Text`
+  font-size: 20px;
+  font-family: "Inter-Bold";
+  color: #0c0c0c;
+  margin-left: 16px;
+  margin-bottom: 16px;
 `;
 
 /* parceiros */

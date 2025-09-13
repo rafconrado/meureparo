@@ -10,7 +10,6 @@ import {
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
-import { register } from "../../../services/authService";
 
 import {
   Container,
@@ -131,7 +130,6 @@ const RegisterClient = () => {
       return;
     }
 
-    // aqui não salva no banco, só passa para o step 2
     navigation.navigate("RegisterClientStep2", {
       name,
       cpf,
