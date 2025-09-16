@@ -5,7 +5,7 @@ import { ProviderTabs } from "./ProviderTabs";
 import { useAuth } from "../contexts/AuthContext";
 
 export default function Routes() {
-  const { user, loading } = useAuth();
+  const { user, userType, loading } = useAuth();
 
   if (loading) {
     return (
@@ -14,9 +14,10 @@ export default function Routes() {
       </View>
     );
   }
+
   if (user) {
-    if (user.userType === "client") return <ClientTabs />;
-    if (user.userType === "provider") return <ProviderTabs />;
+    if (userType === "client") return <ClientTabs />;
+    if (userType === "provider") return <ProviderTabs />;
   }
 
   return <AuthStack />;

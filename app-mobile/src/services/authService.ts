@@ -1,132 +1,95 @@
-import axios from "axios";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import api from "./api";
+import { AxiosError } from "axios";
 import {
   RegisterClientDTO,
   RegisterProviderDTO,
   UpdateUserData,
+  UserData,
 } from "./../@types/auth";
-// --- CONFIGURAÇÃO DA API ---
-const api = axios.create({
-  baseURL: "http://192.168.1.16:3000/api-backend/auth",
-});
 
-// --- INTERCEPTOR ---
-api.interceptors.request.use(async (config) => {
-  try {
-    const storedUser = await AsyncStorage.getItem("@app:user");
-    if (storedUser) {
-      const userData = JSON.parse(storedUser);
-      const token = userData?.token;
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-    }
-    return config;
-  } catch (error) {
-    console.error("Erro no interceptor do Axios:", error);
-    return Promise.reject(error);
-  }
-});
-
-// --- INTERFACE DE RESPOSTA ---
+// Interface para a resposta da API de autenticação
 interface ApiResponse {
-  user: {
-    id: string;
-    name: string;
-    email: string;
-    userType: "client" | "provider";
-  };
+  user: UserData;
   token: string;
   message?: string;
 }
 
-// --- FUNÇÕES DE SERVIÇO ---
+/**
+ * Função genérica para tratar erros do Axios.
+ * O tipo de retorno 'never' informa ao TypeScript que esta função SEMPRE lança um erro.
+ */
+const handleApiError = (error: unknown, defaultMessage: string): never => {
+  const axiosError = error as AxiosError;
 
-export async function registerClient(
+  if (axiosError.response) {
+    console.error(
+      "### Erro da API ###:",
+      JSON.stringify(axiosError.response.data, null, 2)
+    );
+  }
+
+  const message = (axiosError.response?.data as any)?.message || defaultMessage;
+
+  throw new Error(message);
+};
+
+// --- Funções de Serviço ---
+
+export const registerClient = async (
   data: RegisterClientDTO
-): Promise<ApiResponse> {
+): Promise<ApiResponse> => {
   try {
-    const normalizedEmail = data.email.trim().toLowerCase();
-    // ✅ ROTA CORRIGIDA: Sem o /auth no início
-    const response = await api.post("/register/client", {
-      ...data,
-      email: normalizedEmail,
-    });
+    const response = await api.post("/auth/register/client", data);
     return response.data;
-  } catch (error: any) {
-    throw new Error(
-      error.response?.data?.message || "Erro ao registrar cliente"
-    );
+  } catch (error) {
+    // Adicionar 'return' aqui satisfaz o compilador sem adicionar código redundante.
+    return handleApiError(error, "Erro ao registrar cliente");
   }
-}
+};
 
-export async function registerProvider(
+export const registerProvider = async (
   data: RegisterProviderDTO
-): Promise<ApiResponse> {
+): Promise<ApiResponse> => {
   try {
-    const normalizedEmail = data.email.trim().toLowerCase();
-
-    const response = await api.post("/register/provider", {
-      ...data,
-      email: normalizedEmail,
-    });
+    const response = await api.post("/auth/register/provider", data);
     return response.data;
-  } catch (error: any) {
-    throw new Error(
-      error.response?.data?.message || "Erro ao registrar prestador"
-    );
+  } catch (error) {
+    return handleApiError(error, "Erro ao registrar prestador");
   }
-}
+};
 
-export async function loginClient(
+export const loginClient = async (
   email: string,
   password: string
-): Promise<ApiResponse> {
+): Promise<ApiResponse> => {
   try {
-    const normalizedEmail = email.trim().toLowerCase();
+    const response = await api.post("/auth/login/client", { email, password });
+    return response.data;
+  } catch (error) {
+    return handleApiError(error, "E-mail ou senha inválidos.");
+  }
+};
 
-    const response = await api.post("/login/client", {
-      email: normalizedEmail,
+export const loginProvider = async (
+  email: string,
+  password: string
+): Promise<ApiResponse> => {
+  try {
+    const response = await api.post("/auth/login/provider", {
+      email,
       password,
     });
     return response.data;
-  } catch (error: any) {
-    throw new Error(
-      error.response?.data?.message || "Usuário ou senha inválidos."
-    );
+  } catch (error) {
+    return handleApiError(error, "E-mail ou senha inválidos.");
   }
-}
+};
 
-export async function loginProvider(
-  email: string,
-  password: string
-): Promise<ApiResponse> {
+export const updateUser = async (data: UpdateUserData): Promise<UserData> => {
   try {
-    const normalizedEmail = email.trim().toLowerCase();
-    // ✅ ROTA CORRIGIDA: Sem o /auth no início
-    const response = await api.post("/login/provider", {
-      email: normalizedEmail,
-      password,
-    });
+    const response = await api.put("/auth/profile", data);
     return response.data;
-  } catch (error: any) {
-    throw new Error(
-      error.response?.data?.message || "Usuário ou senha inválidos."
-    );
+  } catch (error) {
+    return handleApiError(error, "Não foi possível atualizar o perfil.");
   }
-}
-
-export async function updateUser(
-  data: UpdateUserData
-): Promise<ApiResponse["user"]> {
-  try {
-    // ✅ ROTA CORRIGIDA: Sem o /auth no início
-    const response = await api.put("/profile", data);
-    return response.data;
-  } catch (error: any) {
-    throw new Error(
-      error.response?.data?.message || "Não foi possível conectar ao servidor."
-    );
-  }
-}
+};

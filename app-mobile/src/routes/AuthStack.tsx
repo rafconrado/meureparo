@@ -6,7 +6,6 @@ import SelectionScreen from "../screens/auth/SelectionScreen";
 import LoginClienteScreen from "../screens/auth/LoginClientScreen";
 import RegisterClient from "../screens/auth/RegisterClient";
 import RegisterClientStep2 from "../screens/auth/RegisterClientStep2";
-import HomeClient from "../screens/client/HomeClient";
 
 import LoginProviderScreen from "../screens/auth/LoginProviderScreen";
 import RegisterProvider from "../screens/auth/RegisterProvider";
@@ -34,7 +33,6 @@ export default function AuthStack() {
         name="RegisterClientStep2"
         component={RegisterClientStep2}
       />
-      <Stack.Screen name="HomeClient" component={HomeClient} />
     </Stack.Navigator>
   );
 }

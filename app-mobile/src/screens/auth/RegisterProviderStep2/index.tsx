@@ -43,7 +43,6 @@ const RegisterProviderStep2 = () => {
     password: string;
   };
 
-  // CORREÇÃO 2: Use o hook 'useAuth()' e pegue a função com o nome correto: 'registerProvider'.
   const { registerProvider } = useAuth();
 
   const [loading, setLoading] = useState(false);

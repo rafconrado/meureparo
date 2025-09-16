@@ -1,9 +1,16 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import { registerClient } from "../services/authService";
+import {
+  registerClient,
+  registerProvider as registerProviderService,
+} from "../services/authService";
 import { updateUserById } from "../services/userService";
-import { UserData, RegisterClientDTO } from "../@types/auth";
+import {
+  UserData,
+  RegisterClientDTO,
+  RegisterProviderDTO,
+} from "../@types/auth";
 
 interface UpdateUserData {
   name: string;
@@ -17,6 +24,7 @@ interface AuthContextData {
   signIn(credentials: any, userType: "client" | "provider"): Promise<void>;
   signOut(): void;
   register(data: RegisterClientDTO): Promise<void>;
+  registerProvider(data: RegisterProviderDTO): Promise<void>;
   updateUser(data: UpdateUserData): Promise<void>;
 }
 
@@ -62,32 +70,39 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       const userData = { ...apiResponse.user, token: apiResponse.token };
       await signIn(userData, "client");
     } catch (error) {
-      console.error("Erro no contexto de registro:", error);
+      console.error("Erro no contexto de registro do cliente:", error);
       throw error;
     }
   }
 
-  // --- FUNÇÃO DE ATUALIZAÇÃO CORRIGIDA ---
+  async function registerProvider(data: RegisterProviderDTO) {
+    try {
+      const apiResponse = await registerProviderService(data);
+
+      const userData = { ...apiResponse.user, token: apiResponse.token };
+
+      await signIn(userData, "provider");
+    } catch (error) {
+      console.error("Erro no contexto de registro do prestador:", error);
+      throw error;
+    }
+  }
+
   async function updateUser(data: UpdateUserData) {
     try {
       if (!user) {
         throw new Error("Não há usuário logado para atualizar.");
       }
 
-      // 1. Chama o serviço para persistir a mudança na lista principal de usuários
       await updateUserById(user.id, data);
 
-      // 2. Cria um NOVO objeto de sessão, mesclando o usuário ATUAL (com token)
-      //    com os NOVOS dados (name, email). Isso preserva o token.
       const updatedSessionUser = {
         ...user,
         ...data,
       };
 
-      // 3. Atualiza o estado com o objeto de sessão completo e corrigido
       setUser(updatedSessionUser);
 
-      // 4. Atualiza o AsyncStorage com o mesmo objeto de sessão completo
       await AsyncStorage.setItem(
         "@app:user",
         JSON.stringify(updatedSessionUser)
@@ -113,6 +128,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         signOut,
         register,
         updateUser,
+        registerProvider, // <- Disponibilizada para a aplicação
       }}
     >
       {children}
