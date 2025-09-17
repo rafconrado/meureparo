@@ -56,9 +56,10 @@ export const ForgotPasswordText = styled.Text`
 export const LoginButton = styled.TouchableOpacity`
   background-color: #57b2c5;
   padding: 15px;
-  border-radius: 12px;
+  border-radius: 8px;
   align-items: center;
-  margin-bottom: 25px;
+  justify-content: center;
+  margin-top: 20px;
 `;
 
 export const ButtonText = styled.Text`
