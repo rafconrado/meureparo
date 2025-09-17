@@ -1,4 +1,4 @@
-# MeuReparo 🛠️
+# MEUReparo 🛠️
 
 *Conectando clientes a prestadores de serviços de forma rápida e confiável.*
 
@@ -8,19 +8,19 @@
 
 ## 📝 Sobre o Projeto
 
-**MeuReparo** é uma plataforma full-stack (Mobile + Web) projetada para ser o ponto de encontro entre clientes que precisam de reparos ou serviços e os melhores profissionais do mercado. O projeto possui dois ambientes distintos: um para o **cliente**, que pode buscar e contratar serviços, e outro para o **prestador**, que pode oferecer seu trabalho, gerenciar agendamentos e construir sua reputação.
+**MEUReparo** é uma plataforma full-stack (Mobile + Backend) projetada para ser o ponto de encontro entre clientes que precisam de reparos ou serviços e os melhores profissionais do mercado. O projeto possui dois ambientes distintos: um para o **cliente**, que pode buscar e contratar serviços, e outro para o **prestador**, que pode oferecer seu trabalho e gerenciar seus anúncios.
 
-Atualmente, o projeto está na fase de **desenvolvimento e integração** entre o backend (API) e o frontend (aplicativo).
+Atualmente, o projeto concluiu uma fase crucial de desenvolvimento do backend, com a API de autenticação e gerenciamento de anúncios totalmente funcional e validada. O foco agora se volta para a implementação dessas funcionalidades no aplicativo mobile.
 
 ## ✨ Funcionalidades Principais
 
 O escopo do projeto inclui as seguintes funcionalidades:
 
-#### ✔️ Em Andamento
-* **Autenticação Dupla:** Sistema de cadastro e login seguro com JWT para Clientes e Prestadores de Serviço.
-* **Estrutura da API RESTful:** Construção dos endpoints principais para manipulação de dados.
-* **Base do App Mobile:** Telas de navegação iniciais, componentes de UI e configuração do estado.
-* **Integração API-App:** Conectando o frontend ao backend para o fluxo de autenticação.
+#### ✅ Concluídas Recentemente
+* **Autenticação Robusta:** Sistema de cadastro e login seguro com JWT para Clientes e Prestadores. Inclui validação de dados duplicados (CPF, CNPJ, E-mail) para garantir a integridade da base de dados.
+* **API RESTful para Anúncios:** Endpoints com CRUD completo (Criar, Ler, Atualizar, Deletar) para que os prestadores possam gerenciar seus anúncios de serviço. As rotas de manipulação de dados são protegidas, garantindo que apenas o dono do anúncio possa modificá-lo.
+* **Integração e Validação:** Todo o fluxo de autenticação e criação de anúncios foi validado ponta a ponta através de testes com o Postman.
+* **Documentação da API:** Uma página de documentação estática e interativa foi criada para detalhar todos os endpoints disponíveis, facilitando o desenvolvimento do frontend.
 
 #### 📝 Planejadas
 * **Perfis Detalhados:** Perfis completos para prestadores (com portfólio, especialidades) e clientes (com histórico de serviços).
@@ -33,14 +33,15 @@ O escopo do projeto inclui as seguintes funcionalidades:
 
 ## 🚀 Tecnologias Utilizadas
 
-Este projeto é construído com uma arquitetura de microsserviços, utilizando tecnologias modernas para o backend e o frontend.
+Este projeto é construído utilizando tecnologias modernas para o backend e o frontend.
 
 ### 💻 Frontend (React Native com Expo)
 * **Framework:** [React Native](https://reactnative.dev/) com [Expo](https://expo.dev/)
 * **Linguagem:** [TypeScript](https://www.typescriptlang.org/)
 * **Navegação:** [React Navigation](https://reactnavigation.org/)
 * **Estilização:** [Styled Components](https://styled-components.com/) e [Expo Vector Icons](https://docs.expo.dev/guides/icons/)
-* **Armazenamento Local:** [AsyncStorage](https://react-native-async-storage.github.io/async-storage/) e [Expo SQLite](https://docs.expo.dev/versions/latest/sdk/sqlite/)
+* **Gerenciamento de Estado:** [React Context API](https://react.dev/learn/passing-data-deeply-with-context)
+* **Comunicação com API:** [Axios](https://axios-http.com/)
 
 ### ☁️ Backend (Node.js)
 * **Ambiente de Execução:** [Node.js](https://nodejs.org/en/)
@@ -66,8 +67,8 @@ Para rodar este projeto localmente, você precisará ter `Node.js`, `npm` (ou `y
 
 1.  **Clone o repositório:**
     ```bash
-    git clone https://SEU_LINK_DO_REPOSITORIO/meureparo.git
-    cd meureparo
+    git clone https://SEU_LINK_DO_REPOSITORIO/find-and-fix.git
+    cd find-and-fix
     ```
 
 2.  **Configure e rode o Backend (`api-backend`):**
@@ -79,14 +80,14 @@ Para rodar este projeto localmente, você precisará ter `Node.js`, `npm` (ou `y
     npm install
 
     # Inicie o servidor em modo de desenvolvimento
-    npm start
+    npm run dev
     ```
-    > O servidor backend estará rodando em `http://localhost:3333` (ou a porta que você configurar).
+    > O servidor backend estará rodando em `http://localhost:3000`.
 
-3.  **Configure e rode o Frontend (`myapp`):**
+3.  **Configure e rode o Frontend (`app-mobile`):**
     ```bash
     # Volte para a raiz e navegue até a pasta do frontend
-    cd ../myapp
+    cd ../app-mobile
 
     # Instale as dependências
     npm install
@@ -98,13 +99,21 @@ Para rodar este projeto localmente, você precisará ter `Node.js`, `npm` (ou `y
 
 ---
 
-## 🗺️ Roadmap do Projeto
+## 🗺️ Roadmap e Próximos Passos
+
+O backend atingiu um estado estável para as funcionalidades de autenticação e anúncios. O foco agora é construir as interfaces no aplicativo para consumir esses recursos.
 
 * [x] Estruturação dos projetos `backend` e `frontend`.
-* [x] Finalizar fluxo de Cadastro e Login ponta a ponta.
-* [ ] Desenvolver os endpoints para CRUD de Serviços.
-* [ ] Criar as telas de Perfil de Usuário (Cliente e Prestador).
-* [ ] Implementar o sistema de busca e listagem de serviços no app.
+* [x] **Backend:** Fluxo de Autenticação completo (Cadastro, Login, JWT) para Clientes e Prestadores.
+* [x] **Backend:** Validação de dados duplicados (CPF, CNPJ, E-mail).
+* [x] **Backend:** CRUD completo para Anúncios (`/ads`).
+* [x] **Testes:** Validação de toda a API com Postman, incluindo automação de token.
+* [x] **Documentação:** Criação de uma página HTML detalhando todos os endpoints.
+* [ ] **Frontend:** Criar o `adService.ts` para consumir os endpoints de anúncios.
+* [ ] **Frontend:** Desenvolver a tela para o Prestador criar e gerenciar seus anúncios.
+* [ ] **Frontend:** Desenvolver a tela para o Cliente visualizar a lista de anúncios disponíveis.
+* [ ] **Frontend:** Implementar a funcionalidade de "Atualizar Perfil" nas telas de usuário.
+* [ ] **Backend & Frontend:** Iniciar o desenvolvimento do sistema de Agendamentos.
 
 ---
 

@@ -19,5 +19,4 @@ yarn-error.log*
 # Outros
 .DS_Store
 
-#Expo 
-.expo/
+db.sqlite

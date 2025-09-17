@@ -35,7 +35,7 @@ import {
   SignUpLink,
 } from "./style";
 
-import { AntDesign, Feather, FontAwesome } from "@expo/vector-icons";
+import { AntDesign, Feather } from "@expo/vector-icons";
 import { BackButton } from "../../../components/BackButton";
 
 const LoginProviderScreen = () => {
@@ -52,11 +52,9 @@ const LoginProviderScreen = () => {
     }
 
     setLoading(true);
-    console.log("-> [TELA] Tentando fazer login...");
 
     try {
       const response = await loginProvider(email, password);
-      console.log("[LOGIN] Resposta da API:", response);
 
       if (response && response.user && response.token) {
         const userToSignIn = {
@@ -74,13 +72,8 @@ const LoginProviderScreen = () => {
       console.error(
         "################ ERRO DETALHADO NO LOGIN ################"
       );
-      console.error(error);
-      const errorMessage =
-        error.response?.data?.message ||
-        error.message ||
-        "Ocorreu um erro inesperado.";
 
-      Alert.alert("Erro no Login", errorMessage);
+      Alert.alert("Erro no Login", error.message);
     } finally {
       setLoading(false);
     }
@@ -126,13 +119,15 @@ const LoginProviderScreen = () => {
               <ForgotPasswordText>Esqueceu sua senha?</ForgotPasswordText>
             </TouchableOpacity>
 
-            <LoginButton onPress={handleLogin} disabled={loading}>
-              {loading ? (
-                <ActivityIndicator color="#FFFFFF" />
-              ) : (
-                <ButtonText>Login</ButtonText>
-              )}
-            </LoginButton>
+            <TouchableOpacity onPress={handleLogin} disabled={loading}>
+              <LoginButton>
+                {loading ? (
+                  <ActivityIndicator color="#FFFFFF" />
+                ) : (
+                  <ButtonText>Login</ButtonText>
+                )}
+              </LoginButton>
+            </TouchableOpacity>
 
             <DividerContainer>
               <DividerLine />
@@ -144,10 +139,10 @@ const LoginProviderScreen = () => {
                 <AntDesign name="google" size={30} color="#000000" />
               </TouchableOpacity>
               <TouchableOpacity>
-                <FontAwesome name="apple" size={30} color="#000" />
+                <AntDesign name="apple1" size={30} color="#000" />
               </TouchableOpacity>
               <TouchableOpacity>
-                <FontAwesome name="facebook-square" size={30} color="#000000" />
+                <AntDesign name="facebook-square" size={30} color="#000000" />
               </TouchableOpacity>
             </SocialLoginContainer>
             <SignUpContainer>

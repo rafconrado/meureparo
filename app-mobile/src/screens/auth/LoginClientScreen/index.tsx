@@ -34,7 +34,7 @@ import {
   SignUpLink,
 } from "./style";
 
-import { AntDesign, Feather, FontAwesome } from "@expo/vector-icons";
+import { AntDesign, Feather } from "@expo/vector-icons";
 
 import { BackButton } from "../../../components/BackButton";
 
@@ -137,10 +137,10 @@ const LoginClienteScreen = () => {
                 <AntDesign name="google" size={30} color="#000000" />
               </TouchableOpacity>
               <TouchableOpacity>
-                <FontAwesome name="apple" size={30} color="#000" />
+                <AntDesign name="apple1" size={30} color="#000" />
               </TouchableOpacity>
               <TouchableOpacity>
-                <FontAwesome name="facebook-square" size={30} color="#000000" />
+                <AntDesign name="facebook-square" size={30} color="#000000" />
               </TouchableOpacity>
             </SocialLoginContainer>
 
