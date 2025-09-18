@@ -38,7 +38,6 @@ export const Value = styled.Text`
   padding: 10px 0;
 `;
 
-// NOVO: Estilo para o campo de input
 export const Input = styled.TextInput`
   font-size: 16px;
   color: #0c0c0c;
@@ -61,7 +60,6 @@ export const ButtonText = styled.Text`
   font-weight: bold;
 `;
 
-// NOVO: Container para alinhar botões lado a lado
 export const ButtonContainer = styled.View`
   flex-direction: row;
   justify-content: space-between;

@@ -31,7 +31,6 @@ const dbGet = (sql, params) => {
  */
 const dbRun = (sql, params) => {
   return new Promise((resolve, reject) => {
-    // Usamos 'function' para ter acesso ao 'this' do sqlite
     db.run(sql, params, function (err) {
       if (err) reject(err);
       else resolve({ lastID: this.lastID, changes: this.changes });

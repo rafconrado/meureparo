@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const authController = require("../controllers/authController");
-// Importando sua função de middleware com o nome correto
+
 const { verifyToken } = require("../middlewares/auth");
 
 // --- ROTAS PARA CLIENTES ---

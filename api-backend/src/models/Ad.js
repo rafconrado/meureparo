@@ -14,7 +14,6 @@ class Ad {
         if (err) {
           reject(err);
         } else {
-          // Retorna o anúncio recém-criado com o ID
           resolve({
             id: this.lastID,
             title,

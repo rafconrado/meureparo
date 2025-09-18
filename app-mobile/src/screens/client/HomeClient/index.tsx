@@ -19,7 +19,7 @@ import {
   PartnerContainer,
   PartnerLogo,
   PartnerName,
-  SectionTitle, // Importação do novo estilo
+  SectionTitle, 
 } from "./style";
 
 const adsData = [

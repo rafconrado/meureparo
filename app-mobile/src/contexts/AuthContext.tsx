@@ -128,7 +128,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         signOut,
         register,
         updateUser,
-        registerProvider, // <- Disponibilizada para a aplicação
+        registerProvider, 
       }}
     >
       {children}

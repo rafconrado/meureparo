@@ -4,7 +4,6 @@ import { useRoute } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
 import { Picker } from "@react-native-picker/picker";
 
-// CORREÇÃO 1: Importe o hook 'useAuth' em vez do 'AuthContext' diretamente.
 import { useAuth } from "../../../contexts/AuthContext";
 
 import {
@@ -153,11 +152,8 @@ const RegisterProviderStep2 = () => {
         cidade,
         uf,
         servico,
-        // CORREÇÃO 3: O objeto de dados precisa incluir o 'userType' para o DTO funcionar.
         userType: "provider" as const,
       };
-
-      // CORREÇÃO 4: Chame a função 'registerProvider' que pegamos do contexto.
       await registerProvider(providerData);
     } catch (error) {
       console.error(error);

@@ -23,7 +23,7 @@ export function ProviderTabs() {
         },
         tabBarIcon: ({ color, size }) => {
           let iconName: keyof typeof Ionicons.glyphMap = "home";
-          if (route.name === "Início") iconName = "briefcase"; // diferenciado
+          if (route.name === "Início") iconName = "briefcase"; 
           if (route.name === "Perfil") iconName = "person";
           return <Ionicons name={iconName} size={size} color={color} />;
         },

@@ -42,7 +42,6 @@ export const registerClient = async (
     const response = await api.post("/auth/register/client", data);
     return response.data;
   } catch (error) {
-    // Adicionar 'return' aqui satisfaz o compilador sem adicionar código redundante.
     return handleApiError(error, "Erro ao registrar cliente");
   }
 };

@@ -94,7 +94,6 @@ export const ServiceButtonText = styled.Text`
   text-align: center;
 `;
 
-// Novo estilo adicionado para o título da seção
 export const SectionTitle = styled.Text`
   font-size: 20px;
   font-family: "Inter-Bold";

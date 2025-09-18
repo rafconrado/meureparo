@@ -78,7 +78,7 @@ const isValidCPF = (cpf: string) => {
 };
 
 const formatCPF = (value: string) => {
-  const cpf = value.replace(/\D/g, ""); // remove tudo que não é número
+  const cpf = value.replace(/\D/g, "");
 
   if (cpf.length <= 3) return cpf;
   if (cpf.length <= 6) return `${cpf.slice(0, 3)}.${cpf.slice(3)}`;

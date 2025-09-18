@@ -54,15 +54,13 @@ const LoginClienteScreen = () => {
       const apiResponse = await loginService(email, password);
 
       const userData = {
-        ...apiResponse.user, // Copia id, name, email, etc.
-        token: apiResponse.token, // Adiciona o token
+        ...apiResponse.user,
+        token: apiResponse.token,
       };
 
       await signIn(userData, "client");
 
       Alert.alert("Sucesso", "Login realizado!");
-      // O ideal é navegar para a próxima tela após o sucesso
-      // Ex: navigation.navigate('Home');
     } catch (error: any) {
       Alert.alert(
         "Erro de Login",
