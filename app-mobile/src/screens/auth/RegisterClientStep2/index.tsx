@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { StatusBar, Alert, ScrollView } from "react-native";
+import {
+  StatusBar,
+  Alert,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
 import { Picker } from "@react-native-picker/picker";
@@ -28,11 +34,12 @@ import {
   RegisterClientStep2RouteProp,
 } from "../../../@types/navigation";
 
+// Interface foi movida para fora para melhor organização
 interface RouteParams {
   name: string;
   cpf: string;
   email: string;
-  password: string;
+  password:string;
 }
 
 const motivos = [
@@ -48,7 +55,7 @@ const motivos = [
 const RegisterClientStep2 = () => {
   const navigation = useNavigation<RegisterClientStep2NavigationProp>();
   const route = useRoute<RegisterClientStep2RouteProp>();
-  const { name, cpf, email, password } = route.params as RouteParams;
+  const { name, cpf, email, password } = route.params; // Removida a asserção desnecessária
 
   const { register } = useAuth();
 
@@ -61,6 +68,7 @@ const RegisterClientStep2 = () => {
   const [cidade, setCidade] = useState("");
   const [uf, setUf] = useState("");
   const [comoFicouSabendo, setComoFicouSabendo] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const formatPhone = (value: string) => {
     const cleaned = value.replace(/\D/g, "");
@@ -84,36 +92,31 @@ const RegisterClientStep2 = () => {
   };
 
   const handleCepChange = async (text: string) => {
-    const rawCep = text.replace(/\D/g, "");
-    const formattedCep = formatCep(rawCep);
+    const formattedCep = formatCep(text);
     setCep(formattedCep);
+    const rawCep = formattedCep.replace(/\D/g, "");
 
-    if (rawCep.length === 8) {
-      try {
-        const response = await fetch(
-          `https://viacep.com.br/ws/${rawCep}/json/`
-        );
-        const data = await response.json();
-        if (data.erro) {
-          Alert.alert("CEP não encontrado", "Verifique o CEP informado.");
-          setLogradouro("");
-          setBairro("");
-          setCidade("");
-          setUf("");
-          return;
-        }
+    if (rawCep.length !== 8) {
+        setLogradouro("");
+        setBairro("");
+        setCidade("");
+        setUf("");
+        return;
+    }
+
+    try {
+      const response = await fetch(`https://viacep.com.br/ws/${rawCep}/json/`);
+      const data = await response.json();
+      if (data.erro) {
+        Alert.alert("CEP não encontrado", "Verifique o CEP informado.");
+      } else {
         setLogradouro(data.logradouro || "");
         setBairro(data.bairro || "");
         setCidade(data.localidade || "");
         setUf(data.uf || "");
-      } catch (error) {
-        Alert.alert("Erro", "Não foi possível buscar o endereço.");
       }
-    } else {
-      setLogradouro("");
-      setBairro("");
-      setCidade("");
-      setUf("");
+    } catch (error) {
+      Alert.alert("Erro", "Não foi possível buscar o endereço.");
     }
   };
 
@@ -134,6 +137,8 @@ const RegisterClientStep2 = () => {
       );
       return;
     }
+    
+    setIsLoading(true);
 
     try {
       await register({
@@ -156,7 +161,7 @@ const RegisterClientStep2 = () => {
       Alert.alert("Sucesso!", "Cadastro finalizado com sucesso.", [
         {
           text: "OK",
-          onPress: () => navigation.navigate("HomeClient" as never),
+          onPress: () => navigation.navigate("HomeClient" as never), // Idealmente, tipar a navegação
         },
       ]);
     } catch (error: any) {
@@ -165,129 +170,145 @@ const RegisterClientStep2 = () => {
         "Erro no Cadastro",
         error.message || "Não foi possível concluir o cadastro."
       );
+    } finally {
+        setIsLoading(false);
     }
   };
+  
+  const iconColor = "#df692b";
 
   return (
     <Container>
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <StatusBar barStyle="light-content" backgroundColor="#df692b" />
-        <BackButton />
+      <StatusBar barStyle="light-content" backgroundColor="#df692b" />
+      <BackButton />
 
-        <Header>
-          <HeaderContent>
-            <Logo source={require("../../../assets/images/logo.png")} />
-            <HeaderTitle>
-              Só mais alguns dados para concluir seu cadastro...
-            </HeaderTitle>
-          </HeaderContent>
-        </Header>
+      <Header>
+        <HeaderContent>
+          <Logo source={require("../../../assets/images/logo.png")} />
+          <HeaderTitle>
+            Só mais alguns dados para concluir seu cadastro...
+          </HeaderTitle>
+        </HeaderContent>
+      </Header>
 
-        <FormContainer>
-          <Subtitle>Informações adicionais:</Subtitle>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{ flex: 1 }}
+      >
+        <ScrollView
+          contentContainerStyle={{ flexGrow: 1 }}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <FormContainer>
+            <Subtitle>Endereço e Contato</Subtitle>
 
-          <InputContainer>
-            <Feather name="phone" size={20} color="white" />
-            <StyledInput
-              placeholder="Telefone"
-              keyboardType="phone-pad"
-              value={phone}
-              onChangeText={(text) => setPhone(formatPhone(text))}
-              maxLength={15}
-            />
-          </InputContainer>
+            <InputContainer>
+              <Feather name="phone" size={20} color={iconColor} />
+              <StyledInput
+                placeholder="Telefone com DDD"
+                keyboardType="phone-pad"
+                value={phone}
+                onChangeText={(text) => setPhone(formatPhone(text))}
+                maxLength={15}
+              />
+            </InputContainer>
 
-          <InputContainer>
-            <Feather name="search" size={20} color="white" />
-            <StyledInput
-              placeholder="CEP"
-              keyboardType="number-pad"
-              value={cep}
-              onChangeText={handleCepChange}
-              maxLength={9}
-            />
-          </InputContainer>
+            <InputContainer>
+              <Feather name="map-pin" size={20} color={iconColor} />
+              <StyledInput
+                placeholder="CEP"
+                keyboardType="number-pad"
+                value={cep}
+                onChangeText={handleCepChange}
+                maxLength={9}
+              />
+            </InputContainer>
 
-          <InputContainer>
-            <Feather name="map-pin" size={20} color="white" />
-            <StyledInput
-              placeholder="Logradouro"
-              value={logradouro}
-              onChangeText={setLogradouro}
-            />
-          </InputContainer>
+            <InputContainer>
+              <Feather name="map" size={20} color={iconColor} />
+              <StyledInput
+                placeholder="Logradouro"
+                value={logradouro}
+                onChangeText={setLogradouro}
+              />
+            </InputContainer>
 
-          <InputContainer>
-            <Feather name="hash" size={20} color="white" />
-            <StyledInput
-              placeholder="Número"
-              value={numero}
-              onChangeText={setNumero}
-              keyboardType="numeric"
-            />
-          </InputContainer>
+            <InputContainer>
+              <Feather name="hash" size={20} color={iconColor} />
+              <StyledInput
+                placeholder="Número"
+                value={numero}
+                onChangeText={setNumero}
+                keyboardType="numeric"
+              />
+            </InputContainer>
 
-          <InputContainer>
-            <Feather name="info" size={20} color="white" />
-            <StyledInput
-              placeholder="Complemento (opcional)"
-              value={complemento}
-              onChangeText={setComplemento}
-            />
-          </InputContainer>
+            <InputContainer>
+              <Feather name="plus-square" size={20} color={iconColor} />
+              <StyledInput
+                placeholder="Complemento (opcional)"
+                value={complemento}
+                onChangeText={setComplemento}
+              />
+            </InputContainer>
 
-          <InputContainer>
-            <Feather name="map" size={20} color="white" />
-            <StyledInput
-              placeholder="Bairro"
-              value={bairro}
-              onChangeText={setBairro}
-            />
-          </InputContainer>
+            <InputContainer>
+              <Feather name="box" size={20} color={iconColor} />
+              <StyledInput
+                placeholder="Bairro"
+                value={bairro}
+                onChangeText={setBairro}
+              />
+            </InputContainer>
 
-          <InputContainer>
-            <Feather name="map" size={20} color="white" />
-            <StyledInput
-              placeholder="Cidade"
-              value={cidade}
-              onChangeText={setCidade}
-            />
-          </InputContainer>
+            <InputContainer>
+              <Feather name="home" size={20} color={iconColor} />
+              <StyledInput
+                placeholder="Cidade"
+                value={cidade}
+                onChangeText={setCidade}
+              />
+            </InputContainer>
 
-          <InputContainer>
-            <Feather name="map" size={20} color="white" />
-            <StyledInput
-              placeholder="UF"
-              value={uf}
-              onChangeText={setUf}
-              maxLength={2}
-            />
-          </InputContainer>
+            <InputContainer>
+              <Feather name="compass" size={20} color={iconColor} />
+              <StyledInput
+                placeholder="UF"
+                value={uf}
+                onChangeText={(text) => setUf(text.toUpperCase())}
+                maxLength={2}
+                autoCapitalize="characters"
+              />
+            </InputContainer>
 
-          <PickerContainer>
-            <Feather name="help-circle" size={20} color="white" />
-            <StyledPicker
-              selectedValue={comoFicouSabendo}
-              onValueChange={(itemValue) =>
-                setComoFicouSabendo(itemValue as string)
-              }
-              dropdownIconColor={"#FFF"}
-            >
-              {motivos.map((motivo) => (
-                <Picker.Item
-                  key={motivo.value}
-                  label={motivo.label}
-                  value={motivo.value}
-                />
-              ))}
-            </StyledPicker>
-          </PickerContainer>
+            <PickerContainer>
+              <Feather name="help-circle" size={20} color={iconColor} />
+              <StyledPicker
+                selectedValue={comoFicouSabendo}
+                onValueChange={(itemValue) =>
+                  setComoFicouSabendo(itemValue as string)
+                }
+                dropdownIconColor={iconColor}
+              >
+                {motivos.map((motivo) => (
+                  <Picker.Item
+                    key={motivo.value}
+                    label={motivo.label}
+                    value={motivo.value}
+                  />
+                ))}
+              </StyledPicker>
+            </PickerContainer>
 
-          <RegisterButton onPress={handleFinishRegister}>
-            <ButtonText>Finalizar Cadastro</ButtonText>
-          </RegisterButton>
-        </FormContainer>
-      </ScrollView>
+            <RegisterButton onPress={handleFinishRegister} disabled={isLoading}>
+              <ButtonText>
+                {isLoading ? "Finalizando..." : "Finalizar Cadastro"}
+              </ButtonText>
+            </RegisterButton>
+          </FormContainer>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </Container>
   );
 };

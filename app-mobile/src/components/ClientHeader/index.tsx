@@ -1,3 +1,5 @@
+// src/components/ClientHeader/index.tsx
+
 import React from "react";
 import { Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";

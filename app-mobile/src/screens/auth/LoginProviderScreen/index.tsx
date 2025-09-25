@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   StatusBar,
   TouchableOpacity,
@@ -6,7 +6,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
-  ActivityIndicator,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
@@ -15,8 +14,11 @@ import { loginProvider } from "../../../services/authService";
 
 import {
   Container,
+  Header,
   FormContainer,
-  BlueFooter,
+  HeaderContent,
+  Logo,
+  HeaderTitle,
   Subtitle,
   InputContainer,
   StyledInput,
@@ -27,9 +29,7 @@ import {
   DividerLine,
   DividerText,
   SocialLoginContainer,
-  FooterContent,
-  Logo,
-  FooterTitle,
+  SocialButton,
   SignUpContainer,
   SignUpText,
   SignUpLink,
@@ -38,20 +38,27 @@ import {
 import { AntDesign, Feather, FontAwesome } from "@expo/vector-icons";
 import { BackButton } from "../../../components/BackButton";
 
-const LoginProviderScreen = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const { signIn } = useAuth();
-  const navigation = useNavigation();
+interface NavigationProps {
+  navigate: (screen: string) => void;
+}
 
-  async function handleLogin() {
+const LoginProviderScreen: React.FC = () => {
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  
+  const { signIn } = useAuth();
+  const navigation = useNavigation<NavigationProps>();
+  const scrollViewRef = useRef<ScrollView>(null);
+
+  const handleLogin = async (): Promise<void> => {
     if (!email || !password) {
       Alert.alert("Atenção", "Por favor, preencha e-mail e senha.");
       return;
     }
 
-    setLoading(true);
+    setIsLoading(true);
 
     try {
       const response = await loginProvider(email, password);
@@ -64,6 +71,7 @@ const LoginProviderScreen = () => {
         };
 
         await signIn(userToSignIn, "provider");
+        Alert.alert("Sucesso", "Login realizado com sucesso!");
         console.log("<- [TELA] Login realizado com sucesso!");
       } else {
         throw new Error("Resposta do servidor inválida.");
@@ -72,94 +80,122 @@ const LoginProviderScreen = () => {
       console.error(
         "################ ERRO DETALHADO NO LOGIN ################"
       );
-
       Alert.alert("Erro no Login", error.message);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
-  }
+  };
+
+  const handleInputFocus = (): void => {
+    setTimeout(() => {
+      scrollViewRef.current?.scrollToEnd({ animated: true });
+    }, 100);
+  };
 
   return (
     <Container>
-      <StatusBar barStyle="dark-content" backgroundColor="#fff8ec" />
-      <BackButton color="#57b2c5" />
+      <StatusBar barStyle="light-content" backgroundColor="#57b2c5" />
+      <BackButton />
+
+      <Header>
+        <HeaderContent>
+          <Logo source={require("../../../assets/images/logo.png")} />
+          <HeaderTitle>
+            Conectando você a novas oportunidades.
+          </HeaderTitle>
+        </HeaderContent>
+      </Header>
+
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1 }}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
       >
         <ScrollView
+          ref={scrollViewRef}
+          style={{ flex: 1 }}
           contentContainerStyle={{ flexGrow: 1 }}
           keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
         >
           <FormContainer>
-            <Subtitle>Sou prestador:</Subtitle>
+            <Subtitle>Bem-vindo, prestador!</Subtitle>
 
             <InputContainer>
-              <Feather name="user" size={20} color="white" />
+              <Feather name="mail" size={20} color="#57b2c5" />
               <StyledInput
-                placeholder="E-mail"
+                placeholder="Digite seu e-mail"
                 keyboardType="email-address"
                 value={email}
                 onChangeText={setEmail}
                 autoCapitalize="none"
+                editable={!isLoading}
+                returnKeyType="next"
+                onFocus={handleInputFocus}
               />
             </InputContainer>
 
             <InputContainer>
-              <Feather name="lock" size={20} color="white" />
+              <Feather name="lock" size={20} color="#57b2c5" />
               <StyledInput
-                placeholder="Senha"
-                secureTextEntry
+                placeholder="Digite sua senha"
+                secureTextEntry={!showPassword}
                 value={password}
                 onChangeText={setPassword}
+                editable={!isLoading}
+                returnKeyType="done"
+                onSubmitEditing={handleLogin}
+                onFocus={handleInputFocus}
               />
+              <TouchableOpacity 
+                onPress={() => setShowPassword(!showPassword)}
+                style={{ padding: 5 }}
+              >
+                <Feather 
+                  name={showPassword ? "eye-off" : "eye"} 
+                  size={20} 
+                  color="#57b2c5" 
+                />
+              </TouchableOpacity>
             </InputContainer>
 
             <TouchableOpacity>
               <ForgotPasswordText>Esqueceu sua senha?</ForgotPasswordText>
             </TouchableOpacity>
 
-            
-              <LoginButton onPress={handleLogin} disabled={loading}>
-                {loading ? (
-                  <ActivityIndicator color="#FFFFFF" />
-                ) : (
-                  <ButtonText>Login</ButtonText>
-                )}
-              </LoginButton>
-            
+            <LoginButton onPress={handleLogin} disabled={isLoading}>
+              <ButtonText>
+                {isLoading ? "Entrando..." : "Entrar"}
+              </ButtonText>
+            </LoginButton>
 
             <DividerContainer>
               <DividerLine />
-              <DividerText>Login com:</DividerText>
+              <DividerText>ou continue com</DividerText>
               <DividerLine />
             </DividerContainer>
+
             <SocialLoginContainer>
-              <TouchableOpacity>
-                <AntDesign name="google" size={30} color="#000000" />
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <FontAwesome name="apple" size={30} color="#000" />
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <FontAwesome name="facebook-square" size={30} color="#000000" />
-              </TouchableOpacity>
+              <SocialButton>
+                <AntDesign name="google" size={24} color="#57b2c5" />
+              </SocialButton>
+              <SocialButton>
+                <FontAwesome name="apple" size={24} color="#57b2c5" />
+              </SocialButton>
+              <SocialButton>
+                <FontAwesome name="facebook" size={24} color="#57b2c5" />
+              </SocialButton>
             </SocialLoginContainer>
+
             <SignUpContainer>
-              <SignUpText>Não tem uma conta?</SignUpText>
+              <SignUpText>Não tem uma conta? </SignUpText>
               <TouchableOpacity
-                onPress={() => navigation.navigate("RegisterProvider" as never)}
+                onPress={() => navigation.navigate("RegisterProvider")}
               >
-                <SignUpLink>Cadastre-se</SignUpLink>
+                <SignUpLink>Cadastre-se aqui</SignUpLink>
               </TouchableOpacity>
             </SignUpContainer>
           </FormContainer>
-          <BlueFooter>
-            <FooterContent>
-              <Logo source={require("../../../assets/images/logo.png")} />
-              <FooterTitle>Conectando você a novas oportunidades.</FooterTitle>
-            </FooterContent>
-          </BlueFooter>
         </ScrollView>
       </KeyboardAvoidingView>
     </Container>

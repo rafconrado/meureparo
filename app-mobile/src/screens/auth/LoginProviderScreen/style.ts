@@ -2,127 +2,186 @@ import styled from "styled-components/native";
 
 export const Container = styled.View`
   flex: 1;
-  background-color: #fff8ec;
+  background-color: #57b2c5;
+`;
+
+export const Header = styled.View`
+  justify-content: center;
+  align-items: center;
+  padding: 80px 30px 40px 30px;
+  background-color: #57b2c5;
 `;
 
 export const FormContainer = styled.View`
   flex: 1;
-  justify-content: center;
-  padding: 80px 25px 40px 25px;
+  background-color: #ffffff;
+  border-top-left-radius: 35px;
+  border-top-right-radius: 35px;
+  padding: 45px 30px 60px;
+  shadow-color: #000;
+  shadow-offset: 0px -5px;
+  shadow-opacity: 0.1;
+  shadow-radius: 10px;
+  elevation: 15;
 `;
 
-export const BlueFooter = styled.View`
-  background-color: #57b2c5;
-  border-top-left-radius: 25px;
-  border-top-right-radius: 25px;
-  justify-content: center;
+export const HeaderContent = styled.View`
+  flex-direction: row;
   align-items: center;
-  padding: 85px 20px;
+  justify-content: center;
+`;
+
+export const Logo = styled.Image`
+  width: 100px;
+  height: 100px;
+  margin-right: 20px;
+  border-radius: 20px;
+  shadow-color: #000;
+  shadow-offset: 0px 4px;
+  shadow-opacity: 0.3;
+  shadow-radius: 8px;
+  elevation: 8;
+`;
+
+export const HeaderTitle = styled.Text`
+  font-size: 20px;
+  color: #ffffff;
+  font-weight: 700;
+  flex-shrink: 1;
+  text-align: center;
+  line-height: 26px;
+  text-shadow-color: rgba(0, 0, 0, 0.3);
+  text-shadow-offset: 1px 1px;
+  text-shadow-radius: 2px;
 `;
 
 export const Subtitle = styled.Text`
-  font-size: 16px;
-  color: #333;
-  font-weight: 600;
-  margin-bottom: 20px;
+  font-size: 28px;
+  color: #2c2c2c;
+  font-weight: 700;
+  margin-bottom: 35px;
   text-align: center;
+  letter-spacing: -0.5px;
 `;
 
 export const InputContainer = styled.View`
   flex-direction: row;
   align-items: center;
-  background-color: #57b2c5;
-  border-radius: 12px;
-  padding: 0 15px;
-  margin-bottom: 15px;
+  background-color: #f8f9fa;
+  border: 2px solid #e9ecef;
+  border-radius: 15px;
+  padding: 0 20px;
+  margin-bottom: 20px;
+  shadow-color: #000;
+  shadow-offset: 0px 2px;
+  shadow-opacity: 0.05;
+  shadow-radius: 6px;
+  elevation: 3;
+  min-height: 58px;
 `;
 
 export const StyledInput = styled.TextInput.attrs({
-  placeholderTextColor: "rgba(255, 255, 255, 0.7)",
+  placeholderTextColor: "#6c757d",
 })`
   flex: 1;
-  color: #fff8ec;
-  padding: 15px 10px;
+  color: #2c2c2c;
+  padding: 18px 15px;
   font-size: 16px;
+  font-weight: 500;
 `;
 
 export const ForgotPasswordText = styled.Text`
   font-size: 14px;
-  color: #555;
+  color: #57b2c5;
   text-align: right;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
+  font-weight: 600;
+  text-decoration-line: underline;
 `;
 
-export const LoginButton = styled.TouchableOpacity`
+export const LoginButton = styled.TouchableOpacity<{ disabled?: boolean }>`
   background-color: #57b2c5;
-  padding: 15px;
-  border-radius: 12px;
+  border-radius: 15px;
+  margin-bottom: 30px;
+  shadow-color: #57b2c5;
+  shadow-offset: 0px 6px;
+  shadow-opacity: 0.3;
+  shadow-radius: 10px;
+  elevation: 8;
+  min-height: 58px;
+  justify-content: center;
   align-items: center;
-  margin-bottom: 25px;
+  opacity: ${props => props.disabled ? 0.7 : 1};
 `;
 
 export const ButtonText = styled.Text`
-  color: #fff8ec;
+  color: #ffffff;
   font-size: 18px;
-  font-weight: bold;
-`;
-
-export const FooterContent = styled.View`
-  flex-direction: row;
-  align-items: center;
-`;
-
-export const Logo = styled.Image`
-  width: 90px;
-  height: 90px;
-  margin-right: 15px;
-`;
-
-export const FooterTitle = styled.Text`
-  font-size: 20px;
-  color: #fff8ec;
-  font-weight: bold;
-  flex-shrink: 1;
+  font-weight: 700;
+  letter-spacing: 0.5px;
 `;
 
 export const DividerContainer = styled.View`
   flex-direction: row;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
+  margin-top: 10px;
 `;
 
 export const DividerLine = styled.View`
   flex: 1;
   height: 1px;
-  background-color: #ccc;
+  background-color: #dee2e6;
 `;
 
 export const DividerText = styled.Text`
-  color: #888;
-  margin: 0 10px;
+  color: #6c757d;
+  margin: 0 15px;
+  font-size: 14px;
+  font-weight: 500;
+  background-color: #ffffff;
+  padding: 0 5px;
 `;
 
 export const SocialLoginContainer = styled.View`
   flex-direction: row;
   justify-content: center;
-  gap: 25px;
+  gap: 20px;
+  margin-bottom: 25px;
+`;
+
+export const SocialButton = styled.TouchableOpacity`
+  width: 60px;
+  height: 60px;
+  border-radius: 30px;
+  background-color: #ffffff;
+  border: 2px solid #f1f3f4;
+  justify-content: center;
+  align-items: center;
+  shadow-color: #000;
+  shadow-offset: 0px 3px;
+  shadow-opacity: 0.1;
+  shadow-radius: 6px;
+  elevation: 4;
 `;
 
 export const SignUpContainer = styled.View`
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  margin-top: 30px;
+  margin-top: 20px;
+  margin-bottom: 30px;
 `;
 
 export const SignUpText = styled.Text`
-  font-size: 15px;
-  color: #666;
+  font-size: 16px;
+  color: #6c757d;
+  font-weight: 500;
 `;
 
 export const SignUpLink = styled.Text`
-  font-size: 15px;
+  font-size: 16px;
   color: #57b2c5;
-  font-weight: bold;
-  margin-left: 5px;
+  font-weight: 700;
+  text-decoration-line: underline;
 `;

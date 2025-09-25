@@ -44,7 +44,9 @@ type RegisterClientScreenProp = NativeStackNavigationProp<
   "RegisterClientStep2"
 >;
 
-const capitalizeName = (text: string) => {
+interface NavigationProps extends RegisterClientScreenProp {}
+
+const capitalizeName = (text: string): string => {
   return text
     .toLowerCase()
     .split(" ")
@@ -52,7 +54,7 @@ const capitalizeName = (text: string) => {
     .join(" ");
 };
 
-const isValidCPF = (cpf: string) => {
+const isValidCPF = (cpf: string): boolean => {
   cpf = cpf.replace(/[^\d]+/g, "");
   if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
 
@@ -77,7 +79,7 @@ const isValidCPF = (cpf: string) => {
   return true;
 };
 
-const formatCPF = (value: string) => {
+const formatCPF = (value: string): string => {
   const cpf = value.replace(/\D/g, "");
 
   if (cpf.length <= 3) return cpf;
@@ -90,27 +92,44 @@ const formatCPF = (value: string) => {
   )}`;
 };
 
-const isValidEmail = (email: string) => {
+const isValidEmail = (email: string): boolean => {
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return regex.test(email.toLowerCase());
 };
 
-const RegisterClient = () => {
-  const navigation = useNavigation<RegisterClientScreenProp>();
+const RegisterClient: React.FC = () => {
+  const navigation = useNavigation<NavigationProps>();
 
-  const [name, setName] = useState("");
-  const [cpf, setCpf] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [name, setName] = useState<string>("");
+  const [cpf, setCpf] = useState<string>("");
+  const [isCpfValid, setIsCpfValid] = useState<boolean | null>(null);
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
 
-  const handleRegister = () => {
+  const handleCpfChange = (text: string) => {
+    const formattedCpf = formatCPF(text);
+    setCpf(formattedCpf);
+
+    const rawCpf = formattedCpf.replace(/[^\d]/g, "");
+
+    if (rawCpf.length === 11) {
+      setIsCpfValid(isValidCPF(rawCpf));
+    } else {
+      setIsCpfValid(null);
+    }
+  };
+
+  const handleRegister = (): void => {
     if (!name || !cpf || !email || !password || !confirmPassword) {
       Alert.alert("Campos obrigatórios", "Preencha todos os campos.");
       return;
     }
 
-    if (!isValidCPF(cpf)) {
+    if (isCpfValid === false || !isValidCPF(cpf)) {
       Alert.alert("CPF inválido", "Por favor, insira um CPF válido.");
       return;
     }
@@ -130,101 +149,162 @@ const RegisterClient = () => {
       return;
     }
 
-    navigation.navigate("RegisterClientStep2", {
-      name,
-      cpf,
-      email,
-      password,
-    });
+    setIsLoading(true);
+
+    setTimeout(() => {
+      navigation.navigate("RegisterClientStep2", {
+        name,
+        cpf,
+        email,
+        password,
+      });
+      setIsLoading(false);
+    }, 500);
   };
 
   return (
     <Container>
       <StatusBar barStyle="light-content" backgroundColor="#df692b" />
       <BackButton />
+
+      <Header>
+        <HeaderContent>
+          <Logo source={require("../../../assets/images/logo.png")} />
+          <HeaderTitle>
+            Cadastre-se para encontrar o profissional certo para você.
+          </HeaderTitle>
+        </HeaderContent>
+      </Header>
+
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1 }}
       >
         <ScrollView
+          style={{ flex: 1 }}
           contentContainerStyle={{ flexGrow: 1 }}
           keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
         >
-          <Header>
-            <HeaderContent>
-              <Logo source={require("../../../assets/images/logo.png")} />
-              <HeaderTitle>
-                Cadastre-se para encontrar o profissional certo para você.
-              </HeaderTitle>
-            </HeaderContent>
-          </Header>
-
           <FormContainer>
-            <Subtitle>Cadastro de cliente:</Subtitle>
+            <Subtitle>Dados pessoais</Subtitle>
 
             <InputContainer>
-              <Feather name="user" size={20} color="white" />
+              <Feather name="user" size={20} color="#df692b" />
               <StyledInput
-                placeholder="Nome completo"
+                placeholder="Digite seu nome completo"
                 value={name}
                 onChangeText={(text) => setName(capitalizeName(text))}
                 returnKeyType="next"
+                editable={!isLoading}
               />
             </InputContainer>
 
             <InputContainer>
-              <Feather name="shield" size={20} color="white" />
+              {/* Ícone de escudo sempre fixo à esquerda */}
+              <Feather name="shield" size={20} color="#df692b" />
+              
               <StyledInput
-                placeholder="CPF"
+                placeholder="Digite seu CPF"
                 keyboardType="number-pad"
                 maxLength={14}
                 value={cpf}
-                onChangeText={(text) => setCpf(formatCPF(text))}
+                onChangeText={handleCpfChange}
+                returnKeyType="next"
+                editable={!isLoading}
               />
+
+              {/* Ícones de validação aparecem condicionalmente à direita */}
+              {isCpfValid === true && (
+                <Feather name="check-circle" size={20} color="#28a745" />
+              )}
+              {isCpfValid === false && (
+                <Feather name="x-circle" size={20} color="#dc3545" />
+              )}
             </InputContainer>
 
+            {/* Mensagem de erro que só aparece se o CPF for inválido */}
+            {isCpfValid === false && (
+              <LoginText
+                style={{
+                  color: "#dc3545",
+                  marginTop: -10,
+                  marginBottom: 10,
+                  marginLeft: 15,
+                }}
+              >
+                CPF inválido
+              </LoginText>
+            )}
+
             <InputContainer>
-              <Feather name="mail" size={20} color="white" />
+              <Feather name="mail" size={20} color="#df692b" />
               <StyledInput
-                placeholder="E-mail"
+                placeholder="Digite seu e-mail"
                 keyboardType="email-address"
                 autoCapitalize="none"
                 value={email}
                 onChangeText={setEmail}
                 returnKeyType="next"
+                editable={!isLoading}
               />
             </InputContainer>
 
             <InputContainer>
-              <Feather name="lock" size={20} color="white" />
+              <Feather name="lock" size={20} color="#df692b" />
               <StyledInput
-                placeholder="Senha"
-                secureTextEntry
+                placeholder="Digite sua senha"
+                secureTextEntry={!showPassword}
                 value={password}
                 onChangeText={setPassword}
                 returnKeyType="next"
+                editable={!isLoading}
               />
+              <TouchableOpacity
+                onPress={() => setShowPassword(!showPassword)}
+                style={{ padding: 5 }}
+              >
+                <Feather
+                  name={showPassword ? "eye-off" : "eye"}
+                  size={20}
+                  color="#df692b"
+                />
+              </TouchableOpacity>
             </InputContainer>
 
             <InputContainer>
-              <Feather name="lock" size={20} color="white" />
+              <Feather name="lock" size={20} color="#df692b" />
               <StyledInput
-                placeholder="Confirme a senha"
-                secureTextEntry
+                placeholder="Confirme sua senha"
+                secureTextEntry={!showConfirmPassword}
                 value={confirmPassword}
                 onChangeText={setConfirmPassword}
                 returnKeyType="done"
+                onSubmitEditing={handleRegister}
+                editable={!isLoading}
               />
+              <TouchableOpacity
+                onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                style={{ padding: 5 }}
+              >
+                <Feather
+                  name={showConfirmPassword ? "eye-off" : "eye"}
+                  size={20}
+                  color="#df692b"
+                />
+              </TouchableOpacity>
             </InputContainer>
 
-            <RegisterButton onPress={handleRegister}>
-              <ButtonText>Próximo</ButtonText>
+            <RegisterButton onPress={handleRegister} disabled={isLoading}>
+              <ButtonText>
+                {isLoading ? "Processando..." : "Continuar"}
+              </ButtonText>
             </RegisterButton>
 
             <LoginContainer>
-              <LoginText>Já tem uma conta?</LoginText>
+              <LoginText>Já tem uma conta? </LoginText>
               <TouchableOpacity onPress={() => navigation.goBack()}>
-                <LoginLink>Entrar</LoginLink>
+                <LoginLink>Entrar aqui</LoginLink>
               </TouchableOpacity>
             </LoginContainer>
           </FormContainer>

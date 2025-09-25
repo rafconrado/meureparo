@@ -2,7 +2,7 @@ import styled from "styled-components/native";
 
 export const Container = styled.View`
   flex: 1;
-  background-color: #fff8ec;
+  background-color: #ffffffff;
   align-items: center;
   justify-content: center;
   padding: 20px;
@@ -29,24 +29,27 @@ export const Subtitle = styled.Text`
   margin-bottom: 40px;
 `;
 
-export const OptionCard = styled.View({
-  backgroundColor: "#fff8ec",
-  width: "85%",
-  padding: 25,
-  marginBottom: 20,
-  borderRadius: 20,
-  alignItems: "center",
-  justifyContent: "center",
+export const OptionCard = styled.View`
+  background-color: #ffffffff;
+  width: 85%;
+  padding: 25px;
+  margin-bottom: 20px;
+  border-radius: 20px;
+  align-items: center;
+  justify-content: center;
 
-  shadowColor: "#000",
-  shadowOffset: {
-    width: 0,
-    height: 2,
-  },
-  shadowOpacity: 0.1,
-  shadowRadius: 8,
-  elevation: 5,
-});
+  /* Sombra para iOS */
+  shadow-color: #000;
+  shadow-offset: {
+    width: 0;
+    height: 2;
+  }
+  shadow-opacity: 0.1;
+  shadow-radius: 8px;
+
+  /* Sombra para Android */
+  elevation: 5;
+`;
 
 export const ClientText = styled.Text`
   font-size: 18px;
