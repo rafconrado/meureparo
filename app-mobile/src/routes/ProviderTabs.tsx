@@ -26,7 +26,7 @@ export function ProviderTabs() {
             tabBarActiveTintColor: "#57B2C5",
             tabBarInactiveTintColor: "#0C0C0C",
             tabBarStyle: {
-              backgroundColor: "#FFF8EC",
+              backgroundColor: "#FFF",
               borderTopWidth: 1,
               borderTopColor: "#D9D9D9",
               height: 60,

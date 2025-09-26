@@ -2,7 +2,7 @@ import styled from "styled-components/native";
 
 export const Container = styled.View`
   flex: 1;
-  background-color: #fff8ec;
+  background-color: #fff;
 `;
 
 export const Title = styled.Text`
@@ -39,7 +39,7 @@ export const ServiceCard = styled.View`
   padding: 16px;
   padding-bottom: 50px;
   border-radius: 20px;
-  background-color: #fff8ec;
+  background-color: #fff;
   margin-left: 12px;
   elevation: 4;
   shadow-color: #000;

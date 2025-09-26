@@ -4,7 +4,7 @@ export const styles = StyleSheet.create({
   button: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#FFF8EC",
+    backgroundColor: "#FFF",
     paddingVertical: 6,
     paddingHorizontal: 12,
     borderRadius: 6,

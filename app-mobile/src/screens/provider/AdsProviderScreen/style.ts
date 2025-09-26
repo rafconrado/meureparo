@@ -1,6 +1,11 @@
 import styled from "styled-components/native";
 import { Feather } from "@expo/vector-icons";
+import { Dimensions } from "react-native";
+import CurrencyInput from 'react-native-currency-input';
 
+const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
+
+// Estilos originais mantidos
 export const Container = styled.View`
   flex: 1;
   background-color: #57b2c5;
@@ -114,10 +119,10 @@ export const AdFooter = styled.View`
 export const ActionButton = styled.TouchableOpacity<{ edit?: boolean; delete?: boolean }>`
   flex-direction: row;
   align-items: center;
-  background-color: ${props => 
-    props.edit ? '#ffc107' : 
-    props.delete ? '#dc3545' : 
-    '#57b2c5'
+  background-color: ${props =>
+    props.edit ? '#ffc107' :
+      props.delete ? '#dc3545' :
+        '#57b2c5'
   };
   padding: 8px 12px;
   border-radius: 8px;
@@ -184,44 +189,86 @@ export const FAB = styled.TouchableOpacity`
 
 export const FABIcon = styled(Feather)``;
 
+export const ModalOverlay = styled.View`
+  flex: 1;
+  background-color: rgba(0, 0, 0, 0.6);
+  justify-content: ${screenHeight > 700 ? 'center' : 'flex-end'};
+`;
+
 export const ModalContainer = styled.View`
   flex: 1;
-  justify-content: center;
-  align-items: center;
-  background-color: rgba(0, 0, 0, 0.5);
-  padding: 20px;
+  justify-content: ${screenHeight > 700 ? 'center' : 'flex-end'};
+  padding: ${screenHeight > 700 ? '20px' : '0px'};
+  max-height: ${screenHeight > 700 ? '90%' : '95%'};
 `;
 
 export const ModalContent = styled.View`
-  width: 100%;
-  max-width: 400px;
   background-color: #ffffff;
-  border-radius: 20px;
-  padding: 30px;
+  border-top-left-radius: 25px;
+  border-top-right-radius: 25px;
+  ${screenHeight > 700 ? `
+    border-radius: 25px;
+    max-width: 500px;
+    align-self: center;
+    width: 100%;
+  ` : ''}
+  max-height: 70%;
   shadow-color: #000;
-  shadow-offset: 0px 10px;
-  shadow-opacity: 0.25;
-  shadow-radius: 20px;
-  elevation: 15;
+  shadow-offset: 0px -5px;
+  shadow-opacity: 0.15;
+  shadow-radius: 15px;
+  elevation: 20;
+`;
+
+export const ModalHeader = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 25px 25px 15px 25px;
+  border-bottom-width: 1px;
+  border-bottom-color: #f1f3f4;
 `;
 
 export const ModalTitle = styled.Text`
   font-size: 22px;
   font-weight: 700;
   color: #2c2c2c;
-  text-align: center;
-  margin-bottom: 25px;
+  flex: 1;
 `;
 
-export const InputContainer = styled.View`
+export const CloseButton = styled.TouchableOpacity<{ disabled?: boolean }>`
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  background-color: #f8f9fa;
+  justify-content: center;
+  align-items: center;
+  opacity: ${props => props.disabled ? 0.5 : 1};
+`;
+
+export const ModalBody = styled.View`
+  padding: 20px 25px;
+`;
+
+export const InputGroup = styled.View`
+  margin-bottom: 20px;
+`;
+
+export const InputLabel = styled.Text`
+  font-size: 16px;
+  font-weight: 600;
+  color: #2c2c2c;
+  margin-bottom: 8px;
+`;
+
+export const InputContainer = styled.View<{ error?: boolean }>`
   flex-direction: row;
   align-items: center;
-  background-color: #f8f9fa;
-  border: 2px solid #e9ecef;
+  background-color: ${props => props.error ? '#fff5f5' : '#f8f9fa'};
+  border: 2px solid ${props => props.error ? '#dc3545' : '#e9ecef'};
   border-radius: 15px;
   padding: 0 15px;
-  margin-bottom: 15px;
-  min-height: 50px;
+  min-height: 55px;
 `;
 
 export const StyledInput = styled.TextInput.attrs({
@@ -229,35 +276,43 @@ export const StyledInput = styled.TextInput.attrs({
 })`
   flex: 1;
   color: #2c2c2c;
-  padding: 15px 10px;
+  padding: 15px 12px;
+  font-size: 16px;
+  font-weight: 500;
+`;
+
+export const StyledCurrencyInput = styled(CurrencyInput).attrs({
+  placeholderTextColor: "#6c757d",
+})`
+  flex: 1;
+  color: #2c2c2c;
+  padding: 15px 12px;
   font-size: 16px;
   font-weight: 500;
 `;
 
 export const TextArea = styled.TextInput.attrs({
   placeholderTextColor: "#6c757d",
-})`
-  background-color: #f8f9fa;
-  border: 2px solid #e9ecef;
+}) <{ error?: boolean }>`
+  background-color: ${props => props.error ? '#fff5f5' : '#f8f9fa'};
+  border: 2px solid ${props => props.error ? '#dc3545' : '#e9ecef'};
   border-radius: 15px;
   padding: 15px;
-  margin-bottom: 15px;
-  min-height: 100px;
+  min-height: 120px;
   color: #2c2c2c;
   font-size: 16px;
   font-weight: 500;
 `;
 
-export const CategoryPicker = styled.View`
+export const CategoryPicker = styled.View<{ error?: boolean }>`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  background-color: #f8f9fa;
-  border: 2px solid #e9ecef;
+  background-color: ${props => props.error ? '#fff5f5' : '#f8f9fa'};
+  border: 2px solid ${props => props.error ? '#dc3545' : '#e9ecef'};
   border-radius: 15px;
   padding: 15px;
-  margin-bottom: 15px;
-  min-height: 50px;
+  min-height: 55px;
 `;
 
 export const CategoryPickerText = styled.Text<{ selected?: boolean }>`
@@ -265,19 +320,36 @@ export const CategoryPickerText = styled.Text<{ selected?: boolean }>`
   color: ${props => props.selected ? '#2c2c2c' : '#6c757d'};
   font-size: 16px;
   font-weight: 500;
-  margin-left: 10px;
+  margin-left: 12px;
+`;
+
+export const ValidationText = styled.Text`
+  color: #dc3545;
+  font-size: 14px;
+  font-weight: 500;
+  margin-top: 5px;
+  margin-left: 5px;
+`;
+
+export const ModalFooter = styled.View`
+  flex-direction: row;
+  padding: 20px 25px 30px 25px;
+  gap: 12px;
+  border-top-width: 1px;
+  border-top-color: #f1f3f4;
 `;
 
 export const SaveButton = styled.TouchableOpacity<{ disabled?: boolean }>`
+  flex: 2;
   background-color: #57b2c5;
   border-radius: 15px;
-  padding: 18px;
+  padding: 16px;
   align-items: center;
-  margin-top: 10px;
-  margin-bottom: 10px;
+  justify-content: center;
+  min-height: 50px;
   shadow-color: #57b2c5;
   shadow-offset: 0px 4px;
-  shadow-opacity: 0.3;
+  shadow-opacity: 0.25;
   shadow-radius: 8px;
   elevation: 6;
   opacity: ${props => props.disabled ? 0.7 : 1};
@@ -291,35 +363,54 @@ export const SaveButtonText = styled.Text`
 `;
 
 export const CancelButton = styled.TouchableOpacity<{ disabled?: boolean }>`
-  background-color: #6c757d;
+  flex: 1;
+  background-color: transparent;
+  border: 2px solid #e9ecef;
   border-radius: 15px;
-  padding: 18px;
+  padding: 16px;
   align-items: center;
+  justify-content: center;
+  min-height: 50px;
   opacity: ${props => props.disabled ? 0.5 : 1};
 `;
 
 export const CancelButtonText = styled.Text`
-  color: #ffffff;
+  color: #6c757d;
   font-size: 16px;
   font-weight: 600;
 `;
 
+// Modal de Categoria melhorado
 export const CategoryModal = styled.View`
   flex: 1;
   justify-content: center;
   align-items: center;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.6);
   padding: 20px;
+`;
+
+export const CategoryModalContent = styled.View`
+  flex: 1;
+  background-color: #ffffff;
+  border-radius: 25px;
+  max-width: 400px;
+  width: 90%;
+  align-self: center;
+  shadow-color: #000;
+  shadow-offset: 0px 10px;
+  shadow-opacity: 0.25;
+  shadow-radius: 20px;
+  elevation: 15;
+  max-height: 80%;
 `;
 
 export const CategoryOption = styled.TouchableOpacity`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  padding: 15px 0;
+  padding: 18px 25px;
   border-bottom-width: 1px;
-  border-bottom-color: #e9ecef;
-  width: 100%;
+  border-bottom-color: #f1f3f4;
 `;
 
 export const CategoryOptionText = styled.Text`

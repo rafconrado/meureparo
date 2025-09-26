@@ -9,7 +9,7 @@ export const Container = styled(SafeAreaView)`
   padding-right: 16px;
   padding-bottom: 15px; 
   min-height: 64px;
-  background-color: #fff8ec;
+  background-color: #fff;
   border-bottom-width: 1px;
   border-bottom-color: #d9d9d9;
 `;

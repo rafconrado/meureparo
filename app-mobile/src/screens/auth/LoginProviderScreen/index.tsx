@@ -2,15 +2,11 @@ import React, { useState } from "react";
 import {
   StatusBar,
   TouchableOpacity,
-  KeyboardAvoidingView,
-  Platform,
   Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-
 import { useAuth } from "../../../contexts/AuthContext";
-
 import {
   Container,
   Header,
@@ -33,7 +29,6 @@ import {
   SignUpText,
   SignUpLink,
 } from "./style";
-
 import { AntDesign, Feather, FontAwesome } from "@expo/vector-icons";
 import { BackButton } from "../../../components/BackButton";
 
@@ -80,94 +75,88 @@ const LoginProviderScreen: React.FC = () => {
         </HeaderContent>
       </Header>
 
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-        style={{ flex: 1 }}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
+      <KeyboardAwareScrollView
+        contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
+        enableOnAndroid
+        extraScrollHeight={20}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
       >
-        <KeyboardAwareScrollView
-          contentContainerStyle={{ flexGrow: 1 }}
-          enableOnAndroid
-          extraScrollHeight={20}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-        >
-          <FormContainer>
-            <Subtitle>Bem-vindo, prestador!</Subtitle>
+        <FormContainer>
+          <Subtitle>Bem-vindo, prestador!</Subtitle>
 
-            <InputContainer>
-              <Feather name="mail" size={20} color="#57b2c5" />
-              <StyledInput
-                placeholder="Digite seu e-mail"
-                keyboardType="email-address"
-                value={email}
-                onChangeText={setEmail}
-                autoCapitalize="none"
-                editable={!isLoading}
-                returnKeyType="next"
+          <InputContainer>
+            <Feather name="mail" size={20} color="#57b2c5" />
+            <StyledInput
+              placeholder="Digite seu e-mail"
+              keyboardType="email-address"
+              value={email}
+              onChangeText={setEmail}
+              autoCapitalize="none"
+              editable={!isLoading}
+              returnKeyType="next"
+            />
+          </InputContainer>
+
+          <InputContainer>
+            <Feather name="lock" size={20} color="#57b2c5" />
+            <StyledInput
+              placeholder="Digite sua senha"
+              secureTextEntry={!showPassword}
+              value={password}
+              onChangeText={setPassword}
+              editable={!isLoading}
+              returnKeyType="done"
+              onSubmitEditing={handleLogin}
+            />
+            <TouchableOpacity
+              onPress={() => setShowPassword(!showPassword)}
+              style={{ padding: 5 }}
+            >
+              <Feather
+                name={showPassword ? "eye-off" : "eye"}
+                size={20}
+                color="#57b2c5"
               />
-            </InputContainer>
-
-            <InputContainer>
-              <Feather name="lock" size={20} color="#57b2c5" />
-              <StyledInput
-                placeholder="Digite sua senha"
-                secureTextEntry={!showPassword}
-                value={password}
-                onChangeText={setPassword}
-                editable={!isLoading}
-                returnKeyType="done"
-                onSubmitEditing={handleLogin}
-              />
-              <TouchableOpacity
-                onPress={() => setShowPassword(!showPassword)}
-                style={{ padding: 5 }}
-              >
-                <Feather
-                  name={showPassword ? "eye-off" : "eye"}
-                  size={20}
-                  color="#57b2c5"
-                />
-              </TouchableOpacity>
-            </InputContainer>
-
-            <TouchableOpacity>
-              <ForgotPasswordText>Esqueceu sua senha?</ForgotPasswordText>
             </TouchableOpacity>
+          </InputContainer>
 
-            <LoginButton onPress={handleLogin} disabled={isLoading}>
-              <ButtonText>{isLoading ? "Entrando..." : "Entrar"}</ButtonText>
-            </LoginButton>
+          <TouchableOpacity>
+            <ForgotPasswordText>Esqueceu sua senha?</ForgotPasswordText>
+          </TouchableOpacity>
 
-            <DividerContainer>
-              <DividerLine />
-              <DividerText>ou continue com</DividerText>
-              <DividerLine />
-            </DividerContainer>
+          <LoginButton onPress={handleLogin} disabled={isLoading}>
+            <ButtonText>{isLoading ? "Entrando..." : "Entrar"}</ButtonText>
+          </LoginButton>
 
-            <SocialLoginContainer>
-              <SocialButton>
-                <AntDesign name="google" size={24} color="#57b2c5" />
-              </SocialButton>
-              <SocialButton>
-                <FontAwesome name="apple" size={24} color="#57b2c5" />
-              </SocialButton>
-              <SocialButton>
-                <FontAwesome name="facebook" size={24} color="#57b2c5" />
-              </SocialButton>
-            </SocialLoginContainer>
+          <DividerContainer>
+            <DividerLine />
+            <DividerText>ou continue com</DividerText>
+            <DividerLine />
+          </DividerContainer>
 
-            <SignUpContainer>
-              <SignUpText>Não tem uma conta? </SignUpText>
-              <TouchableOpacity
-                onPress={() => navigation.navigate("RegisterProvider")}
-              >
-                <SignUpLink>Cadastre-se aqui</SignUpLink>
-              </TouchableOpacity>
-            </SignUpContainer>
-          </FormContainer>
-        </KeyboardAwareScrollView>
-      </KeyboardAvoidingView>
+          <SocialLoginContainer>
+            <SocialButton>
+              <AntDesign name="google" size={24} color="#57b2c5" />
+            </SocialButton>
+            <SocialButton>
+              <FontAwesome name="apple" size={24} color="#57b2c5" />
+            </SocialButton>
+            <SocialButton>
+              <FontAwesome name="facebook" size={24} color="#57b2c5" />
+            </SocialButton>
+          </SocialLoginContainer>
+
+          <SignUpContainer>
+            <SignUpText>Não tem uma conta? </SignUpText>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("RegisterProvider")}
+            >
+              <SignUpLink>Cadastre-se aqui</SignUpLink>
+            </TouchableOpacity>
+          </SignUpContainer>
+        </FormContainer>
+      </KeyboardAwareScrollView>
     </Container>
   );
 };
