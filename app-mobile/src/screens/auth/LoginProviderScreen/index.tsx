@@ -1,16 +1,15 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import {
   StatusBar,
   TouchableOpacity,
-  ScrollView,
   KeyboardAvoidingView,
   Platform,
   Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 import { useAuth } from "../../../contexts/AuthContext";
-import { loginProvider } from "../../../services/authService";
 
 import {
   Container,
@@ -47,10 +46,9 @@ const LoginProviderScreen: React.FC = () => {
   const [password, setPassword] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  
+
   const { signIn } = useAuth();
   const navigation = useNavigation<NavigationProps>();
-  const scrollViewRef = useRef<ScrollView>(null);
 
   const handleLogin = async (): Promise<void> => {
     if (!email || !password) {
@@ -61,35 +59,13 @@ const LoginProviderScreen: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const response = await loginProvider(email, password);
-
-      if (response && response.user && response.token) {
-        const userToSignIn = {
-          name: response.user.name,
-          email: response.user.email,
-          token: response.token,
-        };
-
-        await signIn(userToSignIn, "provider");
-        Alert.alert("Sucesso", "Login realizado com sucesso!");
-        console.log("<- [TELA] Login realizado com sucesso!");
-      } else {
-        throw new Error("Resposta do servidor inválida.");
-      }
+      await signIn({ email, password }, "provider");
+      Alert.alert("Sucesso", "Login realizado com sucesso!");
     } catch (error: any) {
-      console.error(
-        "################ ERRO DETALHADO NO LOGIN ################"
-      );
       Alert.alert("Erro no Login", error.message);
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleInputFocus = (): void => {
-    setTimeout(() => {
-      scrollViewRef.current?.scrollToEnd({ animated: true });
-    }, 100);
   };
 
   return (
@@ -99,22 +75,20 @@ const LoginProviderScreen: React.FC = () => {
 
       <Header>
         <HeaderContent>
-          <Logo source={require("../../../assets/images/logo.png")} />
-          <HeaderTitle>
-            Conectando você a novas oportunidades.
-          </HeaderTitle>
+          <Logo source={require("../../../assets/images/provider.png")} />
+          <HeaderTitle>Conectando você a novas oportunidades.</HeaderTitle>
         </HeaderContent>
       </Header>
 
       <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={{ flex: 1 }}
         keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
       >
-        <ScrollView
-          ref={scrollViewRef}
-          style={{ flex: 1 }}
+        <KeyboardAwareScrollView
           contentContainerStyle={{ flexGrow: 1 }}
+          enableOnAndroid
+          extraScrollHeight={20}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
@@ -131,7 +105,6 @@ const LoginProviderScreen: React.FC = () => {
                 autoCapitalize="none"
                 editable={!isLoading}
                 returnKeyType="next"
-                onFocus={handleInputFocus}
               />
             </InputContainer>
 
@@ -145,16 +118,15 @@ const LoginProviderScreen: React.FC = () => {
                 editable={!isLoading}
                 returnKeyType="done"
                 onSubmitEditing={handleLogin}
-                onFocus={handleInputFocus}
               />
-              <TouchableOpacity 
+              <TouchableOpacity
                 onPress={() => setShowPassword(!showPassword)}
                 style={{ padding: 5 }}
               >
-                <Feather 
-                  name={showPassword ? "eye-off" : "eye"} 
-                  size={20} 
-                  color="#57b2c5" 
+                <Feather
+                  name={showPassword ? "eye-off" : "eye"}
+                  size={20}
+                  color="#57b2c5"
                 />
               </TouchableOpacity>
             </InputContainer>
@@ -164,9 +136,7 @@ const LoginProviderScreen: React.FC = () => {
             </TouchableOpacity>
 
             <LoginButton onPress={handleLogin} disabled={isLoading}>
-              <ButtonText>
-                {isLoading ? "Entrando..." : "Entrar"}
-              </ButtonText>
+              <ButtonText>{isLoading ? "Entrando..." : "Entrar"}</ButtonText>
             </LoginButton>
 
             <DividerContainer>
@@ -196,7 +166,7 @@ const LoginProviderScreen: React.FC = () => {
               </TouchableOpacity>
             </SignUpContainer>
           </FormContainer>
-        </ScrollView>
+        </KeyboardAwareScrollView>
       </KeyboardAvoidingView>
     </Container>
   );

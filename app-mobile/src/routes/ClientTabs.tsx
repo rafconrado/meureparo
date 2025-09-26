@@ -17,7 +17,6 @@ const Tab = createBottomTabNavigator();
 export function ClientTabs() {
   return (
     <View style={{ flex: 1 }}>
-      {/* Header fixo */}
       <ClientHeader />
 
       {/* Tabs */}

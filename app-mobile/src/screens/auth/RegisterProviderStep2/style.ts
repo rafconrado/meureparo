@@ -9,88 +9,128 @@ export const Container = styled.View`
 export const Header = styled.View`
   justify-content: center;
   align-items: center;
-  padding: 60px 30px 30px;
+  padding: 80px 30px 40px 30px;
+  background-color: #57b2c5;
 `;
 
 export const HeaderContent = styled.View`
   flex-direction: row;
   align-items: center;
+  justify-content: center;
 `;
 
 export const Logo = styled.Image`
-  width: 70px;
-  height: 70px;
-  margin-right: 15px;
+  width: 100px;
+  height: 100px;
+  margin-right: 20px;
+  border-radius: 20px;
+  shadow-color: #000;
+  shadow-offset: 0px 4px;
+  shadow-opacity: 0.3;
+  shadow-radius: 8px;
+  elevation: 8;
 `;
 
 export const HeaderTitle = styled.Text`
-  font-size: 16px;
-  color: #fff8ec;
-  font-weight: bold;
+  font-size: 20px;
+  color: #ffffff;
+  font-weight: 700;
   flex-shrink: 1;
-  line-height: 22px;
+  text-align: center;
+  line-height: 26px;
+  text-shadow-color: rgba(0, 0, 0, 0.3);
+  text-shadow-offset: 1px 1px;
+  text-shadow-radius: 2px;
 `;
 
 export const FormContainer = styled.View`
   flex: 1;
-  background-color: #fff8ec;
-  border-top-left-radius: 30px;
-  border-top-right-radius: 30px;
-  padding: 30px 25px;
+  background-color: #ffffff;
+  border-top-left-radius: 35px;
+  border-top-right-radius: 35px;
+  padding: 45px 30px 60px;
+  shadow-color: #000;
+  shadow-offset: 0px -5px;
+  shadow-opacity: 0.1;
+  shadow-radius: 10px;
+  elevation: 15;
 `;
 
 export const Subtitle = styled.Text`
-  font-size: 18px;
-  color: #333;
-  font-weight: 600;
-  margin-bottom: 25px;
+  font-size: 28px;
+  color: #2c2c2c;
+  font-weight: 700;
+  margin-bottom: 35px;
   text-align: center;
+  letter-spacing: -0.5px;
 `;
 
 export const InputContainer = styled.View`
   flex-direction: row;
   align-items: center;
-  background-color: #57b2c5;
-  border-radius: 12px;
-  padding: 0 15px;
-  margin-bottom: 15px;
+  background-color: #f8f9fa;
+  border: 2px solid #e9ecef;
+  border-radius: 15px;
+  padding: 0 20px;
+  margin-bottom: 20px;
+  shadow-color: #000;
+  shadow-offset: 0px 2px;
+  shadow-opacity: 0.05;
+  shadow-radius: 6px;
+  elevation: 3;
+  min-height: 58px;
 `;
 
 export const StyledInput = styled.TextInput.attrs({
-  placeholderTextColor: "rgba(255, 248, 236, 0.7)",
+  placeholderTextColor: "#6c757d",
 })`
   flex: 1;
-  color: #fff8ec;
-  padding: 16px 12px;
+  color: #2c2c2c;
+  padding: 18px 15px;
   font-size: 16px;
+  font-weight: 500;
 `;
 
-export const RegisterButton = styled.TouchableOpacity`
+export const RegisterButton = styled.TouchableOpacity<{ disabled?: boolean }>`
   background-color: #57b2c5;
-  padding: 16px;
-  border-radius: 12px;
-  align-items: center;
+  border-radius: 15px;
   margin-top: 10px;
-  margin-bottom: 25px;
+  margin-bottom: 30px;
+  shadow-color: #57b2c5;
+  shadow-offset: 0px 6px;
+  shadow-opacity: 0.3;
+  shadow-radius: 10px;
+  elevation: 8;
+  min-height: 58px;
+  justify-content: center;
+  align-items: center;
+  opacity: ${props => props.disabled ? 0.7 : 1};
 `;
 
 export const ButtonText = styled.Text`
-  color: #fff8ec;
+  color: #ffffff;
   font-size: 18px;
-  font-weight: bold;
+  font-weight: 700;
+  letter-spacing: 0.5px;
 `;
 
 export const PickerContainer = styled.View`
   flex-direction: row;
   align-items: center;
-  background-color: #57b2c5;
-  border-radius: 12px;
+  background-color: #f8f9fa;
+  border: 2px solid #e9ecef;
+  border-radius: 15px;
+  padding: 0 20px;
   margin-bottom: 20px;
-  padding: 0 15px;
+  shadow-color: #000;
+  shadow-offset: 0px 2px;
+  shadow-opacity: 0.05;
+  shadow-radius: 6px;
+  elevation: 3;
+  min-height: 58px;
 `;
 
 export const StyledPicker = styled(Picker)`
   flex: 1;
-  color: #fff8ec;
-  padding: 12px 0;
+  color: #2c2c2c;
 `;

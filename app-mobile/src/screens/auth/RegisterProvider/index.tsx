@@ -3,13 +3,13 @@ import {
   StatusBar,
   TouchableOpacity,
   Alert,
-  ScrollView,
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 import {
   Container,
@@ -43,6 +43,8 @@ type RegisterProviderScreenProp = NativeStackNavigationProp<
   RootStackParamList,
   "RegisterProviderStep2"
 >;
+
+interface NavigationProps extends RegisterProviderScreenProp {}
 
 const isValidCNPJ = (cnpj: string): boolean => {
   cnpj = cnpj.replace(/[^\d]+/g, "");
@@ -79,12 +81,12 @@ const isValidCNPJ = (cnpj: string): boolean => {
   return true;
 };
 
-const isValidEmail = (email: string) => {
+const isValidEmail = (email: string): boolean => {
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return regex.test(email.toLowerCase());
 };
 
-const capitalizeName = (text: string) => {
+const capitalizeName = (text: string): string => {
   return text
     .toLowerCase()
     .split(" ")
@@ -110,16 +112,20 @@ const formatCNPJ = (value: string): string => {
   )}/${cnpj.slice(8, 12)}-${cnpj.slice(12, 14)}`;
 };
 
-const RegisterProvider = () => {
-  const navigation = useNavigation<RegisterProviderScreenProp>();
+const RegisterProvider: React.FC = () => {
+  const navigation = useNavigation<NavigationProps>();
 
-  const [name, setName] = useState("");
-  const [cnpj, setCnpj] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [name, setName] = useState<string>("");
+  const [cnpj, setCnpj] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] =
+    useState<boolean>(false);
 
-  const handleRegister = () => {
+  const handleRegister = (): void => {
     if (!name || !cnpj || !email || !password || !confirmPassword) {
       Alert.alert("Campos obrigatórios", "Preencha todos os campos.");
       return;
@@ -145,12 +151,17 @@ const RegisterProvider = () => {
       return;
     }
 
-    navigation.navigate("RegisterProviderStep2", {
-      name,
-      cnpj: cnpj.replace(/\D/g, ""),
-      email,
-      password,
-    });
+    setIsLoading(true);
+
+    setTimeout(() => {
+      navigation.navigate("RegisterProviderStep2", {
+        name,
+        cnpj: cnpj.replace(/\D/g, ""),
+        email,
+        password,
+      });
+      setIsLoading(false);
+    }, 500);
   };
 
   return (
@@ -158,93 +169,126 @@ const RegisterProvider = () => {
       <StatusBar barStyle="light-content" backgroundColor="#57b2c5" />
       <BackButton />
 
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={{ flex: 1 }}
-      >
-        <ScrollView
-          contentContainerStyle={{ flexGrow: 1 }}
-          keyboardShouldPersistTaps="handled"
-        >
-          <Header>
-            <HeaderContent>
-              <Logo source={require("../../../assets/images/logo.png")} />
-              <HeaderTitle>
-                Ofereça seus serviços e encontre novos clientes.
-              </HeaderTitle>
-            </HeaderContent>
-          </Header>
+      <Header>
+        <HeaderContent>
+          <Logo source={require("../../../assets/images/provider.png")} />
+          <HeaderTitle>
+            Ofereça seus serviços e encontre novos clientes.
+          </HeaderTitle>
+        </HeaderContent>
+      </Header>
 
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        style={{ flex: 1 }}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
+      >
+        <KeyboardAwareScrollView
+          contentContainerStyle={{ flexGrow: 1 }}
+          enableOnAndroid={true}
+          extraScrollHeight={20}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
           <FormContainer>
-            <Subtitle>Cadastro de prestador:</Subtitle>
+            <Subtitle>Dados da empresa</Subtitle>
 
             <InputContainer>
-              <Feather name="user" size={20} color="white" />
+              <Feather name="user" size={20} color="#57b2c5" />
               <StyledInput
                 placeholder="Nome completo ou Razão Social"
                 value={name}
                 onChangeText={(text) => setName(capitalizeName(text))}
                 returnKeyType="next"
+                editable={!isLoading}
               />
             </InputContainer>
 
             <InputContainer>
-              <Feather name="shield" size={20} color="white" />
+              <Feather name="shield" size={20} color="#57b2c5" />
               <StyledInput
-                placeholder="CNPJ"
+                placeholder="Digite o CNPJ"
                 keyboardType="number-pad"
                 maxLength={18}
                 value={cnpj}
                 onChangeText={(text) => setCnpj(formatCNPJ(text))}
+                returnKeyType="next"
+                editable={!isLoading}
               />
             </InputContainer>
 
             <InputContainer>
-              <Feather name="mail" size={20} color="white" />
+              <Feather name="mail" size={20} color="#57b2c5" />
               <StyledInput
-                placeholder="E-mail"
+                placeholder="Digite seu e-mail"
                 keyboardType="email-address"
                 autoCapitalize="none"
                 value={email}
                 onChangeText={setEmail}
                 returnKeyType="next"
+                editable={!isLoading}
               />
             </InputContainer>
 
             <InputContainer>
-              <Feather name="lock" size={20} color="white" />
+              <Feather name="lock" size={20} color="#57b2c5" />
               <StyledInput
-                placeholder="Senha"
-                secureTextEntry
+                placeholder="Digite sua senha"
+                secureTextEntry={!showPassword}
                 value={password}
                 onChangeText={setPassword}
                 returnKeyType="next"
+                editable={!isLoading}
               />
+              <TouchableOpacity
+                onPress={() => setShowPassword(!showPassword)}
+                style={{ padding: 5 }}
+              >
+                <Feather
+                  name={showPassword ? "eye-off" : "eye"}
+                  size={20}
+                  color="#57b2c5"
+                />
+              </TouchableOpacity>
             </InputContainer>
 
             <InputContainer>
-              <Feather name="lock" size={20} color="white" />
+              <Feather name="lock" size={20} color="#57b2c5" />
               <StyledInput
-                placeholder="Confirme a senha"
-                secureTextEntry
+                placeholder="Confirme sua senha"
+                secureTextEntry={!showConfirmPassword}
                 value={confirmPassword}
                 onChangeText={setConfirmPassword}
                 returnKeyType="done"
+                onSubmitEditing={handleRegister}
+                editable={!isLoading}
               />
+              <TouchableOpacity
+                onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                style={{ padding: 5 }}
+              >
+                <Feather
+                  name={showConfirmPassword ? "eye-off" : "eye"}
+                  size={20}
+                  color="#57b2c5"
+                />
+              </TouchableOpacity>
             </InputContainer>
 
-            <RegisterButton onPress={handleRegister}>
-              <ButtonText>Próximo</ButtonText>
+            <RegisterButton onPress={handleRegister} disabled={isLoading}>
+              <ButtonText>
+                {isLoading ? "Processando..." : "Continuar"}
+              </ButtonText>
             </RegisterButton>
 
             <LoginContainer>
-              <LoginText>Já tem uma conta?</LoginText>
+              <LoginText>Já tem uma conta? </LoginText>
               <TouchableOpacity onPress={() => navigation.goBack()}>
-                <LoginLink>Entrar</LoginLink>
+                <LoginLink>Entrar aqui</LoginLink>
               </TouchableOpacity>
             </LoginContainer>
           </FormContainer>
-        </ScrollView>
+        </KeyboardAwareScrollView>
       </KeyboardAvoidingView>
     </Container>
   );
