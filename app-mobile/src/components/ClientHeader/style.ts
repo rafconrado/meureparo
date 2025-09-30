@@ -16,4 +16,3 @@ export const Container = styled(SafeAreaView)`
 
 export const AvatarButton = styled.TouchableOpacity``;
 
-export const SearchButton = styled.TouchableOpacity``;
