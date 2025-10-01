@@ -88,15 +88,15 @@ export const CategoryName = styled.Text`
 `;
 
 // Cards de Promoção
-export const PromoCard = styled(LinearGradient)` 
-width: 92%;
- margin-left: 12px; 
- padding: 20px;
-border-radius: 20px;
-elevation: 4;
-shadow-color: #667eea;
-shadow-opacity: 0.3;
- shadow-radius: 6px;
+export const PromoCard = styled(LinearGradient)`
+  width: 92%;
+  margin-left: 12px;
+  padding: 20px;
+  border-radius: 20px;
+  elevation: 4;
+  shadow-color: #667eea;
+  shadow-opacity: 0.3;
+  shadow-radius: 6px;
 `;
 
 export const PromoContent = styled.View`
@@ -179,7 +179,7 @@ export const RatingText = styled.Text`
 export const ProviderRating = styled.Text`
   font-family: "Inter-Bold";
   font-size: 13px;
-  color: #FFB800;
+  color: #ffb800;
 `;
 
 export const ProviderPrice = styled.Text`
@@ -205,7 +205,6 @@ export const BadgeText = styled.Text`
   color: #fff;
 `;
 
-// Carousel antigo mantido
 export const CarouselImage = styled.Image<{ height?: number }>`
   width: 92%;
   height: ${({ height }) => (height ? `${height}px` : "190px")};
@@ -217,18 +216,18 @@ export const CarouselImage = styled.Image<{ height?: number }>`
   shadow-radius: 6px;
 `;
 
-// Service Cards (atualizados)
+// Service Cards
 export const ServiceCard = styled.View`
-  width: 92%;
   padding: 16px;
   padding-bottom: 20px;
   border-radius: 20px;
   background-color: #fff;
-  margin-left: 12px;
   elevation: 4;
   shadow-color: #000;
   shadow-opacity: 0.06;
   shadow-radius: 5px;
+  height: auto;
+  justify-content: space-between;
 `;
 
 export const ServiceImage = styled.Image`
@@ -243,6 +242,7 @@ export const ServiceTitle = styled.Text`
   font-family: "Inter-Bold";
   margin-top: 12px;
   color: #0c0c0c;
+  line-height: 22px;
 `;
 
 export const ServiceFromText = styled.Text`
@@ -257,7 +257,7 @@ export const ServicePrice = styled.Text`
   color: #ff8724;
   font-family: "Inter-Bold";
   margin-top: 2px;
-  margin-bottom: 12px;
+  margin-bottom: 0px;
 `;
 
 export const ServiceButton = styled.TouchableOpacity`
@@ -266,7 +266,7 @@ export const ServiceButton = styled.TouchableOpacity`
   border-radius: 14px;
   align-items: center;
   justify-content: center;
-  margin-top: 12px;
+  margin-top: 16px;
   width: 100%;
 `;
 
@@ -285,7 +285,7 @@ export const SectionTitle = styled.Text`
   margin-bottom: 16px;
 `;
 
-// Parceiros (mantidos)
+// Parceiros
 export const PartnerContainer = styled.View`
   align-items: center;
   justify-content: center;

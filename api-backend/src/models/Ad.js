@@ -1,40 +1,60 @@
-const db = require("../../database");
+const { db } = require("../../database");
 
 class Ad {
-  /**
-   * Cria um novo anúncio no banco de dados.
-   */
-  static create({ title, description, price, category, providerId }) {
+  // Cria um novo anúncio
+  static create(data) {
     return new Promise((resolve, reject) => {
-      const sql =
-        "INSERT INTO ads (title, description, price, category, providerId) VALUES (?, ?, ?, ?, ?)";
-      const params = [title, description, price, category, providerId];
+      const {
+        title,
+        description,
+        price,
+        category,
+        providerId,
+        image = null,
+        rating = 0,
+        reviews = 0,
+        isVerified = 0,
+        isPromoted = 0,
+        discount = 0,
+      } = data;
+
+      const sql = `
+        INSERT INTO ads (
+          title, description, price, category, providerId, 
+          image, rating, reviews, isVerified, isPromoted, discount
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `;
+      const params = [
+        title,
+        description,
+        price,
+        category,
+        providerId,
+        image,
+        rating,
+        reviews,
+        isVerified,
+        isPromoted,
+        discount,
+      ];
 
       db.run(sql, params, function (err) {
         if (err) {
           reject(err);
         } else {
-          resolve({
-            id: this.lastID,
-            title,
-            description,
-            price,
-            category,
-            providerId,
-          });
+          resolve({ id: this.lastID, ...data });
         }
       });
     });
   }
 
-  /**
-   * Encontra todos os anúncios, incluindo informações do prestador.
-   */
+  // Retorna todos os anúncios com informações do prestador
   static findAll() {
     return new Promise((resolve, reject) => {
       const sql = `
         SELECT 
           ads.id, ads.title, ads.description, ads.price, ads.category, ads.providerId,
+          ads.image, ads.rating, ads.reviews, ads.isVerified, ads.isPromoted, ads.discount,
           providers.name as providerName, 
           providers.email as providerEmail,
           providers.phone as providerPhone
@@ -45,49 +65,93 @@ class Ad {
         if (err) {
           reject(err);
         } else {
-          resolve(rows);
+          const adsWithBooleans = rows.map((ad) => ({
+            ...ad,
+            isVerified: !!ad.isVerified,
+            isPromoted: !!ad.isPromoted,
+          }));
+          resolve(adsWithBooleans);
         }
       });
     });
   }
 
-  /**
-   * Encontra um anúncio específico pelo seu ID.
-   */
+  // Encontra um anúncio por ID
   static findById(id) {
     return new Promise((resolve, reject) => {
-      const sql = "SELECT * FROM ads WHERE id = ?";
+      const sql = `
+        SELECT 
+          ads.*, 
+          providers.name as providerName 
+        FROM ads 
+        JOIN providers ON ads.providerId = providers.id 
+        WHERE ads.id = ?
+      `;
       db.get(sql, [id], (err, row) => {
         if (err) {
           reject(err);
         } else {
-          resolve(row); // Retorna a linha encontrada ou 'undefined' se não encontrar
+          resolve(row);
         }
       });
     });
   }
 
-  /**
-   * Atualiza um anúncio existente.
-   */
+  // Atualiza um anuncio no banco de dados
   static update(id, data) {
     return new Promise((resolve, reject) => {
-      const { title, description, price, category } = data;
-      const sql =
-        "UPDATE ads SET title = ?, description = ?, price = ?, category = ? WHERE id = ?";
-      db.run(sql, [title, description, price, category, id], function (err) {
+      const {
+        title,
+        description,
+        price,
+        category,
+        image,
+        rating,
+        reviews,
+        isVerified,
+        isPromoted,
+        discount,
+      } = data;
+      const sql = `
+        UPDATE ads 
+        SET 
+          title = COALESCE(?, title), 
+          description = COALESCE(?, description), 
+          price = COALESCE(?, price), 
+          category = COALESCE(?, category),
+          image = COALESCE(?, image),
+          rating = COALESCE(?, rating),
+          reviews = COALESCE(?, reviews),
+          isVerified = COALESCE(?, isVerified),
+          isPromoted = COALESCE(?, isPromoted),
+          discount = COALESCE(?, discount)
+        WHERE id = ?
+      `;
+      const params = [
+        title,
+        description,
+        price,
+        category,
+        image,
+        rating,
+        reviews,
+        isVerified,
+        isPromoted,
+        discount,
+        id,
+      ];
+
+      db.run(sql, params, function (err) {
         if (err) {
           reject(err);
         } else {
-          resolve({ changes: this.changes }); // Retorna o número de linhas afetadas
+          resolve({ changes: this.changes });
         }
       });
     });
   }
 
-  /**
-   * Deleta um anúncio do banco de dados.
-   */
+  // Deleta um anuncio do banco de dados
   static delete(id) {
     return new Promise((resolve, reject) => {
       const sql = "DELETE FROM ads WHERE id = ?";
@@ -95,7 +159,7 @@ class Ad {
         if (err) {
           reject(err);
         } else {
-          resolve({ changes: this.changes }); // Retorna o número de linhas afetadas
+          resolve({ changes: this.changes });
         }
       });
     });

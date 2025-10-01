@@ -1,21 +1,28 @@
-const Ad = require("../models/Ad"); // Importa o nosso novo Model
+const Ad = require("../models/Ad");
 
-/**
- * Cria um novo anúncio.
- * Apenas usuários autenticados com userType 'provider' podem acessar.
- */
+// Cria um novo anúncio
 exports.createAd = async (req, res) => {
   const providerId = req.user.id;
   const userType = req.user.userType;
 
-  // Verificação para garantir que apenas providers criem anúncios
   if (userType !== "provider") {
     return res.status(403).json({
       message: "Acesso negado. Apenas prestadores podem criar anúncios.",
     });
   }
 
-  const { title, description, price, category } = req.body;
+  const {
+    title,
+    description,
+    price,
+    category,
+    image,
+    rating,
+    reviews,
+    isVerified,
+    isPromoted,
+    discount,
+  } = req.body;
   if (!title || !description || !category) {
     return res
       .status(400)
@@ -23,13 +30,20 @@ exports.createAd = async (req, res) => {
   }
 
   try {
-    const newAd = await Ad.create({
+    const adData = {
       title,
       description,
       price,
       category,
       providerId,
-    });
+      image,
+      rating,
+      reviews,
+      isVerified,
+      isPromoted,
+      discount,
+    };
+    const newAd = await Ad.create(adData);
     res.status(201).json({ message: "Anúncio criado com sucesso!", ad: newAd });
   } catch (error) {
     res
@@ -38,9 +52,7 @@ exports.createAd = async (req, res) => {
   }
 };
 
-/**
- * Lista todos os anúncios disponíveis (acesso público).
- */
+// Busca todos os anúncios
 exports.getAllAds = async (req, res) => {
   try {
     const ads = await Ad.findAll();
@@ -52,9 +64,7 @@ exports.getAllAds = async (req, res) => {
   }
 };
 
-/**
- * Busca um único anúncio pelo ID (acesso público).
- */
+// Busca um anúncio por ID
 exports.getAdById = async (req, res) => {
   try {
     const ad = await Ad.findById(req.params.id);
@@ -69,22 +79,17 @@ exports.getAdById = async (req, res) => {
   }
 };
 
-/**
- * Atualiza um anúncio.
- * Apenas o provider que criou o anúncio pode atualizá-lo.
- */
+// Atualiza um anúncio
 exports.updateAd = async (req, res) => {
   try {
     const adId = req.params.id;
     const providerIdFromToken = req.user.id;
 
-    // 1. Verificar se o anúncio existe e quem é o dono
     const ad = await Ad.findById(adId);
     if (!ad) {
       return res.status(404).json({ message: "Anúncio não encontrado." });
     }
 
-    // 2. Checar se o usuário logado é o dono do anúncio
     if (ad.providerId !== providerIdFromToken) {
       return res.status(403).json({
         message:
@@ -92,14 +97,9 @@ exports.updateAd = async (req, res) => {
       });
     }
 
-    // 3. Se tudo estiver ok, prosseguir com a atualização
-    const { title, description, price, category } = req.body;
-    const result = await Ad.update(adId, {
-      title,
-      description,
-      price,
-      category,
-    });
+    const updateData = req.body;
+
+    const result = await Ad.update(adId, updateData);
 
     if (result.changes === 0) {
       return res
@@ -115,22 +115,17 @@ exports.updateAd = async (req, res) => {
   }
 };
 
-/**
- * Deleta um anúncio.
- * Apenas o provider que criou o anúncio pode deletá-lo.
- */
+// Deleta um anúncio
 exports.deleteAd = async (req, res) => {
   try {
     const adId = req.params.id;
     const providerIdFromToken = req.user.id;
 
-    // 1. Verificar se o anúncio existe e quem é o dono
     const ad = await Ad.findById(adId);
     if (!ad) {
       return res.status(404).json({ message: "Anúncio não encontrado." });
     }
 
-    // 2. Checar se o usuário logado é o dono do anúncio
     if (ad.providerId !== providerIdFromToken) {
       return res.status(403).json({
         message:
@@ -138,7 +133,6 @@ exports.deleteAd = async (req, res) => {
       });
     }
 
-    // 3. Se tudo estiver ok, prosseguir com a deleção
     const result = await Ad.delete(adId);
     if (result.changes === 0) {
       return res

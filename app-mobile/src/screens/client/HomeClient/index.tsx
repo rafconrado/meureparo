@@ -1,10 +1,16 @@
 import React, { useEffect, useState, useMemo, useCallback } from "react";
-import { StatusBar, ScrollView, ActivityIndicator, RefreshControl, FlatList } from "react-native";
-import { useNavigation } from '@react-navigation/native';
+import {
+  StatusBar,
+  ScrollView,
+  ActivityIndicator,
+  RefreshControl,
+  FlatList,
+  Text,
+  Dimensions,
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "../../../contexts/AuthContext";
-
-import { CustomCarousel } from "../../../components/Carousel";
 import {
   Container,
   Title,
@@ -16,23 +22,30 @@ import {
   SearchButton,
   LoadingContainer,
 } from "./style";
-
-import type { Provider, Category, Promo, Partner } from '../../../types';
-import { providersData, categoriesData, promosData, partnersData } from '../../../data/mockData';
-
-import { CategoryCardItem } from './components/CategoryCardItem';
-import { FeaturedProviderCard } from './components/FeaturedPRoviderCard';
+import type { Provider, Category, Promo, Partner } from "../../../types";
+import api from "../../../services/api";
+import {
+  categoriesData,
+  promosData,
+  partnersData,
+} from "../../../data/mockData";
+import { CategoryCardItem } from "./components/CategoryCardItem";
+import { FeaturedProviderCard } from "./components/FeaturedProviderCard";
 import { ProviderCarouselCard } from "./components/ProviderCarouselCard";
-import { PromoCardItem } from './components/PromoCardItem';
-import { PartnerItem } from './components/PartnerItem';
+import { PromoCardItem } from "./components/PromoCardItem";
+import { PartnerItem } from "./components/PartnerItem";
+
+const { width: screenWidth } = Dimensions.get("window");
+const CARD_WIDTH = screenWidth * 0.8;
+const HORIZONTAL_PADDING = (screenWidth - CARD_WIDTH) / 2 - 4; // Ajuste fino para a margem
 
 const HomeClient = () => {
   const { user } = useAuth();
   const navigation = useNavigation<any>();
-
   const [searchText, setSearchText] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const [apiData, setApiData] = useState({
     providers: [] as Provider[],
@@ -42,15 +55,23 @@ const HomeClient = () => {
   });
 
   const fetchData = useCallback(async () => {
+    setError(null);
     setIsLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    setApiData({
-      providers: providersData,
-      categories: categoriesData,
-      promos: promosData,
-      partners: partnersData,
-    });
-    setIsLoading(false);
+    try {
+      const response = await api.get("/ads");
+      console.log("DADOS DO PRIMEIRO ANÚNCIO:", response.data[0]);
+      setApiData({
+        providers: response.data,
+        categories: categoriesData,
+        promos: promosData,
+        partners: partnersData,
+      });
+    } catch (err) {
+      console.error("Erro ao buscar anúncios da API:", err);
+      setError("Não foi possível carregar os dados. Verifique sua conexão.");
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
   useEffect(() => {
@@ -63,8 +84,16 @@ const HomeClient = () => {
     setRefreshing(false);
   }, [fetchData]);
 
-  const featuredProviders = useMemo(() =>
-    apiData.providers.filter(p => p.isPromoted || p.discount),
+  const featuredProviders = useMemo(
+    () => apiData.providers.filter((p) => p.isPromoted || p.discount),
+    [apiData.providers]
+  );
+
+  const mostPopularProviders = useMemo(
+    () =>
+      [...apiData.providers]
+        .sort((a, b) => (b.reviews || 0) - (a.reviews || 0)) // Usar b.reviewCount ou o campo correto
+        .slice(0, 5),
     [apiData.providers]
   );
 
@@ -72,22 +101,43 @@ const HomeClient = () => {
     console.log("Buscando por:", searchText);
   }, [searchText]);
 
-  const handleCategoryPress = useCallback((category: Category) => {
-    navigation.navigate('CategoryScreen', { categoryId: category.id });
-  }, [navigation]);
+  const handleCategoryPress = useCallback(
+    (category: Category) => {
+      navigation.navigate("CategoryScreen", { categoryId: category.id });
+    },
+    [navigation]
+  );
 
-  const handleProviderPress = useCallback((provider: Provider) => {
-    if (provider.advertisementId) {
-      navigation.navigate('AdvertisementDetail', { adId: provider.advertisementId });
-    } else {
-      console.warn(`Prestador ${provider.name} não possui um anúncio associado.`);
-    }
-  }, [navigation]);
+  const handleProviderPress = useCallback(
+    (provider: Provider) => {
+      if (provider.advertisementId) {
+        navigation.navigate("AdvertisementDetail", {
+          adId: provider.advertisementId,
+        });
+      } else {
+        console.warn(
+          `Prestador ${provider.name} não possui um anúncio associado.`
+        );
+      }
+    },
+    [navigation]
+  );
 
   if (isLoading && !refreshing) {
     return (
       <LoadingContainer>
         <ActivityIndicator size="large" color="#ff8724" />
+      </LoadingContainer>
+    );
+  }
+
+  if (error) {
+    return (
+      <LoadingContainer>
+        <Ionicons name="cloud-offline-outline" size={48} color="#999" />
+        <Text style={{ marginTop: 16, color: "#666", textAlign: "center" }}>
+          {error}
+        </Text>
       </LoadingContainer>
     );
   }
@@ -98,7 +148,11 @@ const HomeClient = () => {
       <ScrollView
         showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#ff8724"]} />
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={["#ff8724"]}
+          />
         }
       >
         <Title>Olá, {user?.name || "Usuário"} 👋</Title>
@@ -121,7 +175,9 @@ const HomeClient = () => {
           <FlatList
             data={apiData.categories}
             keyExtractor={(item) => item.id}
-            renderItem={({ item }) => <CategoryCardItem item={item} onPress={handleCategoryPress} />}
+            renderItem={({ item }) => (
+              <CategoryCardItem item={item} onPress={handleCategoryPress} />
+            )}
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={{ paddingLeft: 16 }}
@@ -129,11 +185,15 @@ const HomeClient = () => {
         </Section>
 
         <Section>
-          <CustomCarousel
-            title="🔥 Ofertas Especiais"
+          <SectionTitle>🔥 Ofertas Especiais</SectionTitle>
+          {/* Note: O CustomCarousel pode não existir. Se não, troque por uma FlatList similar às outras. */}
+          <FlatList
             data={apiData.promos}
-            height={140}
-            renderItem={(item) => <PromoCardItem item={item} />}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => <PromoCardItem item={item} />}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ paddingLeft: 16 }}
           />
         </Section>
 
@@ -142,7 +202,12 @@ const HomeClient = () => {
           <FlatList
             data={featuredProviders}
             keyExtractor={(item) => item.id}
-            renderItem={({ item }) => <FeaturedProviderCard provider={item} onPress={handleProviderPress} />}
+            renderItem={({ item }) => (
+              <FeaturedProviderCard
+                provider={item}
+                onPress={handleProviderPress}
+              />
+            )}
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={{ paddingLeft: 16 }}
@@ -150,11 +215,24 @@ const HomeClient = () => {
         </Section>
 
         <Section>
-          <CustomCarousel
-            title="Todos os Profissionais"
-            data={apiData.providers}
-            height={290}
-            renderItem={(item) => <ProviderCarouselCard provider={item} onPress={handleProviderPress} />}
+          <SectionTitle>🚀 Anúncios Mais Populares</SectionTitle>
+          <FlatList
+            data={mostPopularProviders}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <ProviderCarouselCard
+                provider={item}
+                onPress={handleProviderPress}
+                cardWidth={CARD_WIDTH}
+              />
+            )}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            snapToInterval={CARD_WIDTH + 8}
+            decelerationRate="fast"
+            contentContainerStyle={{
+              paddingHorizontal: HORIZONTAL_PADDING,
+            }}
           />
         </Section>
 

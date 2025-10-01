@@ -3,14 +3,16 @@ const DBSOURCE = "db.sqlite";
 
 const db = new sqlite3.Database(DBSOURCE, (err) => {
   if (err) {
-    console.error(err.message);
+    console.error("Erro ao conectar ao banco:", err.message);
     throw err;
   }
-  console.log("Conectado ao banco de dados SQLite.");
+});
 
-  // --- CRIAÇÃO DA TABELA DE CLIENTES (CLIENTS) ---
-  db.run(
-    `CREATE TABLE IF NOT EXISTS clients (
+const initDb = () => {
+  return new Promise((resolve, reject) => {
+    db.serialize(() => {
+      db.run(
+        `CREATE TABLE IF NOT EXISTS clients (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
             cpf TEXT NOT NULL UNIQUE,
@@ -25,20 +27,16 @@ const db = new sqlite3.Database(DBSOURCE, (err) => {
             cidade TEXT,
             uf TEXT,
             comoFicouSabendo TEXT,
-            userType TEXT DEFAULT 'client'
+            role TEXT NOT NULL DEFAULT 'client'
         )`,
-    (err) => {
-      if (err) {
-        console.error("Erro criando tabela clients:", err.message);
-      } else {
-        console.log("Tabela 'clients' verificada/criada.");
-      }
-    }
-  );
+        (err) => {
+          if (err) return reject(err);
+          console.log("Tabela 'clients' verificada/criada.");
+        }
+      );
 
-  // --- CRIAÇÃO DA TABELA DE PRESTADORES (PROVIDERS) ---
-  db.run(
-    `CREATE TABLE IF NOT EXISTS providers (
+      db.run(
+        `CREATE TABLE IF NOT EXISTS providers (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
             cnpj TEXT NOT NULL UNIQUE,
@@ -53,33 +51,53 @@ const db = new sqlite3.Database(DBSOURCE, (err) => {
             bairro TEXT,
             cidade TEXT,
             uf TEXT,
-            userType TEXT DEFAULT 'provider'
+            role TEXT NOT NULL DEFAULT 'provider'
         )`,
-    (err) => {
-      if (err) {
-        console.error("Erro criando tabela providers:", err.message);
-      } else {
-        console.log("Tabela 'providers' verificada/criada.");
-      }
-    }
-  );
+        (err) => {
+          if (err) return reject(err);
+          console.log("Tabela 'providers' verificada/criada.");
+        }
+      );
 
-  // --- CRIAÇÃO DA TABELA DE ANÚNCIOS (ADS) ---
-  db.run(
-    `CREATE TABLE IF NOT EXISTS ads (
+      db.run(
+        `CREATE TABLE IF NOT EXISTS ads (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             title TEXT NOT NULL,
             description TEXT NOT NULL,
             price REAL,
             category TEXT NOT NULL,
             providerId INTEGER NOT NULL,
+            image TEXT,
+            rating REAL DEFAULT 0,
+            reviews INTEGER DEFAULT 0,
+            isVerified INTEGER DEFAULT 0,
+            isPromoted INTEGER DEFAULT 0,
+            discount INTEGER DEFAULT 0,
             FOREIGN KEY (providerId) REFERENCES providers (id)
         )`,
-    (err) => {
-      if (err) console.error("Erro criando tabela ads:", err.message);
-      else console.log("Tabela ads verificada/criada");
-    }
-  );
-});
+        (err) => {
+          if (err) return reject(err);
 
-module.exports = db;
+          console.log("Tabela 'ads' verificada/criada.");
+        }
+      );
+
+      db.run(
+        `CREATE TABLE IF NOT EXISTS admins (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            email TEXT NOT NULL UNIQUE,
+            password TEXT NOT NULL,
+            role TEXT NOT NULL DEFAULT 'admin'
+        )`,
+        (err) => {
+          if (err) return reject(err);
+          console.log("Tabela 'admins' verificada/criada.");
+          resolve();
+        }
+      );
+    });
+  });
+};
+
+module.exports = { db, initDb };
