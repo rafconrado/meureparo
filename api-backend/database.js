@@ -31,7 +31,6 @@ const initDb = () => {
         )`,
         (err) => {
           if (err) return reject(err);
-          console.log("Tabela 'clients' verificada/criada.");
         }
       );
 
@@ -55,7 +54,6 @@ const initDb = () => {
         )`,
         (err) => {
           if (err) return reject(err);
-          console.log("Tabela 'providers' verificada/criada.");
         }
       );
 
@@ -77,8 +75,6 @@ const initDb = () => {
         )`,
         (err) => {
           if (err) return reject(err);
-
-          console.log("Tabela 'ads' verificada/criada.");
         }
       );
 
@@ -92,7 +88,6 @@ const initDb = () => {
         )`,
         (err) => {
           if (err) return reject(err);
-          console.log("Tabela 'admins' verificada/criada.");
           resolve();
         }
       );

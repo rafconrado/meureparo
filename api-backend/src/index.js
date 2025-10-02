@@ -43,10 +43,7 @@ const startServer = async () => {
   try {
     await initDb();
 
-    app.listen(PORT, () => {
-      console.log(`Servidor rodando na porta ${PORT}`);
-      console.log(`Acesse a documentação em: http://localhost:${PORT}/docs`);
-    });
+    app.listen(PORT, () => {});
   } catch (error) {
     console.error("Falha ao inicializar o banco de dados:", error);
     process.exit(1);
