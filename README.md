@@ -110,8 +110,8 @@ O backend atingiu um estado estável para as funcionalidades de autenticação e
 * [x] **Testes:** Validação de toda a API com Postman, incluindo automação de token.
 * [x] **Documentação:** Criação de uma página HTML detalhando todos os endpoints.
 * [ ] **Frontend:** Criar o `adService.ts` para consumir os endpoints de anúncios.
-* [ ] **Frontend:** Desenvolver a tela para o Prestador criar e gerenciar seus anúncios.
-* [ ] **Frontend:** Desenvolver a tela para o Cliente visualizar a lista de anúncios disponíveis.
+* [x] **Frontend:** Desenvolver a tela para o Prestador criar e gerenciar seus anúncios.
+* [x] **Frontend:** Desenvolver a tela para o Cliente visualizar a lista de anúncios disponíveis.
 * [ ] **Frontend:** Implementar a funcionalidade de "Atualizar Perfil" nas telas de usuário.
 * [ ] **Backend & Frontend:** Iniciar o desenvolvimento do sistema de Agendamentos.
 
