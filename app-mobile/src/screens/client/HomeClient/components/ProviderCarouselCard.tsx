@@ -1,10 +1,8 @@
 import React from "react";
 import { View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { Provider } from "../../../../types";
 import {
   ServiceCard,
-  ServiceImage,
   ServiceTitle,
   ProviderCategory,
   RatingContainer,
@@ -25,7 +23,6 @@ export const ProviderCarouselCard = React.memo(
   ({ provider, onPress, cardWidth }: ProviderCarouselCardProps) => {
     return (
       <ServiceCard style={{ width: cardWidth, marginRight: 8 }}>
-        {/* O campo 'isVerified' não vem da API, então este ícone não aparecerá por enquanto */}
         {provider.isVerified && (
           <View
             style={{
@@ -43,7 +40,6 @@ export const ProviderCarouselCard = React.memo(
           </View>
         )}
 
-        {/* Como a API não envia 'image', mostramos um placeholder padrão */}
         <View
           style={{
             width: "100%",
@@ -58,27 +54,21 @@ export const ProviderCarouselCard = React.memo(
           <Ionicons name="image-outline" size={40} color="#cccccc" />
         </View>
 
-        {/* Usando 'providerName' que vem da API, em vez de 'name' */}
         <ServiceTitle numberOfLines={1}>{provider.providerName}</ServiceTitle>
-
-        {/* 'category' já vem corretamente */}
         <ProviderCategory numberOfLines={1}>
           {provider.category}
         </ProviderCategory>
 
-        {/* Só mostra a nota se a API enviar 'rating' e 'reviews' */}
-        {provider.rating && provider.reviews && (
+        {provider.rating > 0 && provider.reviews > 0 && (
           <RatingContainer style={{ marginTop: 6, marginBottom: 4 }}>
             <Ionicons name="star" size={16} color="#FFB800" />
             <RatingText>
-              {provider.rating} • {provider.reviews} avaliações
+              {provider.rating.toFixed(1)} • {provider.reviews} avaliações
             </RatingText>
           </RatingContainer>
         )}
 
         <ServiceFromText>A partir de</ServiceFromText>
-
-        {/* Adicionamos "R$" ao preço que vem como número */}
         <ServicePrice>R$ {provider.price}</ServicePrice>
 
         <ServiceButton activeOpacity={0.8} onPress={() => onPress(provider)}>

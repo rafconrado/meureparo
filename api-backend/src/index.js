@@ -8,6 +8,7 @@ const { initDb } = require("../database.js");
 const authRoutes = require("./routes/auth.js");
 const adRoutes = require("./routes/adRoutes.js");
 const userRoutes = require("./routes/userRoutes.js");
+const categoryRoutes = require("./routes/categoryRoutes.js");
 
 const app = express();
 
@@ -35,6 +36,7 @@ app.get("/docs", (req, res) => {
 app.use("/api-backend/auth", authRoutes);
 app.use("/api-backend/ads", adRoutes);
 app.use("/api-backend/users", userRoutes);
+app.use("/api-backend/categories", categoryRoutes);
 
 // --- Inicialização do Servidor ---
 const PORT = process.env.PORT || 3000;

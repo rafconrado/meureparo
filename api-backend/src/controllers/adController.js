@@ -1,6 +1,5 @@
 const Ad = require("../models/Ad");
 
-// Cria um novo anúncio
 exports.createAd = async (req, res) => {
   const providerId = req.user.id;
   const role = req.user.role;

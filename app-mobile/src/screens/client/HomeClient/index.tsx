@@ -22,12 +22,15 @@ import {
   SearchButton,
   LoadingContainer,
 } from "./style";
+
 import type { Provider, Category, Promo, Partner } from "../../../types";
+
 import api from "../../../services/api";
+
 import {
-  categoriesData,
   promosData,
   partnersData,
+  categoriesData,
 } from "../../../data/mockData";
 import { CategoryCardItem } from "./components/CategoryCardItem";
 import { FeaturedProviderCard } from "./components/FeaturedProviderCard";
@@ -37,7 +40,7 @@ import { PartnerItem } from "./components/PartnerItem";
 
 const { width: screenWidth } = Dimensions.get("window");
 const CARD_WIDTH = screenWidth * 0.8;
-const HORIZONTAL_PADDING = (screenWidth - CARD_WIDTH) / 2 - 4; 
+const HORIZONTAL_PADDING = (screenWidth - CARD_WIDTH) / 2 - 4;
 
 const HomeClient = () => {
   const { user } = useAuth();
@@ -58,11 +61,13 @@ const HomeClient = () => {
     setError(null);
     setIsLoading(true);
     try {
-      const response = await api.get("/ads");
-      console.log("DADOS DO PRIMEIRO ANÚNCIO:", response.data[0]);
+      const [adsResponse, categoriesResponse] = await Promise.all([
+        api.get("/ads"),
+        api.get("/categories"),
+      ]);
       setApiData({
-        providers: response.data,
-        categories: categoriesData,
+        providers: adsResponse.data,
+        categories: categoriesResponse.data,
         promos: promosData,
         partners: partnersData,
       });
@@ -92,7 +97,7 @@ const HomeClient = () => {
   const mostPopularProviders = useMemo(
     () =>
       [...apiData.providers]
-        .sort((a, b) => (b.reviews || 0) - (a.reviews || 0)) 
+        .sort((a, b) => (b.reviews || 0) - (a.reviews || 0))
         .slice(0, 5),
     [apiData.providers]
   );
@@ -157,7 +162,6 @@ const HomeClient = () => {
       >
         <Title>Olá, {user?.name || "Usuário"} 👋</Title>
         <Subtitle>Encontre os melhores profissionais perto de você</Subtitle>
-
         <SearchContainer>
           <SearchInput
             placeholder="Buscar serviços ou profissionais..."
@@ -169,7 +173,6 @@ const HomeClient = () => {
             <Ionicons name="search" size={22} color="#FFF" />
           </SearchButton>
         </SearchContainer>
-
         <Section>
           <SectionTitle>Categorias Populares</SectionTitle>
           <FlatList
@@ -183,10 +186,8 @@ const HomeClient = () => {
             contentContainerStyle={{ paddingLeft: 16 }}
           />
         </Section>
-
         <Section>
           <SectionTitle>🔥 Ofertas Especiais</SectionTitle>
-          {/* Note: O CustomCarousel pode não existir. Se não, troque por uma FlatList similar às outras. */}
           <FlatList
             data={apiData.promos}
             keyExtractor={(item) => item.id}
@@ -196,7 +197,6 @@ const HomeClient = () => {
             contentContainerStyle={{ paddingLeft: 16 }}
           />
         </Section>
-
         <Section>
           <SectionTitle>⭐ Profissionais em Destaque</SectionTitle>
           <FlatList
@@ -213,7 +213,6 @@ const HomeClient = () => {
             contentContainerStyle={{ paddingLeft: 16 }}
           />
         </Section>
-
         <Section>
           <SectionTitle>🚀 Anúncios Mais Populares</SectionTitle>
           <FlatList
@@ -235,7 +234,6 @@ const HomeClient = () => {
             }}
           />
         </Section>
-
         <Section>
           <SectionTitle>Parceiros de confiança</SectionTitle>
           <FlatList

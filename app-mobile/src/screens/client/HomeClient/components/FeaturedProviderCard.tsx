@@ -42,11 +42,17 @@ export const FeaturedProviderCard = React.memo(({ provider, onPress }: FeaturedP
                     )}
                 </View>
                 <ProviderCategory>{provider.category}</ProviderCategory>
-                <RatingContainer>
-                    <Ionicons name="star" size={14} color="#FFB800" />
-                    <RatingText>{provider.rating}</RatingText>
-                    <RatingText style={{ color: "#999" }}>({provider.reviews})</RatingText>
-                </RatingContainer>
+                
+                {provider.rating > 0 && (
+                    <RatingContainer>
+                        <Ionicons name="star" size={14} color="#FFB800" />
+                        <RatingText>{provider.rating.toFixed(1)}</RatingText>
+                        <RatingText style={{ color: "#999" }}>
+                            ({provider.reviews || 0} avaliações)
+                        </RatingText>
+                    </RatingContainer>
+                )}
+
                 <ProviderPrice>{provider.price}</ProviderPrice>
             </ProviderInfo>
         </ProviderCard>

@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+
 const adController = require("../controllers/adController");
 
 // Agora importamos também o checkRole para verificar a permissão
