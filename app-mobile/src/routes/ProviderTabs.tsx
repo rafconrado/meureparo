@@ -1,7 +1,8 @@
 import React from "react";
-import { View } from "react-native";
+import { View, Dimensions, Platform, StyleSheet } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { ProviderHeader } from "../components/ProviderHeader";
 
@@ -13,7 +14,19 @@ import ProfileScreen from "../screens/provider/ProfileScreen";
 
 const Tab = createBottomTabNavigator();
 
+const { height } = Dimensions.get("window");
+
+const COLORS = {
+  active: "#57B2C5",
+  inactive: "#9CA3AF",
+  background: "#FFFFFF",
+  iconBg: "#57B2C5",
+  iconBgInactive: "#F3F4F6",
+};
+
 export function ProviderTabs() {
+  const insets = useSafeAreaInsets();
+
   return (
     <View style={{ flex: 1 }}>
       <ProviderHeader />
@@ -23,27 +36,80 @@ export function ProviderTabs() {
           screenOptions={({ route }) => ({
             headerShown: false,
             tabBarShowLabel: true,
-            tabBarActiveTintColor: "#57B2C5",
-            tabBarInactiveTintColor: "#0C0C0C",
+
+            tabBarActiveTintColor: COLORS.active,
+            tabBarInactiveTintColor: COLORS.inactive,
+
             tabBarStyle: {
-              backgroundColor: "#FFF",
+              backgroundColor: COLORS.background,
               borderTopWidth: 1,
-              borderTopColor: "#D9D9D9",
-              height: 60,
-              paddingBottom: 5,
+              borderTopColor: "#E5E7EB",
+              height:
+                Platform.OS === "ios"
+                  ? height * 0.085 + insets.bottom
+                  : height * 0.075,
+              paddingTop: 8,
+              paddingBottom: insets.bottom > 0 ? insets.bottom / 2 : 8,
+              paddingHorizontal: 8,
+              elevation: 8,
+              shadowColor: "#000",
+              shadowOffset: { width: 0, height: -2 },
+              shadowOpacity: 0.1,
+              shadowRadius: 3,
             },
-            tabBarIcon: ({ color, size }) => {
-              let iconName: keyof typeof Ionicons.glyphMap = "home-outline";
 
-              if (route.name === "Início") iconName = "home-outline";
-              if (route.name === "Pedidos") iconName = "file-tray-outline";
-              if (route.name === "Mensagens")
-                iconName = "chatbubble-ellipses-outline";
-              if (route.name === "Anúncios") iconName = "megaphone-outline";
-              if (route.name === "Financeiro") iconName = "cash-outline";
-              if (route.name === "Perfil") iconName = "person-outline";
+            tabBarLabelStyle: {
+              fontSize: 11,
+              fontWeight: "600",
+              marginTop: 4,
+            },
 
-              return <Ionicons name={iconName} size={size} color={color} />;
+            tabBarItemStyle: {
+              paddingVertical: 4,
+            },
+
+            tabBarIcon: ({ color, focused }) => {
+              let iconName: keyof typeof Ionicons.glyphMap;
+
+              switch (route.name) {
+                case "Início":
+                  iconName = "home";
+                  break;
+                case "Mensagens":
+                  iconName = "chatbubble-ellipses";
+                  break;
+                case "Anúncios":
+                  iconName = "megaphone";
+                  break;
+                case "Financeiro":
+                  iconName = "cash";
+                  break;
+                case "Perfil":
+                  iconName = "person";
+                  break;
+                default:
+                  iconName = "alert-circle";
+                  break;
+              }
+
+              return (
+                <View
+                  style={[
+                    styles.iconContainer,
+                    {
+                      backgroundColor: focused
+                        ? COLORS.iconBg
+                        : COLORS.iconBgInactive,
+                    },
+                  ]}
+                >
+                  <Ionicons
+                    name={iconName}
+                    size={22}
+                    color={focused ? "#FFFFFF" : COLORS.inactive}
+                  />
+                </View>
+              );
             },
           })}
         >
@@ -57,3 +123,13 @@ export function ProviderTabs() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  iconContainer: {
+    width: 48,
+    height: 32,
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});

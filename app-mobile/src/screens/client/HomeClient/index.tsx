@@ -37,7 +37,7 @@ import { PartnerItem } from "./components/PartnerItem";
 
 const { width: screenWidth } = Dimensions.get("window");
 const CARD_WIDTH = screenWidth * 0.8;
-const HORIZONTAL_PADDING = (screenWidth - CARD_WIDTH) / 2 - 4; // Ajuste fino para a margem
+const HORIZONTAL_PADDING = (screenWidth - CARD_WIDTH) / 2 - 4; 
 
 const HomeClient = () => {
   const { user } = useAuth();
@@ -92,7 +92,7 @@ const HomeClient = () => {
   const mostPopularProviders = useMemo(
     () =>
       [...apiData.providers]
-        .sort((a, b) => (b.reviews || 0) - (a.reviews || 0)) // Usar b.reviewCount ou o campo correto
+        .sort((a, b) => (b.reviews || 0) - (a.reviews || 0)) 
         .slice(0, 5),
     [apiData.providers]
   );

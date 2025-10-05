@@ -161,7 +161,7 @@ const RegisterClientStep2 = () => {
       Alert.alert("Sucesso!", "Cadastro finalizado com sucesso.", [
         {
           text: "OK",
-          onPress: () => navigation.navigate("HomeClient" as never), // Idealmente, tipar a navegação
+          onPress: () => navigation.navigate("HomeClient" as never),
         },
       ]);
     } catch (error: any) {
@@ -184,7 +184,7 @@ const RegisterClientStep2 = () => {
 
       <Header>
         <HeaderContent>
-          <Logo source={require("../../../assets/images/provider.png")} />
+          <Logo source={require("../../../assets/images/logo.png")} />
           <HeaderTitle>
             Só mais alguns dados para concluir seu cadastro...
           </HeaderTitle>

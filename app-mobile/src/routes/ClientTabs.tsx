@@ -1,7 +1,8 @@
 import React from "react";
-import { View } from "react-native";
+import { Dimensions, Platform, StyleSheet, View } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { ClientHeader } from "../components/ClientHeader";
 
@@ -14,47 +15,111 @@ import InvoicesClients from "../screens/client/InvoicesClients";
 
 const Tab = createBottomTabNavigator();
 
+const { height } = Dimensions.get("window");
+
+const COLORS = {
+  active: "#000000",
+  inactive: "#9CA3AF",
+  background: "#FFFFFF",
+  iconBg: "#000000",
+  iconBgInactive: "#F3F4F6",
+};
+
 export function ClientTabs() {
+  const insets = useSafeAreaInsets();
+
   return (
-    <View style={{ flex: 1 }}>
-      <ClientHeader />
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        header: () => <ClientHeader />,
+        headerShown: true,
 
-      {/* Tabs */}
-      <View style={{ flex: 1 }}>
-        <Tab.Navigator
-          screenOptions={({ route }) => ({
-            headerShown: false,
-            tabBarShowLabel: true,
-            tabBarActiveTintColor: "#57B2C5",
-            tabBarInactiveTintColor: "#0C0C0C",
-            tabBarStyle: {
-              backgroundColor: "#FFF",
-              borderTopWidth: 1,
-              borderTopColor: "#D9D9D9",
-              height: 60,
-              paddingBottom: 5,
-            },
-            tabBarIcon: ({ color, size }) => {
-              let iconName: keyof typeof Ionicons.glyphMap = "home-outline";
+        tabBarActiveTintColor: COLORS.active,
+        tabBarInactiveTintColor: COLORS.inactive,
 
-              if (route.name === "Início") iconName = "home-outline";
-              if (route.name === "Mensagens")
-                iconName = "chatbubble-ellipses-outline";
-              if (route.name === "Histórico") iconName = "time-outline";
-              if (route.name === "Perfil") iconName = "person-outline";
-              if (route.name === "Pedidos") iconName = "file-tray-outline";
+        tabBarStyle: {
+          backgroundColor: COLORS.background,
+          borderTopWidth: 1,
+          borderTopColor: "#E5E7EB",
+          height: Platform.OS === "ios" ? height * 0.085 + insets.bottom : height * 0.075,
+          paddingTop: 8,
+          paddingBottom: insets.bottom > 0 ? insets.bottom / 2 : 8,
+          paddingHorizontal: 8,
+          elevation: 8,
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: -2 },
+          shadowOpacity: 0.1,
+          shadowRadius: 3,
+        },
 
-              return <Ionicons name={iconName} size={size} color={color} />;
-            },
-          })}
-        >
-          <Tab.Screen name="Início" component={HomeClientScreen} />
-          <Tab.Screen name="Pedidos" component={InvoicesClients} />
-          <Tab.Screen name="Mensagens" component={MessagesScreen} />
-          <Tab.Screen name="Histórico" component={HistoryScreen} />
-          <Tab.Screen name="Perfil" component={ProfileScreen} />
-        </Tab.Navigator>
-      </View>
-    </View>
+        tabBarLabelStyle: {
+          fontSize: 11,
+          fontWeight: "600",
+          marginTop: 4,
+        },
+
+        tabBarItemStyle: {
+          paddingVertical: 4,
+        },
+
+        tabBarIcon: ({ color, focused }) => {
+          let iconName: keyof typeof Ionicons.glyphMap;
+
+          switch (route.name) {
+            case "Início":
+              iconName = "home";
+              break;
+            case "Pedidos":
+              iconName = "file-tray-full";
+              break;
+            case "Mensagens":
+              iconName = "chatbubble-ellipses";
+              break;
+            case "Histórico":
+              iconName = "time";
+              break;
+            case "Perfil":
+              iconName = "person";
+              break;
+            default:
+              iconName = "alert-circle";
+              break;
+          }
+
+          return (
+            <View
+              style={[
+                styles.iconContainer,
+                {
+                  backgroundColor: focused ? COLORS.iconBg : COLORS.iconBgInactive,
+                },
+              ]}
+            >
+              <Ionicons
+                name={iconName}
+                size={22}
+                color={focused ? "#FFFFFF" : COLORS.inactive}
+              />
+            </View>
+          );
+        },
+      })}
+    >
+      <Tab.Screen name="Início" component={HomeClientScreen} />
+      <Tab.Screen name="Pedidos" component={InvoicesClients} />
+      <Tab.Screen name="Mensagens" component={MessagesScreen} />
+      <Tab.Screen name="Histórico" component={HistoryScreen} />
+      <Tab.Screen name="Perfil" component={ProfileScreen} />
+    </Tab.Navigator>
   );
 }
+
+const styles = StyleSheet.create({
+  iconContainer: {
+    width: 48,
+    height: 32,
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});

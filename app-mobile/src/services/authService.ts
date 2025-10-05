@@ -62,7 +62,11 @@ export const loginClient = async (
   password: string
 ): Promise<ApiResponse> => {
   try {
-    const response = await api.post("/auth/login/client", { email, password });
+    const response = await api.post("/auth/login", {
+      email,
+      password,
+      role: "client",
+    });
     return response.data;
   } catch (error) {
     return handleApiError(error, "E-mail ou senha inválidos.");
@@ -74,9 +78,10 @@ export const loginProvider = async (
   password: string
 ): Promise<ApiResponse> => {
   try {
-    const response = await api.post("/auth/login/provider", {
+    const response = await api.post("/auth/login", {
       email,
       password,
+      role: "provider",
     });
     return response.data;
   } catch (error) {

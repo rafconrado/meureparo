@@ -1,9 +1,9 @@
 import styled from "styled-components/native";
 import { Feather } from "@expo/vector-icons";
 import { Dimensions } from "react-native";
-import CurrencyInput from 'react-native-currency-input';
+import CurrencyInput from "react-native-currency-input";
 
-const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
+const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 
 // Estilos originais mantidos
 export const Container = styled.View`
@@ -116,14 +116,14 @@ export const AdFooter = styled.View`
   padding-top: 15px;
 `;
 
-export const ActionButton = styled.TouchableOpacity<{ edit?: boolean; delete?: boolean }>`
+export const ActionButton = styled.TouchableOpacity<{
+  edit?: boolean;
+  delete?: boolean;
+}>`
   flex-direction: row;
   align-items: center;
-  background-color: ${props =>
-    props.edit ? '#ffc107' :
-      props.delete ? '#dc3545' :
-        '#57b2c5'
-  };
+  background-color: ${(props) =>
+    props.edit ? "#ffc107" : props.delete ? "#dc3545" : "#57b2c5"};
   padding: 8px 12px;
   border-radius: 8px;
   gap: 5px;
@@ -192,29 +192,24 @@ export const FABIcon = styled(Feather)``;
 export const ModalOverlay = styled.View`
   flex: 1;
   background-color: rgba(0, 0, 0, 0.6);
-  justify-content: ${screenHeight > 700 ? 'center' : 'flex-end'};
+  justify-content: center;
+  align-items: center;
 `;
 
 export const ModalContainer = styled.View`
+  width: 92%;
+  max-width: 480px;
+  max-height: 70%;
   flex: 1;
-  justify-content: ${screenHeight > 700 ? 'center' : 'flex-end'};
-  padding: ${screenHeight > 700 ? '20px' : '0px'};
-  max-height: ${screenHeight > 700 ? '90%' : '95%'};
 `;
 
 export const ModalContent = styled.View`
+  flex-grow: 1;
   background-color: #ffffff;
-  border-top-left-radius: 25px;
-  border-top-right-radius: 25px;
-  ${screenHeight > 700 ? `
-    border-radius: 25px;
-    max-width: 500px;
-    align-self: center;
-    width: 100%;
-  ` : ''}
-  max-height: 70%;
+  border-radius: 25px;
+  overflow: hidden;
   shadow-color: #000;
-  shadow-offset: 0px -5px;
+  shadow-offset: 0px 5px;
   shadow-opacity: 0.15;
   shadow-radius: 15px;
   elevation: 20;
@@ -243,10 +238,11 @@ export const CloseButton = styled.TouchableOpacity<{ disabled?: boolean }>`
   background-color: #f8f9fa;
   justify-content: center;
   align-items: center;
-  opacity: ${props => props.disabled ? 0.5 : 1};
+  opacity: ${(props) => (props.disabled ? 0.5 : 1)};
 `;
 
 export const ModalBody = styled.View`
+  flex: 1;
   padding: 20px 25px;
 `;
 
@@ -264,8 +260,8 @@ export const InputLabel = styled.Text`
 export const InputContainer = styled.View<{ error?: boolean }>`
   flex-direction: row;
   align-items: center;
-  background-color: ${props => props.error ? '#fff5f5' : '#f8f9fa'};
-  border: 2px solid ${props => props.error ? '#dc3545' : '#e9ecef'};
+  background-color: ${(props) => (props.error ? "#fff5f5" : "#f8f9fa")};
+  border: 2px solid ${(props) => (props.error ? "#dc3545" : "#e9ecef")};
   border-radius: 15px;
   padding: 0 15px;
   min-height: 55px;
@@ -293,9 +289,9 @@ export const StyledCurrencyInput = styled(CurrencyInput).attrs({
 
 export const TextArea = styled.TextInput.attrs({
   placeholderTextColor: "#6c757d",
-}) <{ error?: boolean }>`
-  background-color: ${props => props.error ? '#fff5f5' : '#f8f9fa'};
-  border: 2px solid ${props => props.error ? '#dc3545' : '#e9ecef'};
+})<{ error?: boolean }>`
+  background-color: ${(props) => (props.error ? "#fff5f5" : "#f8f9fa")};
+  border: 2px solid ${(props) => (props.error ? "#dc3545" : "#e9ecef")};
   border-radius: 15px;
   padding: 15px;
   min-height: 120px;
@@ -308,8 +304,8 @@ export const CategoryPicker = styled.View<{ error?: boolean }>`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  background-color: ${props => props.error ? '#fff5f5' : '#f8f9fa'};
-  border: 2px solid ${props => props.error ? '#dc3545' : '#e9ecef'};
+  background-color: ${(props) => (props.error ? "#fff5f5" : "#f8f9fa")};
+  border: 2px solid ${(props) => (props.error ? "#dc3545" : "#e9ecef")};
   border-radius: 15px;
   padding: 15px;
   min-height: 55px;
@@ -317,7 +313,7 @@ export const CategoryPicker = styled.View<{ error?: boolean }>`
 
 export const CategoryPickerText = styled.Text<{ selected?: boolean }>`
   flex: 1;
-  color: ${props => props.selected ? '#2c2c2c' : '#6c757d'};
+  color: ${(props) => (props.selected ? "#2c2c2c" : "#6c757d")};
   font-size: 16px;
   font-weight: 500;
   margin-left: 12px;
@@ -352,7 +348,7 @@ export const SaveButton = styled.TouchableOpacity<{ disabled?: boolean }>`
   shadow-opacity: 0.25;
   shadow-radius: 8px;
   elevation: 6;
-  opacity: ${props => props.disabled ? 0.7 : 1};
+  opacity: ${(props) => (props.disabled ? 0.7 : 1)};
 `;
 
 export const SaveButtonText = styled.Text`
@@ -371,7 +367,7 @@ export const CancelButton = styled.TouchableOpacity<{ disabled?: boolean }>`
   align-items: center;
   justify-content: center;
   min-height: 50px;
-  opacity: ${props => props.disabled ? 0.5 : 1};
+  opacity: ${(props) => (props.disabled ? 0.5 : 1)};
 `;
 
 export const CancelButtonText = styled.Text`
