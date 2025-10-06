@@ -1,5 +1,5 @@
 import React from "react";
-import { Dimensions, Platform, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -14,8 +14,6 @@ import HistoryScreen from "../screens/client/HistoryScreen";
 import InvoicesClients from "../screens/client/InvoicesClients";
 
 const Tab = createBottomTabNavigator();
-
-const { height } = Dimensions.get("window");
 
 const COLORS = {
   active: "#000000",
@@ -33,34 +31,18 @@ export function ClientTabs() {
       screenOptions={({ route }) => ({
         header: () => <ClientHeader />,
         headerShown: true,
-
         tabBarActiveTintColor: COLORS.active,
         tabBarInactiveTintColor: COLORS.inactive,
+        tabBarStyle: [
+          styles.tabBar,
+          {
+            height: 65 + insets.bottom,
+            paddingBottom: insets.bottom > 0 ? insets.bottom : 10,
+          },
+        ],
 
-        tabBarStyle: {
-          backgroundColor: COLORS.background,
-          borderTopWidth: 1,
-          borderTopColor: "#E5E7EB",
-          height: Platform.OS === "ios" ? height * 0.085 + insets.bottom : height * 0.075,
-          paddingTop: 8,
-          paddingBottom: insets.bottom > 0 ? insets.bottom / 2 : 8,
-          paddingHorizontal: 8,
-          elevation: 8,
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: -2 },
-          shadowOpacity: 0.1,
-          shadowRadius: 3,
-        },
-
-        tabBarLabelStyle: {
-          fontSize: 11,
-          fontWeight: "600",
-          marginTop: 4,
-        },
-
-        tabBarItemStyle: {
-          paddingVertical: 4,
-        },
+        tabBarLabelStyle: styles.tabBarLabel,
+        tabBarItemStyle: styles.tabBarItem,
 
         tabBarIcon: ({ color, focused }) => {
           let iconName: keyof typeof Ionicons.glyphMap;
@@ -91,7 +73,9 @@ export function ClientTabs() {
               style={[
                 styles.iconContainer,
                 {
-                  backgroundColor: focused ? COLORS.iconBg : COLORS.iconBgInactive,
+                  backgroundColor: focused
+                    ? COLORS.iconBg
+                    : COLORS.iconBgInactive,
                 },
               ]}
             >
@@ -115,6 +99,29 @@ export function ClientTabs() {
 }
 
 const styles = StyleSheet.create({
+  tabBar: {
+    backgroundColor: COLORS.background,
+    borderTopWidth: 1,
+    borderTopColor: "#E5E7EB",
+    paddingTop: 8,
+    paddingHorizontal: 8,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: -2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 8,
+  },
+  tabBarLabel: {
+    fontSize: 11,
+    fontWeight: "600",
+    marginTop: 4,
+  },
+  tabBarItem: {
+    paddingVertical: 4,
+  },
   iconContainer: {
     width: 48,
     height: 32,
