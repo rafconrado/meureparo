@@ -60,23 +60,23 @@ export const SearchButton = styled.TouchableOpacity`
 `;
 
 // Categorias
-export const CategoryCard = styled.TouchableOpacity<{ color: string }>`
+export const CategoryCard = styled.TouchableOpacity`
   align-items: center;
-  margin-left: 16px;
+  margin-right: 12px;
   width: 85px;
 `;
 
-export const CategoryIcon = styled.View<{ color: string }>`
+export const CategoryIcon = styled.View`
   width: 60px;
   height: 60px;
   border-radius: 16px;
-  background-color: ${({ color }) => color};
+  background-color: #f3f4f6;
   justify-content: center;
   align-items: center;
   margin-bottom: 8px;
-  elevation: 3;
-  shadow-color: ${({ color }) => color};
-  shadow-opacity: 0.3;
+  elevation: 2;
+  shadow-color: #000;
+  shadow-opacity: 0.05;
   shadow-radius: 4px;
 `;
 
@@ -89,8 +89,8 @@ export const CategoryName = styled.Text`
 
 // Cards de Promoção
 export const PromoCard = styled(LinearGradient)`
-  width: 92%;
-  margin-left: 12px;
+  width: 300px;
+  margin-right: 16px;
   padding: 20px;
   border-radius: 20px;
   elevation: 4;
@@ -105,6 +105,11 @@ export const PromoContent = styled.View`
   align-items: center;
 `;
 
+export const PromoInfo = styled.View`
+  flex: 1;
+  margin-right: 12px;
+`;
+
 export const PromoTitle = styled.Text`
   font-family: "Inter-Bold";
   font-size: 18px;
@@ -116,6 +121,13 @@ export const PromoDescription = styled.Text`
   font-family: "Inter-Regular";
   font-size: 14px;
   color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 8px;
+`;
+
+export const PromoMeta = styled.Text`
+  font-family: "Inter-Regular";
+  font-size: 12px;
+  color: #e0e0e0;
 `;
 
 export const PromoDiscount = styled.Text`
@@ -189,11 +201,11 @@ export const ProviderPrice = styled.Text`
   margin-top: 8px;
 `;
 
-export const ProviderBadge = styled.View`
+export const ProviderBadge = styled.View<{ backgroundColor?: string }>`
   position: absolute;
   top: 10px;
   right: 10px;
-  background-color: #ff8724;
+  background-color: ${({ backgroundColor }) => backgroundColor || "#ff8724"};
   padding: 4px 8px;
   border-radius: 8px;
   z-index: 1;
@@ -308,4 +320,18 @@ export const PartnerName = styled.Text`
   font-size: 14px;
   text-align: center;
   color: #0c0c0c;
+`;
+
+// ProviderBadge
+export const ProviderNameContainer = styled.View`
+  flex-direction: row;
+  align-items: center;
+  gap: 4px; /* 'gap' é uma forma moderna de dar espaçamento */
+`;
+
+// NOVO: Um estilo específico para o texto cinza de "avaliações"
+export const RatingReviewsText = styled(RatingText)`
+  /* Herda o estilo de RatingText */
+  color: #999;
+  margin-left: 4px; /* Pequeno espaço à esquerda */
 `;

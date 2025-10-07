@@ -65,6 +65,7 @@ const HomeClient = () => {
         api.get("/ads"),
         api.get("/categories"),
       ]);
+
       setApiData({
         providers: adsResponse.data,
         categories: categoriesResponse.data,
@@ -108,7 +109,10 @@ const HomeClient = () => {
 
   const handleCategoryPress = useCallback(
     (category: Category) => {
-      navigation.navigate("CategoryScreen", { categoryId: category.id });
+      navigation.navigate("CategoryScreen", {
+        categoryId: category.id,
+        categoryName: category.name,
+      });
     },
     [navigation]
   );
@@ -177,13 +181,13 @@ const HomeClient = () => {
           <SectionTitle>Categorias Populares</SectionTitle>
           <FlatList
             data={apiData.categories}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
               <CategoryCardItem item={item} onPress={handleCategoryPress} />
             )}
             horizontal
             showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ paddingLeft: 16 }}
+            contentContainerStyle={{ paddingHorizontal: 12 }}
           />
         </Section>
         <Section>

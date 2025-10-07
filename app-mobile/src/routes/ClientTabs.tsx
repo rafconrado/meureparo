@@ -7,7 +7,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ClientHeader } from "../components/ClientHeader";
 
 // Telas
-import HomeClientScreen from "../screens/client/HomeClient";
+import HomeClient from "../screens/client/HomeClient";
 import ProfileScreen from "../screens/client/ProfileScreen";
 import MessagesScreen from "../screens/client/MessagesScreen";
 import HistoryScreen from "../screens/client/HistoryScreen";
@@ -89,7 +89,7 @@ export function ClientTabs() {
         },
       })}
     >
-      <Tab.Screen name="Início" component={HomeClientScreen} />
+      <Tab.Screen name="Início" component={HomeClient} />
       <Tab.Screen name="Pedidos" component={InvoicesClients} />
       <Tab.Screen name="Mensagens" component={MessagesScreen} />
       <Tab.Screen name="Histórico" component={HistoryScreen} />

@@ -85,7 +85,7 @@ const CategoryScreen = () => {
                 renderItem={({ item }) => (
                     <FeaturedProviderCard
                         provider={item}
-                        onPress={() => handleProviderPress(item)}
+                        onPress={handleProviderPress}
                     />
                 )}
                 ListEmptyComponent={

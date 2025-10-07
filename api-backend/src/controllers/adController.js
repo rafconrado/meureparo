@@ -14,7 +14,7 @@ exports.createAd = async (req, res) => {
     title,
     description,
     price,
-    category,
+    categoryId,
     image,
     rating,
     reviews,
@@ -22,7 +22,7 @@ exports.createAd = async (req, res) => {
     isPromoted,
     discount,
   } = req.body;
-  if (!title || !description || !category) {
+  if (!title || !description || !categoryId) {
     return res
       .status(400)
       .json({ message: "Título, descrição e categoria são obrigatórios." });
@@ -33,7 +33,7 @@ exports.createAd = async (req, res) => {
       title,
       description,
       price,
-      category,
+      categoryId,
       providerId,
       image,
       rating,
@@ -54,7 +54,15 @@ exports.createAd = async (req, res) => {
 // Busca todos os anúncios
 exports.getAllAds = async (req, res) => {
   try {
-    const ads = await Ad.findAll();
+    const { categoryId } = req.query;
+
+    const filter = {};
+    if (categoryId) {
+      filter.categoryId = categoryId;
+    }
+
+    const ads = await Ad.findAll(filter);
+
     res.status(200).json(ads);
   } catch (error) {
     res

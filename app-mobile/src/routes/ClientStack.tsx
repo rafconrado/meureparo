@@ -1,12 +1,33 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import HomeClient from "../screens/client/HomeClient";
+import CategoryScreen from "../screens/client/CategoryScreen";
 
-const Client = createNativeStackNavigator();
+import { ClientTabs } from "./ClientTabs";
+
+export type ClientStackParamList = {
+  ClientTabs: undefined;
+  CategoryScreen: { categoryId: number; categoryName: string };
+};
+
+const Stack = createNativeStackNavigator<ClientStackParamList>();
 
 export function ClientStack() {
   return (
-    <Client.Navigator screenOptions={{ headerShown: false }}>
-      <Client.Screen name="HomeClient" component={HomeClient} />
-    </Client.Navigator>
+    <Stack.Navigator>
+      <Stack.Screen
+        name="ClientTabs"
+        component={ClientTabs}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="CategoryScreen"
+        component={CategoryScreen}
+        options={({ route }) => ({
+          title: route.params.categoryName,
+          headerShown: true,
+          headerBackTitleVisible: false,
+        })}
+      />
+    </Stack.Navigator>
   );
 }

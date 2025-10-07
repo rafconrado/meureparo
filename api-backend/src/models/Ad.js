@@ -1,14 +1,18 @@
 const { db } = require("../../database");
 
 class Ad {
-  // Cria um novo anúncio
+  /**
+   * Cria um novo anúncio no banco de dados.
+   * @param {object} data - Dados do anúncio.
+   * @returns {Promise<object>} O objeto do anúncio criado.
+   */
   static create(data) {
     return new Promise((resolve, reject) => {
       const {
         title,
         description,
         price,
-        category,
+        categoryId,
         providerId,
         image = null,
         rating = 0,
@@ -20,7 +24,7 @@ class Ad {
 
       const sql = `
         INSERT INTO ads (
-          title, description, price, category, providerId, 
+          title, description, price, categoryId, providerId, 
           image, rating, reviews, isVerified, isPromoted, discount
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `;
@@ -28,7 +32,7 @@ class Ad {
         title,
         description,
         price,
-        category,
+        categoryId,
         providerId,
         image,
         rating,
@@ -48,12 +52,16 @@ class Ad {
     });
   }
 
-  // Retorna todos os anúncios com informações do prestador
-  static findAll() {
+  /**
+   * Retorna anúncios com informações do prestador, com filtro opcional.
+   * @param {object} [filter={}] - Objeto de filtro opcional. Ex: { categoryId: 1 }.
+   * @returns {Promise<Array>} Uma lista de anúncios.
+   */
+  static findAll(filter = {}) {
     return new Promise((resolve, reject) => {
-      const sql = `
+      let sql = `
         SELECT 
-          ads.id, ads.title, ads.description, ads.price, ads.category, ads.providerId,
+          ads.id, ads.title, ads.description, ads.price, ads.categoryId, ads.providerId,
           ads.image, ads.rating, ads.reviews, ads.isVerified, ads.isPromoted, ads.discount,
           providers.name as providerName, 
           providers.email as providerEmail,
@@ -61,10 +69,20 @@ class Ad {
         FROM ads
         JOIN providers ON ads.providerId = providers.id
       `;
-      db.all(sql, [], (err, rows) => {
+
+      const params = [];
+
+      // Adiciona a cláusula WHERE se um filtro de categoria for fornecido.
+      if (filter.categoryId) {
+        sql += ` WHERE ads.categoryId = ?`;
+        params.push(filter.categoryId);
+      }
+
+      db.all(sql, params, (err, rows) => {
         if (err) {
           reject(err);
         } else {
+          // Converte os valores de 0/1 para true/false.
           const adsWithBooleans = rows.map((ad) => ({
             ...ad,
             isVerified: !!ad.isVerified,
@@ -76,7 +94,11 @@ class Ad {
     });
   }
 
-  // Encontra um anúncio por ID
+  /**
+   * Encontra um anúncio específico pelo seu ID.
+   * @param {number} id - O ID do anúncio.
+   * @returns {Promise<object>} O objeto do anúncio encontrado.
+   */
   static findById(id) {
     return new Promise((resolve, reject) => {
       const sql = `
@@ -97,14 +119,19 @@ class Ad {
     });
   }
 
-  // Atualiza um anuncio no banco de dados
+  /**
+   * Atualiza um anúncio no banco de dados.
+   * @param {number} id - O ID do anúncio a ser atualizado.
+   * @param {object} data - Os novos dados para o anúncio.
+   * @returns {Promise<object>} Um objeto com o número de linhas alteradas.
+   */
   static update(id, data) {
     return new Promise((resolve, reject) => {
       const {
         title,
         description,
         price,
-        category,
+        categoryId,
         image,
         rating,
         reviews,
@@ -112,13 +139,14 @@ class Ad {
         isPromoted,
         discount,
       } = data;
+
       const sql = `
         UPDATE ads 
         SET 
           title = COALESCE(?, title), 
           description = COALESCE(?, description), 
           price = COALESCE(?, price), 
-          category = COALESCE(?, category),
+          categoryId = COALESCE(?, categoryId),
           image = COALESCE(?, image),
           rating = COALESCE(?, rating),
           reviews = COALESCE(?, reviews),
@@ -131,7 +159,7 @@ class Ad {
         title,
         description,
         price,
-        category,
+        categoryId,
         image,
         rating,
         reviews,
@@ -151,7 +179,11 @@ class Ad {
     });
   }
 
-  // Deleta um anuncio do banco de dados
+  /**
+   * Deleta um anúncio do banco de dados.
+   * @param {number} id - O ID do anúncio a ser deletado.
+   * @returns {Promise<object>} Um objeto com o número de linhas alteradas.
+   */
   static delete(id) {
     return new Promise((resolve, reject) => {
       const sql = "DELETE FROM ads WHERE id = ?";

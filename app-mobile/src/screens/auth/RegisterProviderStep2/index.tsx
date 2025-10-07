@@ -188,7 +188,7 @@ const RegisterProviderStep2: React.FC = () => {
 
       <Header>
         <HeaderContent>
-          <Logo source={require("../../../assets/images/logo.png")} />
+          <Logo source={require("../../../assets/images/provider.png")} />
           <HeaderTitle>
             Só mais alguns dados para concluir seu cadastro!
           </HeaderTitle>
