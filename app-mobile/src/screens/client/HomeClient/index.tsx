@@ -194,7 +194,7 @@ const HomeClient = () => {
           <SectionTitle>🔥 Ofertas Especiais</SectionTitle>
           <FlatList
             data={apiData.promos}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => <PromoCardItem item={item} />}
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -242,7 +242,7 @@ const HomeClient = () => {
           <SectionTitle>Parceiros de confiança</SectionTitle>
           <FlatList
             data={apiData.partners}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => <PartnerItem partner={item} />}
             horizontal
             showsHorizontalScrollIndicator={false}

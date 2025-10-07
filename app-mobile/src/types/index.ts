@@ -26,7 +26,7 @@ export interface Category {
 }
 
 export interface Promo {
-  id: string;
+  id: number;
   title: string;
   description: string;
   discount: string;
@@ -36,7 +36,7 @@ export interface Promo {
 }
 
 export interface Partner {
-  id: string;
+  id: number;
   name: string;
   logo: ImageSourcePropType;
 }

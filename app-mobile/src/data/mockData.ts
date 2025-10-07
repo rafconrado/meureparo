@@ -3,7 +3,7 @@ import { Provider, Category, Promo, Partner } from "../types";
 export const providersData: Provider[] = [
   {
     id: "1",
-    advertisementId: "ad-joao-eletricista-01", // ID do anúncio
+    advertisementId: "ad-joao-eletricista-01",
     name: "João Silva",
     category: "Eletricista",
     rating: 4.8,
@@ -15,7 +15,7 @@ export const providersData: Provider[] = [
   },
   {
     id: "2",
-    advertisementId: "ad-maria-diarista-02", // ID do anúncio
+    advertisementId: "ad-maria-diarista-02",
     name: "Maria Santos",
     category: "Diarista",
     rating: 4.9,
@@ -27,7 +27,7 @@ export const providersData: Provider[] = [
   },
   {
     id: "3",
-    advertisementId: "ad-pedro-encanador-03", // ID do anúncio
+    advertisementId: "ad-pedro-encanador-03",
     name: "Pedro Costa",
     category: "Encanador",
     rating: 4.7,
@@ -38,7 +38,7 @@ export const providersData: Provider[] = [
   },
   {
     id: "4",
-    advertisementId: "ad-ana-pintora-04", // ID do anúncio
+    advertisementId: "ad-ana-pintora-04",
     name: "Ana Oliveira",
     category: "Pintura",
     rating: 5.0,
@@ -49,20 +49,94 @@ export const providersData: Provider[] = [
     isPromoted: true,
     discount: 20,
   },
+  {
+    id: "5",
+    advertisementId: "ad-carlos-marceneiro-05",
+    name: "Carlos Mendes",
+    category: "Marcenaria",
+    rating: 4.6,
+    reviews: 58,
+    price: "R$ 120/hora",
+    image: require("../../src/assets/images/utils/placeholder.png"),
+    isVerified: true,
+  },
+  {
+    id: "6",
+    advertisementId: "ad-fernanda-jardineira-06",
+    name: "Fernanda Lima",
+    category: "Jardinagem",
+    rating: 4.9,
+    reviews: 142,
+    price: "R$ 180/dia",
+    image: require("../../src/assets/images/utils/placeholder.png"),
+    isVerified: true,
+    isPromoted: true,
+    discount: 10,
+  },
+  {
+    id: "7",
+    advertisementId: "ad-ricardo-pedreiro-07",
+    name: "Ricardo Alves",
+    category: "Pedreiro",
+    rating: 4.5,
+    reviews: 95,
+    price: "R$ 150/dia",
+    image: require("../../src/assets/images/utils/placeholder.png"),
+    isVerified: false,
+  },
+  {
+    id: "8",
+    advertisementId: "ad-juliana-decoradora-08",
+    name: "Juliana Ferreira",
+    category: "Decoração",
+    rating: 4.8,
+    reviews: 76,
+    price: "R$ 250/projeto",
+    image: require("../../src/assets/images/utils/placeholder.png"),
+    isVerified: true,
+    discount: 25,
+  },
+  {
+    id: "9",
+    advertisementId: "ad-roberto-vidraceiro-09",
+    name: "Roberto Souza",
+    category: "Vidraçaria",
+    rating: 4.7,
+    reviews: 48,
+    price: "R$ 90/hora",
+    image: require("../../src/assets/images/utils/placeholder.png"),
+    isVerified: true,
+  },
+  {
+    id: "10",
+    advertisementId: "ad-patricia-cozinheira-10",
+    name: "Patrícia Rocha",
+    category: "Cozinheira",
+    rating: 5.0,
+    reviews: 167,
+    price: "R$ 200/evento",
+    image: require("../../src/assets/images/utils/placeholder.png"),
+    isVerified: true,
+    isPromoted: true,
+  },
 ];
 
 export const categoriesData: Category[] = [
-  { id: "1", name: "Elétrica", icon: "flash", color: "#FFB800" },
-  { id: "2", name: "Hidráulica", icon: "water", color: "#4A90E2" },
-  { id: "3", name: "Limpeza", icon: "sparkles", color: "#7ED321" },
-  { id: "4", name: "Pintura", icon: "brush", color: "#F5A623" },
-  { id: "5", name: "Reformas", icon: "hammer", color: "#BD10E0" },
-  { id: "6", name: "Jardinagem", icon: "leaf", color: "#50E3C2" },
+  { id: 1, name: "Elétrica", icon: "flash", color: "#FFC107" },
+  { id: 2, name: "Hidráulica", icon: "water", color: "#2196F3" },
+  { id: 3, name: "Limpeza", icon: "sparkles", color: "#4CAF50" },
+  { id: 4, name: "Pintura", icon: "brush", color: "#FF9800" },
+  { id: 5, name: "Reformas", icon: "hammer", color: "#9C27B0" },
+  { id: 6, name: "Jardinagem", icon: "leaf", color: "#00BCD4" },
+  { id: 7, name: "Marcenaria", icon: "construct", color: "#795548" },
+  { id: 8, name: "Decoração", icon: "color-palette", color: "#E91E63" },
+  { id: 9, name: "Vidraçaria", icon: "copy-outline", color: "#607D8B" },
+  { id: 10, name: "Cozinha", icon: "restaurant", color: "#FF5722" },
 ];
 
 export const promosData: Promo[] = [
   {
-    id: "1",
+    id: 1,
     title: "Primeira Contratação",
     description: "Desconto especial para novos clientes",
     discount: "30% OFF",
@@ -70,34 +144,68 @@ export const promosData: Promo[] = [
     providerName: "João Silva",
   },
   {
-    id: "2",
+    id: 2,
     title: "Combo Limpeza",
     description: "Limpeza completa com desconto",
     discount: "25% OFF",
     validUntil: "15/11/2025",
     providerName: "Maria Santos",
   },
+  {
+    id: 3,
+    title: "Pintura Completa",
+    description: "Pinte 3 cômodos e ganhe desconto",
+    discount: "20% OFF",
+    validUntil: "20/11/2025",
+    providerName: "Ana Oliveira",
+  },
+  {
+    id: 4,
+    title: "Jardinagem Premium",
+    description: "Manutenção mensal com desconto",
+    discount: "10% OFF",
+    validUntil: "30/11/2025",
+    providerName: "Fernanda Lima",
+  },
+  {
+    id: 5,
+    title: "Black Friday",
+    description: "Todos os serviços com desconto especial",
+    discount: "40% OFF",
+    validUntil: "29/11/2025",
+    providerName: "Vários Profissionais",
+  },
 ];
 
 export const partnersData: Partner[] = [
   {
-    id: "1",
+    id: 1,
     name: "Amanco",
     logo: require("../../src/assets/images/logo/amanco.png"),
   },
   {
-    id: "2",
+    id: 2,
     name: "Tigre",
     logo: require("../../src/assets/images/logo/tigre logo.png"),
   },
   {
-    id: "3",
+    id: 3,
     name: "Lorenzetti",
     logo: require("../../src/assets/images/logo/lorenzetti.png"),
   },
   {
-    id: "4",
+    id: 4,
     name: "Suvinil",
     logo: require("../../src/assets/images/logo/suvinil.png"),
+  },
+  {
+    id: 5,
+    name: "Tramontina",
+    logo: require("../../src/assets/images/utils/placeholder.png"),
+  },
+  {
+    id: 6,
+    name: "Leroy Merlin",
+    logo: require("../../src/assets/images/utils/placeholder.png"),
   },
 ];

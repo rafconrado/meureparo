@@ -11,11 +11,11 @@ interface CategoryCardItemProps {
 export const CategoryCardItem = React.memo(
   ({ item, onPress }: CategoryCardItemProps) => {
     return (
-      <CategoryCard onPress={() => onPress(item)} activeOpacity={0.8}>
-        <CategoryIcon>
-          <Ionicons name={item.icon as any} size={24} color="#4B5563" />
+      <CategoryCard onPress={() => onPress(item)} activeOpacity={0.7}>
+        <CategoryIcon style={{ backgroundColor: `${item.color}15` }}>
+          <Ionicons name={item.icon as any} size={28} color={item.color} />
         </CategoryIcon>
-        <CategoryName>{item.name}</CategoryName>
+        <CategoryName numberOfLines={2}>{item.name}</CategoryName>
       </CategoryCard>
     );
   }

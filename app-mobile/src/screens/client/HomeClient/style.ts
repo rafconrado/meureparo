@@ -1,6 +1,14 @@
 import styled from "styled-components/native";
 import { LinearGradient } from "expo-linear-gradient";
 
+// ============= CORES DA IDENTIDADE VISUAL =============
+// Primary: #FF8724 (Laranja vibrante)
+// Background: #F8F9FA (Cinza claro)
+// Text Primary: #0C0C0C (Preto suave)
+// Text Secondary: #6E6E6E (Cinza médio)
+// White: #FFFFFF
+// Accent: #FFB800 (Amarelo dourado para ratings)
+
 export const Container = styled.View`
   flex: 1;
   background-color: #f8f9fa;
@@ -13,39 +21,52 @@ export const LoadingContainer = styled.View`
   background-color: #f8f9fa;
 `;
 
+// ============= HEADER =============
 export const Title = styled.Text`
-  font-size: 28px;
+  font-size: 32px;
   color: #0c0c0c;
   font-family: "Inter-Bold";
   margin: 32px 16px 4px 16px;
+  line-height: 40px;
 `;
 
 export const Subtitle = styled.Text`
-  font-size: 15px;
+  font-size: 16px;
   color: #6e6e6e;
   font-family: "Inter-Regular";
-  margin: 0 16px 20px 16px;
+  margin: 0 16px 24px 16px;
+  line-height: 24px;
 `;
 
 export const Section = styled.View`
   margin-bottom: 32px;
 `;
 
-// Barra de Pesquisa
+export const SectionTitle = styled.Text`
+  font-size: 22px;
+  font-family: "Inter-Bold";
+  color: #0c0c0c;
+  margin-left: 16px;
+  margin-bottom: 16px;
+  letter-spacing: -0.5px;
+`;
+
+// ============= BARRA DE PESQUISA =============
 export const SearchContainer = styled.View`
   flex-direction: row;
-  margin: 0 16px 24px 16px;
+  margin: 0 16px 28px 16px;
   background-color: #fff;
-  border-radius: 14px;
-  elevation: 3;
+  border-radius: 16px;
+  elevation: 2;
   shadow-color: #000;
-  shadow-opacity: 0.05;
-  shadow-radius: 4px;
+  shadow-opacity: 0.06;
+  shadow-radius: 8px;
+  shadow-offset: 0px 2px;
 `;
 
 export const SearchInput = styled.TextInput`
   flex: 1;
-  padding: 14px 16px;
+  padding: 16px;
   font-family: "Inter-Regular";
   font-size: 15px;
   color: #0c0c0c;
@@ -53,50 +74,54 @@ export const SearchInput = styled.TextInput`
 
 export const SearchButton = styled.TouchableOpacity`
   background-color: #ff8724;
-  padding: 12px 16px;
-  border-radius: 14px;
+  padding: 14px 18px;
+  border-radius: 16px;
   justify-content: center;
   align-items: center;
+  margin: 4px;
 `;
 
-// Categorias
+// ============= CATEGORIAS =============
 export const CategoryCard = styled.TouchableOpacity`
   align-items: center;
-  margin-right: 12px;
-  width: 85px;
+  margin-right: 16px;
+  width: 90px;
 `;
 
 export const CategoryIcon = styled.View`
-  width: 60px;
-  height: 60px;
-  border-radius: 16px;
+  width: 70px;
+  height: 70px;
+  border-radius: 20px;
   background-color: #f3f4f6;
   justify-content: center;
   align-items: center;
-  margin-bottom: 8px;
-  elevation: 2;
+  margin-bottom: 10px;
+  elevation: 3;
   shadow-color: #000;
-  shadow-opacity: 0.05;
-  shadow-radius: 4px;
+  shadow-opacity: 0.08;
+  shadow-radius: 6px;
+  shadow-offset: 0px 2px;
 `;
 
 export const CategoryName = styled.Text`
-  font-family: "Inter-Medium";
+  font-family: "Inter-SemiBold";
   font-size: 13px;
   color: #0c0c0c;
   text-align: center;
+  line-height: 18px;
 `;
 
-// Cards de Promoção
+// ============= CARDS DE PROMOÇÃO =============
 export const PromoCard = styled(LinearGradient)`
-  width: 300px;
+  width: 320px;
   margin-right: 16px;
-  padding: 20px;
-  border-radius: 20px;
-  elevation: 4;
-  shadow-color: #667eea;
-  shadow-opacity: 0.3;
-  shadow-radius: 6px;
+  padding: 24px;
+  border-radius: 24px;
+  elevation: 6;
+  shadow-color: #ff8724;
+  shadow-opacity: 0.25;
+  shadow-radius: 10px;
+  shadow-offset: 0px 4px;
 `;
 
 export const PromoContent = styled.View`
@@ -107,83 +132,88 @@ export const PromoContent = styled.View`
 
 export const PromoInfo = styled.View`
   flex: 1;
-  margin-right: 12px;
+  margin-right: 16px;
 `;
 
 export const PromoTitle = styled.Text`
   font-family: "Inter-Bold";
-  font-size: 18px;
+  font-size: 20px;
   color: #fff;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
+  letter-spacing: -0.3px;
 `;
 
 export const PromoDescription = styled.Text`
   font-family: "Inter-Regular";
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.9);
-  margin-bottom: 8px;
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.95);
+  margin-bottom: 10px;
+  line-height: 22px;
 `;
 
 export const PromoMeta = styled.Text`
-  font-family: "Inter-Regular";
-  font-size: 12px;
-  color: #e0e0e0;
+  font-family: "Inter-Medium";
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.85);
 `;
 
 export const PromoDiscount = styled.Text`
   font-family: "Inter-Bold";
-  font-size: 24px;
+  font-size: 28px;
   color: #fff;
-  padding: 8px 12px;
-  background-color: rgba(255, 255, 255, 0.2);
-  border-radius: 12px;
+  padding: 10px 16px;
+  background-color: rgba(255, 255, 255, 0.25);
+  border-radius: 16px;
+  letter-spacing: -0.5px;
 `;
 
-// Cards de Provider
+// ============= CARDS DE PROVIDER =============
 export const ProviderCard = styled.TouchableOpacity`
-  width: 180px;
+  width: 190px;
   background-color: #fff;
-  border-radius: 20px;
+  border-radius: 24px;
   margin-left: 16px;
   elevation: 4;
   shadow-color: #000;
-  shadow-opacity: 0.08;
-  shadow-radius: 6px;
+  shadow-opacity: 0.1;
+  shadow-radius: 8px;
+  shadow-offset: 0px 2px;
   overflow: hidden;
 `;
 
 export const ProviderImage = styled.Image`
   width: 100%;
-  height: 140px;
+  height: 150px;
   background-color: #f0f0f0;
 `;
 
 export const ProviderInfo = styled.View`
-  padding: 12px;
+  padding: 14px;
 `;
 
 export const ProviderName = styled.Text`
   font-family: "Inter-Bold";
-  font-size: 15px;
+  font-size: 16px;
   color: #0c0c0c;
+  letter-spacing: -0.3px;
 `;
 
 export const ProviderCategory = styled.Text`
   font-family: "Inter-Regular";
   font-size: 13px;
   color: #6e6e6e;
-  margin-top: 2px;
+  margin-top: 4px;
 `;
 
 export const RatingContainer = styled.View`
   flex-direction: row;
   align-items: center;
-  margin-top: 6px;
-  gap: 4px;
+  margin-top: 8px;
+  gap: 6px;
 `;
 
 export const RatingText = styled.Text`
-  font-family: "Inter-Medium";
+  font-family: "Inter-SemiBold";
   font-size: 13px;
   color: #0c0c0c;
 `;
@@ -194,144 +224,155 @@ export const ProviderRating = styled.Text`
   color: #ffb800;
 `;
 
+export const RatingReviewsText = styled(RatingText)`
+  color: #999;
+  font-family: "Inter-Regular";
+  margin-left: 2px;
+`;
+
 export const ProviderPrice = styled.Text`
   font-family: "Inter-Bold";
-  font-size: 15px;
+  font-size: 16px;
   color: #ff8724;
-  margin-top: 8px;
+  margin-top: 10px;
+  letter-spacing: -0.2px;
 `;
 
 export const ProviderBadge = styled.View<{ backgroundColor?: string }>`
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 12px;
+  right: 12px;
   background-color: ${({ backgroundColor }) => backgroundColor || "#ff8724"};
-  padding: 4px 8px;
-  border-radius: 8px;
+  padding: 6px 10px;
+  border-radius: 10px;
   z-index: 1;
+  elevation: 2;
+  shadow-color: #000;
+  shadow-opacity: 0.2;
+  shadow-radius: 4px;
 `;
 
 export const BadgeText = styled.Text`
   font-family: "Inter-Bold";
-  font-size: 10px;
+  font-size: 11px;
   color: #fff;
+  letter-spacing: 0.3px;
 `;
 
+export const ProviderNameContainer = styled.View`
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+`;
+
+// ============= CAROUSEL =============
 export const CarouselImage = styled.Image<{ height?: number }>`
   width: 92%;
-  height: ${({ height }) => (height ? `${height}px` : "190px")};
-  border-radius: 20px;
+  height: ${({ height }) => (height ? `${height}px` : "200px")};
+  border-radius: 24px;
   margin-left: 12px;
-  elevation: 5;
+  elevation: 6;
   shadow-color: #000;
-  shadow-opacity: 0.08;
-  shadow-radius: 6px;
+  shadow-opacity: 0.12;
+  shadow-radius: 10px;
+  shadow-offset: 0px 4px;
 `;
 
-// Service Cards
+// ============= SERVICE CARDS =============
 export const ServiceCard = styled.View`
-  padding: 16px;
+  padding: 18px;
   padding-bottom: 20px;
-  border-radius: 20px;
+  border-radius: 24px;
   background-color: #fff;
   elevation: 4;
   shadow-color: #000;
-  shadow-opacity: 0.06;
-  shadow-radius: 5px;
+  shadow-opacity: 0.08;
+  shadow-radius: 8px;
+  shadow-offset: 0px 2px;
   height: auto;
   justify-content: space-between;
 `;
 
 export const ServiceImage = styled.Image`
   width: 100%;
-  height: 140px;
-  border-radius: 16px;
+  height: 150px;
+  border-radius: 18px;
   background-color: #f0f0f0;
 `;
 
 export const ServiceTitle = styled.Text`
-  font-size: 17px;
+  font-size: 18px;
   font-family: "Inter-Bold";
-  margin-top: 12px;
+  margin-top: 14px;
   color: #0c0c0c;
-  line-height: 22px;
+  line-height: 24px;
+  letter-spacing: -0.3px;
 `;
 
 export const ServiceFromText = styled.Text`
-  font-size: 12px;
+  font-size: 13px;
   color: #808080;
   font-family: "Inter-Regular";
   margin-top: 8px;
 `;
 
 export const ServicePrice = styled.Text`
-  font-size: 18px;
+  font-size: 20px;
   color: #ff8724;
   font-family: "Inter-Bold";
-  margin-top: 2px;
+  margin-top: 4px;
   margin-bottom: 0px;
+  letter-spacing: -0.5px;
 `;
 
 export const ServiceButton = styled.TouchableOpacity`
   background-color: #ff8724;
-  padding: 14px;
-  border-radius: 14px;
+  padding: 16px;
+  border-radius: 16px;
   align-items: center;
   justify-content: center;
   margin-top: 16px;
   width: 100%;
+  elevation: 2;
+  shadow-color: #ff8724;
+  shadow-opacity: 0.3;
+  shadow-radius: 6px;
 `;
 
 export const ServiceButtonText = styled.Text`
   color: #fff;
-  font-size: 15px;
+  font-size: 16px;
   font-family: "Inter-Bold";
   text-align: center;
+  letter-spacing: 0.2px;
 `;
 
-export const SectionTitle = styled.Text`
-  font-size: 20px;
-  font-family: "Inter-Bold";
-  color: #0c0c0c;
-  margin-left: 16px;
-  margin-bottom: 16px;
-`;
-
-// Parceiros
+// ============= PARCEIROS =============
 export const PartnerContainer = styled.View`
   align-items: center;
   justify-content: center;
-  width: 120px;
+  width: 110px;
   margin-left: 16px;
 `;
 
 export const PartnerLogo = styled.Image`
-  width: 90px;
-  height: 90px;
-  border-radius: 45px;
-  margin-bottom: 10px;
-  border-width: 2px;
+  width: 85px;
+  height: 85px;
+  border-radius: 42.5px;
+  margin-bottom: 12px;
+  border-width: 2.5px;
   border-color: #ff8724;
   background-color: #fff;
+  elevation: 3;
+  shadow-color: #000;
+  shadow-opacity: 0.08;
+  shadow-radius: 6px;
 `;
 
 export const PartnerName = styled.Text`
-  font-family: "Inter-Bold";
-  font-size: 14px;
+  font-family: "Inter-SemiBold";
+  font-size: 13px;
   text-align: center;
   color: #0c0c0c;
-`;
-
-// ProviderBadge
-export const ProviderNameContainer = styled.View`
-  flex-direction: row;
-  align-items: center;
-  gap: 4px; /* 'gap' é uma forma moderna de dar espaçamento */
-`;
-
-// NOVO: Um estilo específico para o texto cinza de "avaliações"
-export const RatingReviewsText = styled(RatingText)`
-  /* Herda o estilo de RatingText */
-  color: #999;
-  margin-left: 4px; /* Pequeno espaço à esquerda */
+  line-height: 18px;
 `;
