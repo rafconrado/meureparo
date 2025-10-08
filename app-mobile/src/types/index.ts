@@ -32,6 +32,7 @@ export interface Promo {
   discount: string;
   validUntil: string;
   providerName: string;
+  couponCode?: string;
   colors?: readonly [string, string, ...string[]];
 }
 

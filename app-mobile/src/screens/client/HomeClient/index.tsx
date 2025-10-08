@@ -59,7 +59,6 @@ const HomeClient = () => {
 
   const fetchData = useCallback(async () => {
     setError(null);
-    // Don't set isLoading(true) on refresh to avoid layout shift
     if (!refreshing) {
       setIsLoading(true);
     }
@@ -72,8 +71,8 @@ const HomeClient = () => {
       setApiData({
         providers: adsResponse.data,
         categories: categoriesResponse.data,
-        promos: promosData, // Using mock data
-        partners: partnersData, // Using mock data
+        promos: promosData, 
+        partners: partnersData, 
       });
     } catch (err) {
       console.error("Erro ao buscar dados da API:", err);
@@ -106,7 +105,6 @@ const HomeClient = () => {
   );
 
   const handleSearch = useCallback(() => {
-    // Implement search logic or navigation
     console.log("Buscando por:", searchText);
   }, [searchText]);
 
