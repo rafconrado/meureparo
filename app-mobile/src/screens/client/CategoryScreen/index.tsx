@@ -4,7 +4,7 @@ import { useRoute, useNavigation } from "@react-navigation/native";
 import type { Provider } from "../../../types";
 import api from "../../../services/api";
 
-import { FeaturedProviderCard } from "../HomeClient/components/FeaturedProviderCard";
+import { FeaturedProviderCard } from "../../../components/FeaturedProviderCard";
 import {
     Container,
     Title,

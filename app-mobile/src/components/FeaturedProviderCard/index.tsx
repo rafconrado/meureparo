@@ -1,6 +1,6 @@
 import React from "react";
 import { Ionicons } from "@expo/vector-icons";
-import { Provider } from "../../../../types";
+import { Provider } from "../../types";
 
 import {
   ProviderCard,
@@ -15,7 +15,7 @@ import {
   ProviderPrice,
   ProviderBadge,
   BadgeText,
-} from "../style";
+} from "./style";
 
 interface FeaturedProviderCardProps {
   provider: Provider;

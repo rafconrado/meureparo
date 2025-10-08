@@ -137,7 +137,7 @@ export const categoriesData: Category[] = [
 export const promosData: Promo[] = [
   {
     id: 1,
-    title: "Primeira Contratação",
+    title: "Promoção para Novos Clientes",
     description: "Desconto especial para novos clientes",
     discount: "30% OFF",
     validUntil: "31/10/2025",
@@ -201,11 +201,11 @@ export const partnersData: Partner[] = [
   {
     id: 5,
     name: "Tramontina",
-    logo: require("../../src/assets/images/utils/placeholder.png"),
+    logo: require("../../src/assets/images/logo/tramontina.png"),
   },
   {
     id: 6,
     name: "Leroy Merlin",
-    logo: require("../../src/assets/images/utils/placeholder.png"),
+    logo: require("../../src/assets/images/logo/leroy.png"),
   },
 ];

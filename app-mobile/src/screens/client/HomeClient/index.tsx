@@ -10,33 +10,33 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
+
+// Contexts & Hooks
 import { useAuth } from "../../../contexts/AuthContext";
+
+// API & Data
+import api from "../../../services/api";
+import { promosData, partnersData } from "../../../data/mockData";
+
+import type { Provider, Category, Promo, Partner } from "../../../types";
+
+// Components
+import { CategoryCardItem } from "../../../components/CategoryCardItem";
+import { FeaturedProviderCard } from "../../../components/FeaturedProviderCard";
+import { ProviderCarouselCard } from "../../../components/ProviderCarouselCard";
+import { PromoCardItem } from "../../../components/PromoCardItem";
+import { PartnerItem } from "../../../components/PartnerItem";
+import { SearchBar } from "../../../components/SearchBar";
+
+// Styles
 import {
   Container,
   Title,
   Subtitle,
   Section,
   SectionTitle,
-  SearchContainer,
-  SearchInput,
-  SearchButton,
   LoadingContainer,
 } from "./style";
-
-import type { Provider, Category, Promo, Partner } from "../../../types";
-
-import api from "../../../services/api";
-
-import {
-  promosData,
-  partnersData,
-  categoriesData,
-} from "../../../data/mockData";
-import { CategoryCardItem } from "./components/CategoryCardItem";
-import { FeaturedProviderCard } from "./components/FeaturedProviderCard";
-import { ProviderCarouselCard } from "./components/ProviderCarouselCard";
-import { PromoCardItem } from "./components/PromoCardItem";
-import { PartnerItem } from "./components/PartnerItem";
 
 const { width: screenWidth } = Dimensions.get("window");
 const CARD_WIDTH = screenWidth * 0.8;
@@ -59,7 +59,10 @@ const HomeClient = () => {
 
   const fetchData = useCallback(async () => {
     setError(null);
-    setIsLoading(true);
+    // Don't set isLoading(true) on refresh to avoid layout shift
+    if (!refreshing) {
+      setIsLoading(true);
+    }
     try {
       const [adsResponse, categoriesResponse] = await Promise.all([
         api.get("/ads"),
@@ -69,26 +72,25 @@ const HomeClient = () => {
       setApiData({
         providers: adsResponse.data,
         categories: categoriesResponse.data,
-        promos: promosData,
-        partners: partnersData,
+        promos: promosData, // Using mock data
+        partners: partnersData, // Using mock data
       });
     } catch (err) {
-      console.error("Erro ao buscar anúncios da API:", err);
+      console.error("Erro ao buscar dados da API:", err);
       setError("Não foi possível carregar os dados. Verifique sua conexão.");
     } finally {
       setIsLoading(false);
+      setRefreshing(false);
     }
-  }, []);
+  }, [refreshing]);
 
   useEffect(() => {
     fetchData();
   }, [fetchData]);
 
-  const onRefresh = useCallback(async () => {
+  const onRefresh = useCallback(() => {
     setRefreshing(true);
-    await fetchData();
-    setRefreshing(false);
-  }, [fetchData]);
+  }, []);
 
   const featuredProviders = useMemo(
     () => apiData.providers.filter((p) => p.isPromoted || p.discount),
@@ -104,6 +106,7 @@ const HomeClient = () => {
   );
 
   const handleSearch = useCallback(() => {
+    // Implement search logic or navigation
     console.log("Buscando por:", searchText);
   }, [searchText]);
 
@@ -166,17 +169,15 @@ const HomeClient = () => {
       >
         <Title>Olá, {user?.name || "Usuário"} 👋</Title>
         <Subtitle>Encontre os melhores profissionais perto de você</Subtitle>
-        <SearchContainer>
-          <SearchInput
-            placeholder="Buscar serviços ou profissionais..."
-            value={searchText}
-            onChangeText={setSearchText}
-            placeholderTextColor="#999"
-          />
-          <SearchButton onPress={handleSearch} activeOpacity={0.8}>
-            <Ionicons name="search" size={22} color="#FFF" />
-          </SearchButton>
-        </SearchContainer>
+
+        {/* Usando o componente SearchBar */}
+        <SearchBar
+          searchText={searchText}
+          setSearchText={setSearchText}
+          onSearch={handleSearch}
+        />
+
+        {/* Categorias Populares */}
         <Section>
           <SectionTitle>Categorias Populares</SectionTitle>
           <FlatList
@@ -190,6 +191,8 @@ const HomeClient = () => {
             contentContainerStyle={{ paddingHorizontal: 12 }}
           />
         </Section>
+
+        {/* Ofertas Especiais */}
         <Section>
           <SectionTitle>🔥 Ofertas Especiais</SectionTitle>
           <FlatList
@@ -201,6 +204,8 @@ const HomeClient = () => {
             contentContainerStyle={{ paddingLeft: 16 }}
           />
         </Section>
+
+        {/* Profissionais em Destaque */}
         <Section>
           <SectionTitle>⭐ Profissionais em Destaque</SectionTitle>
           <FlatList
@@ -217,6 +222,8 @@ const HomeClient = () => {
             contentContainerStyle={{ paddingLeft: 16 }}
           />
         </Section>
+
+        {/* Anúncios Mais Populares */}
         <Section>
           <SectionTitle>🚀 Anúncios Mais Populares</SectionTitle>
           <FlatList
@@ -238,6 +245,8 @@ const HomeClient = () => {
             }}
           />
         </Section>
+
+        {/* Parceiros de Confiança */}
         <Section>
           <SectionTitle>Parceiros de confiança</SectionTitle>
           <FlatList

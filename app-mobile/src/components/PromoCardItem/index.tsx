@@ -1,5 +1,5 @@
 import React from "react";
-import { Promo } from "../../../../types";
+import { Promo } from "../../types";
 
 import {
   PromoCard,
@@ -9,7 +9,7 @@ import {
   PromoDescription,
   PromoMeta,
   PromoDiscount,
-} from "../style";
+} from "./style";
 
 interface PromoCardItemProps {
   item: Promo;

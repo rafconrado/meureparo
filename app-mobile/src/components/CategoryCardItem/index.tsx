@@ -1,7 +1,7 @@
 import React from "react";
 import { Ionicons } from "@expo/vector-icons";
-import { Category } from "../../../../types";
-import { CategoryCard, CategoryIcon, CategoryName } from "../style";
+import { Category } from "../../types/index";
+import { CategoryCard, CategoryIcon, CategoryName } from "./style";
 
 interface CategoryCardItemProps {
   item: Category;

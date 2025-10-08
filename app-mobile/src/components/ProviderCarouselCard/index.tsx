@@ -11,7 +11,7 @@ import {
   ServicePrice,
   ServiceButton,
   ServiceButtonText,
-} from "../style";
+} from "./style";
 
 interface ProviderCarouselCardProps {
   provider: any;
