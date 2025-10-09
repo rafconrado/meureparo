@@ -5,17 +5,24 @@ import type { Ionicons } from "@expo/vector-icons";
 export type IoniconName = ComponentProps<typeof Ionicons>["name"];
 
 export interface Provider {
-  id: string;
+  id: number;
+  title: string;
+  description: string;
+  price: number;
   advertisementId?: string;
-  name: string;
+  name?: string;
   category: string;
   rating: number;
   reviews: number;
-  price: string;
-  image: ImageSourcePropType;
+  image: string;
   isVerified?: boolean;
   isPromoted?: boolean;
   discount?: number;
+  coverImage?: string;
+  specialty?: string;
+  categoryName?: string;
+  providerName: string;
+  avatar?: string;
 }
 
 export interface Category {

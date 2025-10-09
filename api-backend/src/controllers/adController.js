@@ -52,7 +52,7 @@ exports.getProviderAds = async (req, res) => {
   console.log("ID do usuário logado:", req.user.id);
   try {
     const providerId = req.user.id;
-    const ads = await Ad.findAll({ providerId });
+    const ads = await Ad.findAll({ where: filter });
     res.status(200).json(ads);
   } catch (error) {
     res
@@ -65,16 +65,21 @@ exports.getProviderAds = async (req, res) => {
 exports.getAllAds = async (req, res) => {
   try {
     const { categoryId } = req.query;
+
     const filter = {};
     if (categoryId) {
       filter.categoryId = categoryId;
     }
+
     const ads = await Ad.findAll(filter);
+
     res.status(200).json(ads);
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Erro ao buscar anúncios.", error: error.message });
+    console.error("Erro detalhado ao buscar anúncios:", error);
+    res.status(500).json({
+      message: "Erro ao buscar anúncios.",
+      error: error.message,
+    });
   }
 };
 

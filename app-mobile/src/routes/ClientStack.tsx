@@ -1,5 +1,5 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import CategoryScreen from "../screens/client/CategoryScreen";
+import CategoryScreen from "../components/CategoryScreen";
 
 import { ClientTabs } from "./ClientTabs";
 
