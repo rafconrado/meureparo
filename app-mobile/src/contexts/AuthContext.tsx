@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import api from "../services/api";
 
 // 1. Importe seus serviços de API
 import {
@@ -8,14 +9,14 @@ import {
   registerClient,
   registerProvider as registerProviderService,
   updateUser as updateUserService,
-} from "../services/authService"; // Verifique o caminho
+} from "../services/authService";
 
 import {
   UserData,
   RegisterClientDTO,
   RegisterProviderDTO,
-  UpdateUserData as UpdateUserDTO, // Renomeado para evitar conflito
-} from "../@types/auth"; // Verifique o caminho
+  UpdateUserData as UpdateUserDTO,
+} from "../@types/auth";
 
 // Interface para as credenciais de login
 interface LoginCredentials {
@@ -52,7 +53,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       const storagedUserType = await AsyncStorage.getItem("@app:userType");
 
       if (storagedUser && storagedUserType) {
-        setUser(JSON.parse(storagedUser));
+        const parsedUser = JSON.parse(storagedUser);
+
+        if (parsedUser.token) {
+          api.defaults.headers.common[
+            "Authorization"
+          ] = `Bearer ${parsedUser.token}`;
+        }
+
+        setUser(parsedUser);
         setUserType(storagedUserType as "client" | "provider");
       }
       setLoading(false);
@@ -60,7 +69,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     loadStoragedData();
   }, []);
 
-  // Função interna para salvar o estado de autenticação
   async function setAuthState(data: UserData, type: "client" | "provider") {
     setUser(data);
     setUserType(type);
@@ -68,7 +76,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     await AsyncStorage.setItem("@app:userType", type);
   }
 
-  // 2. CONECTADO: Função signIn agora chama a API
   async function signIn(
     credentials: LoginCredentials,
     type: "client" | "provider"
@@ -79,6 +86,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         credentials.email,
         credentials.password
       );
+
+      api.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${apiResponse.token}`;
 
       const userDataWithToken = {
         ...apiResponse.user,
@@ -97,14 +108,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       "@app:userType",
       "@app:token",
     ]);
+
+    delete api.defaults.headers.common["Authorization"];
+
     setUser(null);
     setUserType(null);
   }
 
-  // 3. CONECTADO: Funções de registro já usavam o service, agora usam a função interna
   async function register(data: RegisterClientDTO) {
     try {
       const apiResponse = await registerClient(data);
+
+      api.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${apiResponse.token}`;
+
       const userDataWithToken = {
         ...apiResponse.user,
         token: apiResponse.token,
@@ -119,6 +137,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   async function registerProvider(data: RegisterProviderDTO) {
     try {
       const apiResponse = await registerProviderService(data);
+
+      api.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${apiResponse.token}`;
+
       const userDataWithToken = {
         ...apiResponse.user,
         token: apiResponse.token,
@@ -130,7 +153,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }
 
-  // 4. CONECTADO: updateUser agora chama a API e atualiza o estado local
   async function updateUser(data: UpdateUserDTO) {
     try {
       if (!user) throw new Error("Não há usuário logado para atualizar.");

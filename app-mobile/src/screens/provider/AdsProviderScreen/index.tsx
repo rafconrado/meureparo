@@ -6,6 +6,9 @@ import {
   RefreshControl,
   ActivityIndicator,
 } from "react-native";
+
+import { useAuth } from "../../../contexts/AuthContext";
+
 import { Feather } from "@expo/vector-icons";
 import { AxiosError } from "axios";
 import api from "../../../services/api";
@@ -56,6 +59,7 @@ const categories = [
 ];
 
 const AdsProviderScreen: React.FC = () => {
+  const { user } = useAuth();
   const [ads, setAds] = useState<Ad[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -63,12 +67,18 @@ const AdsProviderScreen: React.FC = () => {
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [editingAd, setEditingAd] = useState<Ad | null>(null);
 
+  console.log(
+    `--- TELA RENDERIZANDO --- User: ${user?.email}, Anúncios na tela: ${ads.length}`
+  );
+
   const fetchAds = useCallback(async () => {
     try {
-      const response = await api.get("/ads");
+      const response = await api.get("/ads/provider/my-ads");
+      console.log("-> fetchAds: Dados recebidos da API:", response.data);
       setAds(response.data);
     } catch (error) {
       const err = error as AxiosError<{ message: string }>;
+
       Alert.alert(
         "Erro ao buscar anúncios",
         err.response?.data?.message || "Não foi possível carregar os dados."
@@ -77,11 +87,18 @@ const AdsProviderScreen: React.FC = () => {
       setLoading(false);
       setRefreshing(false);
     }
-  }, []);
+  }, [user]);
 
   useEffect(() => {
-    fetchAds();
-  }, [fetchAds]);
+    console.log(
+      `-> useEffect disparado por mudança de usuário: ${user?.email}`
+    );
+    if (user) {
+      fetchAds();
+    } else {
+      setAds([]);
+    }
+  }, [user, fetchAds]);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -146,7 +163,8 @@ const AdsProviderScreen: React.FC = () => {
               const err = error as AxiosError<{ message: string }>;
               Alert.alert(
                 "Erro ao Deletar",
-                err.response?.data?.message || "Não foi possível deletar o anúncio."
+                err.response?.data?.message ||
+                  "Não foi possível deletar o anúncio."
               );
             }
           },
@@ -177,15 +195,18 @@ const AdsProviderScreen: React.FC = () => {
     [handleOpenEditModal, handleDeleteAd]
   );
 
-  const renderEmptyList = useCallback(() => (
-    <EmptyContainer>
-      <Feather name="clipboard" size={64} color="#57b2c5" />
-      <EmptyText>Nenhum anúncio encontrado</EmptyText>
-      <EmptySubtext>
-        Toque no botão + para criar seu primeiro anúncio
-      </EmptySubtext>
-    </EmptyContainer>
-  ), []);
+  const renderEmptyList = useCallback(
+    () => (
+      <EmptyContainer>
+        <Feather name="clipboard" size={64} color="#57b2c5" />
+        <EmptyText>Nenhum anúncio encontrado</EmptyText>
+        <EmptySubtext>
+          Toque no botão + para criar seu primeiro anúncio
+        </EmptySubtext>
+      </EmptyContainer>
+    ),
+    []
+  );
 
   if (loading) {
     return (

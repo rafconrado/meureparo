@@ -13,7 +13,7 @@ export const CategoryCardItem = React.memo(
     return (
       <CategoryCard onPress={() => onPress(item)} activeOpacity={0.7}>
         <CategoryIcon style={{ backgroundColor: `${item.color}15` }}>
-          <Ionicons name={item.icon as any} size={28} color={item.color} />
+          <Ionicons name={item.icon as any} size={32} color={item.color} />
         </CategoryIcon>
         <CategoryName numberOfLines={2}>{item.name}</CategoryName>
       </CategoryCard>

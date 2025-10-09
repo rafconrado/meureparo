@@ -60,29 +60,40 @@ class Ad {
   static findAll(filter = {}) {
     return new Promise((resolve, reject) => {
       let sql = `
-        SELECT 
-          ads.id, ads.title, ads.description, ads.price, ads.categoryId, ads.providerId,
-          ads.image, ads.rating, ads.reviews, ads.isVerified, ads.isPromoted, ads.discount,
-          providers.name as providerName, 
-          providers.email as providerEmail,
-          providers.phone as providerPhone
-        FROM ads
-        JOIN providers ON ads.providerId = providers.id
-      `;
+      SELECT 
+        ads.id, ads.title, ads.description, ads.price, ads.categoryId, ads.providerId,
+        ads.image, ads.rating, ads.reviews, ads.isVerified, ads.isPromoted, ads.discount,
+        providers.name as providerName, 
+        providers.email as providerEmail,
+        providers.phone as providerPhone
+      FROM ads
+      JOIN providers ON ads.providerId = providers.id
+    `;
 
+      const conditions = [];
       const params = [];
 
-      // Adiciona a cláusula WHERE se um filtro de categoria for fornecido.
+      // Filtro por categoria (opcional)
       if (filter.categoryId) {
-        sql += ` WHERE ads.categoryId = ?`;
+        conditions.push("ads.categoryId = ?");
         params.push(filter.categoryId);
+      }
+
+      // Filtro por prestador (opcional)
+      if (filter.providerId) {
+        conditions.push("ads.providerId = ?");
+        params.push(filter.providerId);
+      }
+
+      // Adiciona o WHERE se houver condições
+      if (conditions.length > 0) {
+        sql += " WHERE " + conditions.join(" AND ");
       }
 
       db.all(sql, params, (err, rows) => {
         if (err) {
           reject(err);
         } else {
-          // Converte os valores de 0/1 para true/false.
           const adsWithBooleans = rows.map((ad) => ({
             ...ad,
             isVerified: !!ad.isVerified,

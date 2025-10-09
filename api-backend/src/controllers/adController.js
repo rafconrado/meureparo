@@ -1,14 +1,8 @@
 const Ad = require("../models/Ad");
 
+// --- FUNÇÃO DE CRIAÇÃO ---
 exports.createAd = async (req, res) => {
   const providerId = req.user.id;
-  const role = req.user.role;
-
-  if (role !== "provider") {
-    return res.status(403).json({
-      message: "Acesso negado. Apenas prestadores podem criar anúncios.",
-    });
-  }
 
   const {
     title,
@@ -22,6 +16,7 @@ exports.createAd = async (req, res) => {
     isPromoted,
     discount,
   } = req.body;
+
   if (!title || !description || !categoryId) {
     return res
       .status(400)
@@ -51,18 +46,30 @@ exports.createAd = async (req, res) => {
   }
 };
 
-// Busca todos os anúncios
+// --- NOVA FUNÇÃO PARA BUSCAR ANÚNCIOS DO PROVIDER ---
+exports.getProviderAds = async (req, res) => {
+  console.log("--- ROTA /provider/my-ads FOI ACESSADA ---");
+  console.log("ID do usuário logado:", req.user.id);
+  try {
+    const providerId = req.user.id;
+    const ads = await Ad.findAll({ providerId });
+    res.status(200).json(ads);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Erro ao buscar seus anúncios.", error: error.message });
+  }
+};
+
+// --- FUNÇÕES PÚBLICAS ---
 exports.getAllAds = async (req, res) => {
   try {
     const { categoryId } = req.query;
-
     const filter = {};
     if (categoryId) {
       filter.categoryId = categoryId;
     }
-
     const ads = await Ad.findAll(filter);
-
     res.status(200).json(ads);
   } catch (error) {
     res
@@ -71,7 +78,6 @@ exports.getAllAds = async (req, res) => {
   }
 };
 
-// Busca um anúncio por ID
 exports.getAdById = async (req, res) => {
   try {
     const ad = await Ad.findById(req.params.id);
@@ -86,34 +92,27 @@ exports.getAdById = async (req, res) => {
   }
 };
 
-// Atualiza um anúncio
+// --- FUNÇÕES DE ATUALIZAÇÃO E DELETE ---
 exports.updateAd = async (req, res) => {
   try {
     const adId = req.params.id;
     const providerIdFromToken = req.user.id;
-
     const ad = await Ad.findById(adId);
     if (!ad) {
       return res.status(404).json({ message: "Anúncio não encontrado." });
     }
-
     if (ad.providerId !== providerIdFromToken) {
       return res.status(403).json({
         message:
           "Acesso negado. Você não tem permissão para editar este anúncio.",
       });
     }
-
-    const updateData = req.body;
-
-    const result = await Ad.update(adId, updateData);
-
+    const result = await Ad.update(adId, req.body);
     if (result.changes === 0) {
       return res
         .status(404)
         .json({ message: "Anúncio não encontrado para atualização." });
     }
-
     res.status(200).json({ message: "Anúncio atualizado com sucesso." });
   } catch (error) {
     res
@@ -122,31 +121,26 @@ exports.updateAd = async (req, res) => {
   }
 };
 
-// Deleta um anúncio
 exports.deleteAd = async (req, res) => {
   try {
     const adId = req.params.id;
     const providerIdFromToken = req.user.id;
-
     const ad = await Ad.findById(adId);
     if (!ad) {
       return res.status(404).json({ message: "Anúncio não encontrado." });
     }
-
     if (ad.providerId !== providerIdFromToken) {
       return res.status(403).json({
         message:
           "Acesso negado. Você não tem permissão para deletar este anúncio.",
       });
     }
-
     const result = await Ad.delete(adId);
     if (result.changes === 0) {
       return res
         .status(404)
         .json({ message: "Anúncio não encontrado para deleção." });
     }
-
     res.status(200).json({ message: "Anúncio deletado com sucesso." });
   } catch (error) {
     res
