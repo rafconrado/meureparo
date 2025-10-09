@@ -87,6 +87,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         credentials.password
       );
 
+      const fetchedUser = apiResponse.user;
+
+      // 🚨 Validação de ambiente/role
+      if (fetchedUser.role !== type) {
+        throw new Error(
+          "Acesso inválido para este ambiente.."
+        );
+      }
+
+      // Configura token global
       api.defaults.headers.common[
         "Authorization"
       ] = `Bearer ${apiResponse.token}`;
@@ -95,10 +105,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         ...apiResponse.user,
         token: apiResponse.token,
       };
+
       await setAuthState(userDataWithToken, type);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Erro no contexto de signIn:", error);
-      throw error;
+
+      // Retorna mensagens mais amigáveis e neutras
+      const message =
+        error.response?.data?.message ||
+        error.message ||
+        "Não foi possível realizar o login. Tente novamente mais tarde.";
+
+      throw new Error(message);
     }
   }
 

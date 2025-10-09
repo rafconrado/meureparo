@@ -4,7 +4,7 @@ export interface UserData {
   email: string;
   token: string;
   avatarUrl?: string;
-  userType: "client" | "provider";
+  role: "client" | "provider";
 }
 
 export interface RegisterClientDTO {
