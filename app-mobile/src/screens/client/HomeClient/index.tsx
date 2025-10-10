@@ -69,10 +69,10 @@ const HomeClient = () => {
       ]);
 
       setApiData({
-        providers: adsResponse.data,
-        categories: categoriesResponse.data,
-        promos: promosData, 
-        partners: partnersData, 
+        providers: adsResponse.data.data || [],
+        categories: categoriesResponse.data || [],
+        promos: promosData,
+        partners: partnersData
       });
     } catch (err) {
       console.error("Erro ao buscar dados da API:", err);
@@ -208,7 +208,7 @@ const HomeClient = () => {
           <SectionTitle>⭐ Profissionais em Destaque</SectionTitle>
           <FlatList
             data={featuredProviders}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
               <FeaturedProviderCard
                 provider={item}
@@ -226,7 +226,7 @@ const HomeClient = () => {
           <SectionTitle>🚀 Anúncios Mais Populares</SectionTitle>
           <FlatList
             data={mostPopularProviders}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
               <ProviderCarouselCard
                 provider={item}
