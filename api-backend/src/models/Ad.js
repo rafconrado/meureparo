@@ -14,7 +14,7 @@ class Ad {
         price,
         categoryId,
         providerId,
-        image = null,
+        imageUrl = null,
         rating = 0,
         reviews = 0,
         isVerified = 0,
@@ -22,11 +22,16 @@ class Ad {
         discount = 0,
       } = data;
 
+      // Validação básica
+      if (!title || !description || !price || !categoryId || !providerId) {
+        return reject(new Error("Campos obrigatórios faltando"));
+      }
+
       const sql = `
         INSERT INTO ads (
           title, description, price, categoryId, providerId, 
-          image, rating, reviews, isVerified, isPromoted, discount
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          imageUrl, rating, reviews, isVerified, isPromoted, discount, createdAt
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
       `;
       const params = [
         title,
@@ -34,7 +39,7 @@ class Ad {
         price,
         categoryId,
         providerId,
-        image,
+        imageUrl,
         rating,
         reviews,
         isVerified,
@@ -54,43 +59,76 @@ class Ad {
 
   /**
    * Retorna anúncios com informações do prestador, com filtro opcional.
-   * @param {object} [filter={}] - Objeto de filtro opcional. Ex: { categoryId: 1 }.
+   * @param {object} [filter={}] - Objeto de filtro opcional.
    * @returns {Promise<Array>} Uma lista de anúncios.
    */
   static findAll(filter = {}) {
     return new Promise((resolve, reject) => {
       let sql = `
-      SELECT 
-        ads.id, ads.title, ads.description, ads.price, ads.categoryId, ads.providerId,
-        ads.image, ads.rating, ads.reviews, ads.isVerified, ads.isPromoted, ads.discount,
-        providers.name as providerName, 
-        providers.email as providerEmail,
-        providers.phone as providerPhone
-      FROM ads
-      JOIN providers ON ads.providerId = providers.id
-    `;
+        SELECT 
+          ads.id, ads.title, ads.description, ads.price, ads.categoryId, ads.providerId,
+          ads.imageUrl, ads.rating, ads.reviews, ads.isVerified, ads.isPromoted, ads.discount,
+          ads.createdAt, ads.updatedAt,
+          providers.name as providerName, 
+          providers.email as providerEmail,
+          providers.phone as providerPhone
+        FROM ads
+        JOIN providers ON ads.providerId = providers.id
+      `;
 
       const conditions = [];
       const params = [];
 
-      // Filtro por categoria (opcional)
       if (filter.categoryId) {
         conditions.push("ads.categoryId = ?");
         params.push(filter.categoryId);
       }
 
-      // Filtro por prestador (opcional)
       if (filter.providerId) {
         conditions.push("ads.providerId = ?");
         params.push(filter.providerId);
       }
 
-      // Adiciona o WHERE se houver condições
       if (conditions.length > 0) {
         sql += " WHERE " + conditions.join(" AND ");
       }
 
+      // Ordena por anúncios promovidos primeiro, depois por data
+      sql += " ORDER BY ads.isPromoted DESC, ads.createdAt DESC";
+
       db.all(sql, params, (err, rows) => {
+        if (err) {
+          reject(err);
+        } else {
+          const adsWithBooleans = rows.map((ad) => ({
+            ...ad,
+            isVerified: !!ad.isVerified,
+            isPromoted: !!ad.isPromoted,
+          }));
+          resolve(adsWithBooleans);
+        }
+      });
+    });
+  }
+
+  /**
+   * Encontra anúncios de um prestador específico.
+   * @param {number} providerId - ID do prestador.
+   * @returns {Promise<Array>} Lista de anúncios do prestador.
+   */
+  static findByProviderId(providerId) {
+    return new Promise((resolve, reject) => {
+      const sql = `
+        SELECT 
+          ads.id, ads.title, ads.description, ads.price, ads.categoryId, 
+          ads.providerId, ads.imageUrl, ads.rating, ads.reviews, 
+          ads.isVerified, ads.isPromoted, ads.discount,
+          ads.createdAt, ads.updatedAt
+        FROM ads
+        WHERE ads.providerId = ?
+        ORDER BY ads.createdAt DESC
+      `;
+      db.all(sql, [providerId], (err, rows) => {
         if (err) {
           reject(err);
         } else {
@@ -115,7 +153,9 @@ class Ad {
       const sql = `
         SELECT 
           ads.*, 
-          providers.name as providerName 
+          providers.name as providerName,
+          providers.email as providerEmail,
+          providers.phone as providerPhone
         FROM ads 
         JOIN providers ON ads.providerId = providers.id 
         WHERE ads.id = ?
@@ -143,7 +183,7 @@ class Ad {
         description,
         price,
         categoryId,
-        image,
+        imageUrl,
         rating,
         reviews,
         isVerified,
@@ -158,12 +198,13 @@ class Ad {
           description = COALESCE(?, description), 
           price = COALESCE(?, price), 
           categoryId = COALESCE(?, categoryId),
-          image = COALESCE(?, image),
+          imageUrl = COALESCE(?, imageUrl),
           rating = COALESCE(?, rating),
           reviews = COALESCE(?, reviews),
           isVerified = COALESCE(?, isVerified),
           isPromoted = COALESCE(?, isPromoted),
-          discount = COALESCE(?, discount)
+          discount = COALESCE(?, discount),
+          updatedAt = datetime('now')
         WHERE id = ?
       `;
       const params = [
@@ -171,7 +212,7 @@ class Ad {
         description,
         price,
         categoryId,
-        image,
+        imageUrl,
         rating,
         reviews,
         isVerified,

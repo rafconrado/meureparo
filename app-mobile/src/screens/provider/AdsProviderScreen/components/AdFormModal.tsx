@@ -5,11 +5,16 @@ import {
   ScrollView,
   Platform,
   TouchableWithoutFeedback,
+  Alert,
   TextInput,
+  Image,
 } from "react-native";
-import { Feather } from "@expo/vector-icons";
 
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import * as ImagePicker from "expo-image-picker";
+
+import { Feather } from "@expo/vector-icons";
+import theme from "../../../../theme";
 
 import {
   ModalOverlay,
@@ -37,13 +42,19 @@ import {
   CategoryModalContent,
   CategoryOption,
   CategoryOptionText,
+  ImagePickerButton,
+  ImagePickerText,
+  ImagePreviewContainer,
+  ImagePreview,
 } from "./../style";
 
 interface AdData {
+  id?: number;
   title: string;
   description: string;
   price: number;
   category: string;
+  image?: string | null;
 }
 
 interface AdFormModalProps {
@@ -67,6 +78,7 @@ const initialAdState: AdData = {
   description: "",
   price: 0,
   category: "",
+  image: null,
 };
 
 export const AdFormModal: React.FC<AdFormModalProps> = ({
@@ -77,6 +89,7 @@ export const AdFormModal: React.FC<AdFormModalProps> = ({
   initialData,
   categories,
 }) => {
+  const [isPickingImage, setIsPickingImage] = useState(false);
   const [ad, setAd] = useState<AdData>(initialAdState);
   const [isCategoryModalVisible, setCategoryModalVisible] = useState(false);
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>(
@@ -93,12 +106,58 @@ export const AdFormModal: React.FC<AdFormModalProps> = ({
     }
   }, [initialData, visible]);
 
+  const handlePickImage = async () => {
+    setIsPickingImage(true);
+
+    try {
+      const existingStatus =
+        await ImagePicker.getMediaLibraryPermissionsAsync();
+      let finalStatus = existingStatus;
+
+      if (existingStatus.status !== "granted") {
+        const newStatus =
+          await ImagePicker.requestMediaLibraryPermissionsAsync();
+        finalStatus = newStatus;
+      }
+
+      if (finalStatus.status !== "granted") {
+        Alert.alert(
+          "Permissão Necessária",
+          "Para selecionar uma imagem, você precisa permitir o acesso à galeria."
+        );
+        setIsPickingImage(false);
+        return;
+      }
+
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [16, 9],
+        quality: 0.7,
+        exif: false,
+      });
+
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        setAd((prev) => ({ ...prev, image: result.assets[0].uri }));
+      }
+    } catch (error) {
+      console.error("Erro ao escolher a imagem:", error);
+      Alert.alert("Erro", "Ocorreu um erro ao selecionar a imagem.");
+    } finally {
+      setIsPickingImage(false);
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setAd((prev) => ({ ...prev, image: null }));
+  };
+
   const handleInputChange = (
     field: keyof AdData,
     value: string | number | null
   ) => {
-    setAd((prev) => ({ ...prev, [field]: value || 0 }));
-    if (validationErrors[field]) {
+    setAd((prev) => ({ ...prev, [field]: value || "" }));
+    if (field in validationErrors) {
       setValidationErrors((prev) => ({ ...prev, [field]: undefined }));
     }
   };
@@ -111,6 +170,7 @@ export const AdFormModal: React.FC<AdFormModalProps> = ({
 
   const validateForm = (): boolean => {
     const errors: ValidationErrors = {};
+
     if (!ad.title.trim() || ad.title.trim().length < 3) {
       errors.title = "Título deve ter pelo menos 3 caracteres";
     }
@@ -123,6 +183,7 @@ export const AdFormModal: React.FC<AdFormModalProps> = ({
     if (!ad.description.trim() || ad.description.trim().length < 10) {
       errors.description = "Descrição deve ter pelo menos 10 caracteres";
     }
+
     setValidationErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -133,7 +194,8 @@ export const AdFormModal: React.FC<AdFormModalProps> = ({
     }
   };
 
-  const isEditMode = !!initialData;
+  const isEditMode = !!initialData?.id;
+  const isLoadingImage = ad.image && isPickingImage;
 
   return (
     <Modal
@@ -149,7 +211,7 @@ export const AdFormModal: React.FC<AdFormModalProps> = ({
             <ModalHeader>
               <ModalTitle>Selecione a Categoria</ModalTitle>
               <CloseButton onPress={() => setCategoryModalVisible(false)}>
-                <Feather name="x" size={24} color="#6c757d" />
+                <Feather name="x" size={24} color={theme.COLORS.GRAY_200} />
               </CloseButton>
             </ModalHeader>
             <ScrollView style={{ flex: 1 }}>
@@ -159,7 +221,11 @@ export const AdFormModal: React.FC<AdFormModalProps> = ({
                   onPress={() => selectCategory(category)}
                 >
                   <CategoryOptionText>{category}</CategoryOptionText>
-                  <Feather name="chevron-right" size={20} color="#57b2c5" />
+                  <Feather
+                    name="chevron-right"
+                    size={20}
+                    color={theme.COLORS.BLUE_400}
+                  />
                 </CategoryOption>
               ))}
             </ScrollView>
@@ -176,7 +242,11 @@ export const AdFormModal: React.FC<AdFormModalProps> = ({
                       {isEditMode ? "Editar Anúncio" : "Novo Anúncio"}
                     </ModalTitle>
                     <CloseButton onPress={onClose} disabled={isSaving}>
-                      <Feather name="x" size={24} color="#6c757d" />
+                      <Feather
+                        name="x"
+                        size={24}
+                        color={theme.COLORS.GRAY_200}
+                      />
                     </CloseButton>
                   </ModalHeader>
 
@@ -192,11 +262,62 @@ export const AdFormModal: React.FC<AdFormModalProps> = ({
                     enableOnAndroid={true}
                   >
                     <ModalBody>
+                      {/* --- CAMPO IMAGEM --- */}
+                      <InputGroup>
+                        <InputLabel>Imagem do Serviço</InputLabel>
+                        {ad.image ? (
+                          <ImagePreviewContainer>
+                            <ImagePreview
+                              source={{ uri: ad.image }}
+                              resizeMode="cover"
+                            />
+                            <TouchableOpacity
+                              onPress={handleRemoveImage}
+                              style={{
+                                position: "absolute",
+                                top: 8,
+                                right: 8,
+                                backgroundColor: "rgba(0, 0, 0, 0.6)",
+                                borderRadius: 20,
+                                padding: 6,
+                              }}
+                            >
+                              <Feather
+                                name="x"
+                                size={20}
+                                color={theme.COLORS.WHITE}
+                              />
+                            </TouchableOpacity>
+                          </ImagePreviewContainer>
+                        ) : (
+                          <ImagePickerButton
+                            onPress={handlePickImage}
+                            disabled={isSaving || isPickingImage}
+                            activeOpacity={0.7}
+                          >
+                            <Feather
+                              name="image"
+                              size={32}
+                              color={theme.COLORS.ORANGE_500}
+                            />
+                            <ImagePickerText>
+                              {isPickingImage
+                                ? "Carregando..."
+                                : "Toque para selecionar"}
+                            </ImagePickerText>
+                          </ImagePickerButton>
+                        )}
+                      </InputGroup>
+
                       {/* --- CAMPO TÍTULO --- */}
                       <InputGroup>
                         <InputLabel>Título do Serviço *</InputLabel>
                         <InputContainer error={!!validationErrors.title}>
-                          <Feather name="type" size={20} color="#57b2c5" />
+                          <Feather
+                            name="type"
+                            size={20}
+                            color={theme.COLORS.BLUE_400}
+                          />
                           <StyledInput
                             placeholder="Ex: Pintura residencial completa"
                             value={ad.title}
@@ -206,9 +327,9 @@ export const AdFormModal: React.FC<AdFormModalProps> = ({
                             editable={!isSaving}
                             maxLength={100}
                             returnKeyType="next"
-                            onSubmitEditing={() => {
-                              setCategoryModalVisible(true);
-                            }}
+                            onSubmitEditing={() =>
+                              setCategoryModalVisible(true)
+                            }
                             blurOnSubmit={false}
                           />
                         </InputContainer>
@@ -227,14 +348,18 @@ export const AdFormModal: React.FC<AdFormModalProps> = ({
                           disabled={isSaving}
                         >
                           <CategoryPicker error={!!validationErrors.category}>
-                            <Feather name="tag" size={20} color="#57b2c5" />
+                            <Feather
+                              name="tag"
+                              size={20}
+                              color={theme.COLORS.BLUE_400}
+                            />
                             <CategoryPickerText selected={!!ad.category}>
                               {ad.category || "Selecione uma categoria"}
                             </CategoryPickerText>
                             <Feather
                               name="chevron-down"
                               size={20}
-                              color="#57b2c5"
+                              color={theme.COLORS.BLUE_400}
                             />
                           </CategoryPicker>
                         </TouchableOpacity>
@@ -262,9 +387,9 @@ export const AdFormModal: React.FC<AdFormModalProps> = ({
                             editable={!isSaving}
                             ref={priceInputRef}
                             returnKeyType="next"
-                            onSubmitEditing={() => {
-                              descriptionInputRef.current?.focus();
-                            }}
+                            onSubmitEditing={() =>
+                              descriptionInputRef.current?.focus()
+                            }
                             blurOnSubmit={false}
                           />
                         </InputContainer>
@@ -275,7 +400,7 @@ export const AdFormModal: React.FC<AdFormModalProps> = ({
                         )}
                       </InputGroup>
 
-                      {/* --- CAMPO DESCRIÇÃO (ÚLTIMO CAMPO) --- */}
+                      {/* --- CAMPO DESCRIÇÃO --- */}
                       <InputGroup>
                         <InputLabel>Descrição do Serviço *</InputLabel>
                         <TextArea
@@ -297,7 +422,7 @@ export const AdFormModal: React.FC<AdFormModalProps> = ({
                         <ValidationText
                           style={{
                             textAlign: "right",
-                            color: "#6c757d",
+                            color: theme.COLORS.GRAY_200,
                             fontSize: 12,
                           }}
                         >
