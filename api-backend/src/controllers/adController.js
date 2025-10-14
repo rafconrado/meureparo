@@ -1,6 +1,7 @@
 const Ad = require("../models/Ad");
 const path = require("path");
 const fs = require("fs").promises;
+const adPresenter = require("../presenters/adPresenter");
 
 // --- FUNÇÃO DE CRIAÇÃO COM UPLOAD DE IMAGEM ---
 exports.createAd = async (req, res) => {
@@ -54,7 +55,7 @@ exports.createAd = async (req, res) => {
 
     return res.status(201).json({
       message: "Anúncio criado com sucesso!",
-      data: newAd,
+      data: adPresenter.format(newAd, req),
     });
   } catch (error) {
     console.error("❌ Erro ao criar anúncio:", error);
@@ -83,11 +84,12 @@ exports.getProviderAds = async (req, res) => {
 
     const providerId = req.user.id;
     const ads = await Ad.findByProviderId(providerId);
+    const formattedAds = adPresenter.formatMany(ads, req);
 
     return res.status(200).json({
       message: "Seus anúncios",
       count: ads.length,
-      data: ads,
+      data: formattedAds,
     });
   } catch (error) {
     console.error("❌ Erro ao buscar anúncios do prestador:", error);
@@ -112,11 +114,12 @@ exports.getAllAds = async (req, res) => {
     }
 
     const ads = await Ad.findAll(filter);
+    const formattedAds = adPresenter.formatMany(ads, req);
 
     return res.status(200).json({
       message: "Anúncios obtidos com sucesso",
       count: ads.length,
-      data: ads,
+      data: formattedAds,
     });
   } catch (error) {
     console.error("❌ Erro ao buscar anúncios:", error);
@@ -140,7 +143,7 @@ exports.getAdById = async (req, res) => {
 
     return res.status(200).json({
       message: "Anúncio encontrado",
-      data: ad,
+      data: adPresenter.format(ad, req),
     });
   } catch (error) {
     console.error("❌ Erro ao buscar anúncio:", error);
@@ -237,7 +240,7 @@ exports.updateAd = async (req, res) => {
 
     return res.status(200).json({
       message: "Anúncio atualizado com sucesso.",
-      data: updatedAd,
+      data: adPresenter.format(updatedAd, req),
     });
   } catch (error) {
     console.error("❌ Erro ao atualizar anúncio:", error);
