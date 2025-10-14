@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Documentação da API - MEUReparo</title>
+    <title>Documentação MEUReparo</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap');
@@ -66,7 +66,7 @@
     <div class="container mx-auto max-w-full lg:max-w-7xl px-4 py-8 md:py-12">
         <header class="relative mb-10 border-b border-slate-200 pb-6">
             <h1 class="text-4xl font-bold text-slate-800">Documentação - MEUReparo 🛠️</h1>
-            <p class="mt-2 text-lg text-slate-500">Endpoints disponíveis na API, organizados por perfil de usuário.</p>
+            <p class="mt-2 text-lg text-slate-500">Endpoints e requsições disponíveis!</p>
             
             <div class="absolute top-0 right-0 bg-slate-100 text-slate-500 text-sm font-semibold px-3 py-1.5 rounded-md">
                 Versão 1.0.0
@@ -83,63 +83,36 @@
                 <nav id="api-nav">
                     <h3 class="text-sm font-semibold uppercase text-slate-500 tracking-wider mb-3">Visão Geral</h3>
                     <ul class="space-y-1 mb-6">
-                        <li><a href="#introduction"
-                                class="nav-link block w-full text-left px-3 py-2 rounded-md text-slate-600 hover:bg-slate-200 transition-colors">Introdução</a>
-                        </li>
+                        <li><a href="#introduction" class="nav-link block w-full text-left px-3 py-2 rounded-md text-slate-600 hover:bg-slate-200 transition-colors">Introdução</a></li>
                     </ul>
 
-                    <h3 class="text-sm font-semibold uppercase text-slate-500 tracking-wider mb-3">Cliente</h3>
+                    <h3 class="text-sm font-semibold uppercase text-slate-500 tracking-wider mb-3">Autenticação</h3>
                     <ul class="space-y-1 mb-6">
-                        <li><a href="#register-client"
-                                class="nav-link block w-full text-left px-3 py-2 rounded-md text-slate-600 hover:bg-slate-200 transition-colors">Registrar
-                                Cliente</a></li>
-                        <li><a href="#login-client"
-                                class="nav-link block w-full text-left px-3 py-2 rounded-md text-slate-600 hover:bg-slate-200 transition-colors">Login
-                                Cliente</a></li>
-                        <li><a href="#update-profile-client"
-                                class="nav-link block w-full text-left px-3 py-2 rounded-md text-slate-600 hover:bg-slate-200 transition-colors">Atualizar
-                                Perfil</a></li>
+                        <li><a href="#register-client" class="nav-link block w-full text-left px-3 py-2 rounded-md text-slate-600 hover:bg-slate-200 transition-colors">Registrar Cliente</a></li>
+                        <li><a href="#register-provider" class="nav-link block w-full text-left px-3 py-2 rounded-md text-slate-600 hover:bg-slate-200 transition-colors">Registrar Prestador</a></li>
+                        <li><a href="#login" class="nav-link block w-full text-left px-3 py-2 rounded-md text-slate-600 hover:bg-slate-200 transition-colors">Login Unificado</a></li>
+                        <li><a href="#update-profile" class="nav-link block w-full text-left px-3 py-2 rounded-md text-slate-600 hover:bg-slate-200 transition-colors">Atualizar Perfil</a></li>
                     </ul>
 
-                    <h3 class="text-sm font-semibold uppercase text-slate-500 tracking-wider mb-3">Prestador</h3>
+                    <h3 class="text-sm font-semibold uppercase text-slate-500 tracking-wider mb-3">Anúncios</h3>
                     <ul class="space-y-1 mb-6">
-                        <li><a href="#register-provider"
-                                class="nav-link block w-full text-left px-3 py-2 rounded-md text-slate-600 hover:bg-slate-200 transition-colors">Registrar
-                                Prestador</a></li>
-                        <li><a href="#login-provider"
-                                class="nav-link block w-full text-left px-3 py-2 rounded-md text-slate-600 hover:bg-slate-200 transition-colors">Login
-                                Prestador</a></li>
-                        <li><a href="#update-profile-provider"
-                                class="nav-link block w-full text-left px-3 py-2 rounded-md text-slate-600 hover:bg-slate-200 transition-colors">Atualizar
-                                Perfil</a></li>
-                        <li><a href="#create-ad"
-                                class="nav-link block w-full text-left px-3 py-2 rounded-md text-slate-600 hover:bg-slate-200 transition-colors">Criar
-                                Anúncio</a></li>
-                        <li><a href="#update-ad"
-                                class="nav-link block w-full text-left px-3 py-2 rounded-md text-slate-600 hover:bg-slate-200 transition-colors">Atualizar
-                                Anúncio</a></li>
-                        <li><a href="#delete-ad"
-                                class="nav-link block w-full text-left px-3 py-2 rounded-md text-slate-600 hover:bg-slate-200 transition-colors">Deletar
-                                Anúncio</a></li>
+                        <li><a href="#list-ads" class="nav-link block w-full text-left px-3 py-2 rounded-md text-slate-600 hover:bg-slate-200 transition-colors">Listar Anúncios</a></li>
+                        <li><a href="#get-ad-by-id" class="nav-link block w-full text-left px-3 py-2 rounded-md text-slate-600 hover:bg-slate-200 transition-colors">Buscar Anúncio por ID</a></li>
+                        <li><a href="#get-provider-ads" class="nav-link block w-full text-left px-3 py-2 rounded-md text-slate-600 hover:bg-slate-200 transition-colors">Meus Anúncios</a></li>
+                        <li><a href="#create-ad" class="nav-link block w-full text-left px-3 py-2 rounded-md text-slate-600 hover:bg-slate-200 transition-colors">Criar Anúncio</a></li>
+                        <li><a href="#update-ad" class="nav-link block w-full text-left px-3 py-2 rounded-md text-slate-600 hover:bg-slate-200 transition-colors">Atualizar Anúncio</a></li>
+                        <li><a href="#delete-ad" class="nav-link block w-full text-left px-3 py-2 rounded-md text-slate-600 hover:bg-slate-200 transition-colors">Deletar Anúncio</a></li>
                     </ul>
 
-                    <h3 class="text-sm font-semibold uppercase text-slate-500 tracking-wider mb-3">Anúncios (Público)
-                    </h3>
+                    <h3 class="text-sm font-semibold uppercase text-slate-500 tracking-wider mb-3">Categorias</h3>
                     <ul class="space-y-1 mb-6">
-                        <li><a href="#list-ads"
-                                class="nav-link block w-full text-left px-3 py-2 rounded-md text-slate-600 hover:bg-slate-200 transition-colors">Listar
-                                Anúncios</a></li>
-                        <li><a href="#get-ad-by-id"
-                                class="nav-link block w-full text-left px-3 py-2 rounded-md text-slate-600 hover:bg-slate-200 transition-colors">Buscar
-                                Anúncio por ID</a></li>
+                        <li><a href="#list-categories" class="nav-link block w-full text-left px-3 py-2 rounded-md text-slate-600 hover:bg-slate-200 transition-colors">Listar Categorias</a></li>
+                        <li><a href="#create-category" class="nav-link block w-full text-left px-3 py-2 rounded-md text-slate-600 hover:bg-slate-200 transition-colors">Criar Categoria</a></li>
                     </ul>
                     
                     <h3 class="text-sm font-semibold uppercase text-slate-500 tracking-wider mb-3">Admin</h3>
                     <ul class="space-y-1">
-                        <li><a href="#admin-delete-ad"
-                                class="nav-link block w-full text-left px-3 py-2 rounded-md text-slate-600 hover:bg-slate-200 transition-colors">Deletar Anúncio (Admin)</a></li>
-                        <li><a href="#admin-list-users"
-                                class="nav-link block w-full text-left px-3 py-2 rounded-md text-slate-600 hover:bg-slate-200 transition-colors">Listar Usuários</a></li>
+                        <li><a href="#list-users" class="nav-link block w-full text-left px-3 py-2 rounded-md text-slate-600 hover:bg-slate-200 transition-colors">Listar Usuários</a></li>
                     </ul>
                 </nav>
                 <div id="no-results" class="text-slate-500 mt-4" style="display: none;">
@@ -152,367 +125,355 @@
                 <section id="introduction" class="content-section">
                     <h2 class="text-3xl font-semibold text-slate-800 mb-4">Introdução</h2>
                     <div class="space-y-4 text-slate-600">
-                        <p>Bem-vindo à documentação da API MEUReparo. Esta API é o coração do aplicativo, responsável
-                            por gerenciar usuários (clientes, prestadores e admins) e os anúncios de serviços.</p>
-                        <p>A API segue os princípios RESTful e utiliza JSON para a troca de dados. A autenticação é
-                            realizada através de Bearer Tokens (JWT), garantindo que apenas usuários autorizados possam
-                            acessar rotas protegidas.</p>
+                        <p>Bem-vindo à documentação MEUReparo. Esta API é o coração do aplicativo, responsável por gerenciar usuários (clientes e prestadores) e os anúncios de serviços.</p>
+                        <p>A API segue os princípios RESTful e utiliza JSON para a troca de dados. A autenticação é realizada através de Bearer Tokens (JWT), garantindo que apenas usuários autorizados possam acessar rotas protegidas.</p>
 
                         <h4 class="text-xl font-semibold text-slate-700 pt-4">URLs Base</h4>
-                        <p>Existem prefixos principais para os endpoints, como:</p>
                         <ul class="list-disc list-inside space-y-2 pl-4">
-                            <li><code class="font-mono bg-slate-100 px-2 py-1 rounded">/api-backend/auth</code>: Para
-                                operações de autenticação e perfis.</li>
-                            <li><code class="font-mono bg-slate-100 px-2 py-1 rounded">/api-backend/ads</code>: Para
-                                operações relacionadas a anúncios.</li>
-                             <li><code class="font-mono bg-slate-100 px-2 py-1 rounded">/api-backend/admin</code>: Para
-                                operações administrativas.</li>
+                            <li><code class="font-mono bg-slate-100 px-2 py-1 rounded">/api-backend/auth</code>: Autenticação e perfis.</li>
+                            <li><code class="font-mono bg-slate-100 px-2 py-1 rounded">/api-backend/ads</code>: Anúncios.</li>
+                            <li><code class="font-mono bg-slate-100 px-2 py-1 rounded">/api-backend/categories</code>: Categorias.</li>
+                            <li><code class="font-mono bg-slate-100 px-2 py-1 rounded">/api-backend/users</code>: Usuários (admin).</li>
                         </ul>
                         
                         <h4 class="text-xl font-semibold text-slate-700 pt-4">Perfis de Usuário e Permissões</h4>
-                        <p>A API opera com três perfis de usuário distintos:</p>
                         <ul class="list-disc list-inside space-y-2 pl-4">
-                            <li><strong>Cliente:</strong> Pode se registrar, fazer login, atualizar seu próprio perfil e visualizar anúncios.</li>
-                            <li><strong>Prestador:</strong> Pode fazer tudo que o cliente faz, e adicionalmente, criar, editar e deletar seus próprios anúncios. Rotas específicas são marcadas como <span class="flex-none items-center bg-amber-100 text-amber-800 text-xs font-medium px-2 py-0.5 rounded-full inline-flex">Protegida</span>.</li>
-                            <li><strong>Admin:</strong> Possui o nível mais alto de acesso. Pode gerenciar todos os dados da plataforma, como deletar qualquer anúncio ou usuário. Rotas de admin são marcadas como <span class="flex-none items-center bg-purple-100 text-purple-800 text-xs font-medium px-2 py-0.5 rounded-full inline-flex">Admin</span>.</li>
+                            <li><strong>Cliente:</strong> Registrar, login, atualizar perfil e visualizar anúncios.</li>
+                            <li><strong>Prestador:</strong> Tudo que o cliente faz, mais criar, editar, deletar e visualizar seus anúncios.</li>
+                            <li><strong>Admin:</strong> Gerenciar usuários e dados da plataforma.</li>
                         </ul>
 
                         <h4 class="text-xl font-semibold text-slate-700 pt-4">Autenticação</h4>
-                        <p>
-                            Rotas protegidas requerem um token JWT no cabeçalho <code>Authorization</code>:
-                        </p>
+                        <p>Rotas protegidas requerem token JWT:</p>
                         <div class="code-block">
-                            <pre class="bg-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto whitespace-pre-wrap break-words"><code>Authorization: Bearer seu_token_jwt_aqui</code></pre>
+                            <pre class="bg-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto"><code>Authorization: Bearer seu_token_jwt_aqui</code></pre>
                         </div>
-                        <p>O token é obtido nas rotas de login ou registro.</p>
 
-                        <h4 class="text-xl font-semibold text-slate-700 pt-4">Códigos de Status</h4>
-                        <p>A API utiliza códigos de status HTTP padrão (200, 201, 400, 401, 403, 404, 500).</p>
+                        <h4 class="text-xl font-semibold text-slate-700 pt-4">Upload de Imagens</h4>
+                        <p>Máximo 5MB. Use <code class="font-mono bg-slate-100 px-2 py-1 rounded">form-data</code> com chave <code class="font-mono bg-slate-100 px-2 py-1 rounded">image</code>. Servidas em <code class="font-mono bg-slate-100 px-2 py-1 rounded">/uploads/seu-arquivo.jpg</code>.</p>
                     </div>
                 </section>
                 
                 <section id="register-client" class="content-section">
-                    <div class="flex items-center gap-3 mb-2"><span
-                            class="bg-green-100 text-green-800 text-sm font-semibold px-3 py-1 rounded-md">POST</span>
+                    <div class="flex items-center gap-3 mb-2"><span class="bg-green-100 text-green-800 text-sm font-semibold px-3 py-1 rounded-md">POST</span>
                         <h2 class="text-2xl font-semibold text-slate-800 font-mono">/auth/register/client</h2>
                     </div>
                     <p class="text-slate-500 mb-6">Cria um novo usuário do tipo "cliente".</p>
-                    <h4 class="font-semibold text-slate-800 mb-2">Corpo da Requisição (Body):</h4>
+                    <h4 class="font-semibold text-slate-800 mb-2">Corpo da Requisição:</h4>
                     <div class="code-block"><button class="copy-btn">Copiar</button>
-                        <pre class="bg-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto whitespace-pre-wrap break-words"><code>{
-    "name": "string",
-    "cpf": "string",
-    "email": "string",
-    "password": "string",
-    "phone": "string",
-    "cep": "string",
-    "logradouro": "string",
-    "numero": "string ",
-    "complemento": "string (opcional)",
-    "bairro": "string",
-    "cidade": "string",
-    "uf": "string",
-    "comoFicouSabendo": "string"
+                        <pre class="bg-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto"><code>{
+  "name": "string",
+  "cpf": "string",
+  "email": "string",
+  "password": "string",
+  "phone": "string",
+  "cep": "string",
+  "logradouro": "string",
+  "numero": "string",
+  "complemento": "string (opcional)",
+  "bairro": "string",
+  "cidade": "string",
+  "uf": "string",
+  "comoFicouSabendo": "string"
 }</code></pre>
                     </div>
-                     <h4 class="font-semibold text-slate-800 mb-2 mt-6">Resposta de Sucesso (201 Created):</h4>
-                    <div class="code-block"><button class="copy-btn">Copiar</button><pre class="bg-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto whitespace-pre-wrap break-words"><code>{
-    "message": "Cliente criado com sucesso!",
-    "user": {
-        "id": 1,
-        "name": "Nome do Cliente",
-        "email": "cliente@email.com",
-        "userType": "client"
-    },
-    "token": "seu_token_jwt_aqui"
-}</code></pre></div>
-                </section>
-
-                <section id="login-client" class="content-section">
-                    <div class="flex items-center gap-3 mb-2"><span
-                            class="bg-green-100 text-green-800 text-sm font-semibold px-3 py-1 rounded-md">POST</span>
-                        <h2 class="text-2xl font-semibold text-slate-800 font-mono">/auth/login/client</h2>
-                    </div>
-                    <p class="text-slate-500 mb-6">Autentica um "cliente" e retorna um token de acesso.</p>
-                     <h4 class="font-semibold text-slate-800 mb-2">Corpo da Requisição (Body):</h4>
+                    <h4 class="font-semibold text-slate-800 mb-2 mt-6">Resposta (201 Created):</h4>
                     <div class="code-block"><button class="copy-btn">Copiar</button>
-                        <pre class="bg-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto whitespace-pre-wrap break-words"><code>{
-    "email": "string",
-    "password": "string"
-}</code></pre>
-                    </div>
-                     <h4 class="font-semibold text-slate-800 mb-2 mt-6">Resposta de Sucesso (200 OK):</h4>
-                    <div class="code-block"><button class="copy-btn">Copiar</button><pre class="bg-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto whitespace-pre-wrap break-words"><code>{
-    "message": "Login bem-sucedido!",
-    "user": {
-        "id": 1,
-        "name": "Nome do Cliente",
-        "email": "cliente@email.com",
-        "userType": "client"
-    },
-    "token": "seu_token_jwt_aqui"
-}</code></pre></div>
-                </section>
-
-                <section id="update-profile-client" class="content-section">
-                    <div class="flex items-center gap-3 mb-2"><span
-                            class="bg-blue-100 text-blue-800 text-sm font-semibold px-3 py-1 rounded-md">PUT</span>
-                        <h2 class="text-2xl font-semibold text-slate-800 font-mono">/auth/profile</h2><span
-                            class="flex items-center gap-1.5 bg-amber-100 text-amber-800 text-xs font-medium px-2 py-0.5 rounded-full">Protegida</span>
-                    </div>
-                    <p class="text-slate-500 mb-6">Atualiza o nome e email do <strong>cliente</strong> logado. Requer
-                        Bearer Token de cliente.</p>
-                    <h4 class="font-semibold text-slate-800 mb-2">Corpo da Requisição (Body):</h4>
-                    <div class="code-block"><button class="copy-btn">Copiar</button>
-                        <pre class="bg-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto whitespace-pre-wrap break-words"><code>{
-    "name": "string",
-    "email": "string"
-}</code></pre>
-                    </div>
-                     <h4 class="font-semibold text-slate-800 mb-2 mt-6">Resposta de Sucesso (200 OK):</h4>
-                    <div class="code-block"><button class="copy-btn">Copiar</button><pre class="bg-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto whitespace-pre-wrap break-words"><code>{
+                        <pre class="bg-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto"><code>{
+  "message": "Cliente criado com sucesso!",
+  "user": {
     "id": 1,
-    "name": "Novo Nome Cliente",
-    "email": "novoemail@cliente.com",
+    "name": "Nome do Cliente",
+    "email": "cliente@email.com",
     "userType": "client"
-}</code></pre></div>
+  },
+  "token": "seu_token_jwt_aqui"
+}</code></pre>
+                    </div>
                 </section>
 
                 <section id="register-provider" class="content-section">
-                    <div class="flex items-center gap-3 mb-2"><span
-                            class="bg-green-100 text-green-800 text-sm font-semibold px-3 py-1 rounded-md">POST</span>
+                    <div class="flex items-center gap-3 mb-2"><span class="bg-green-100 text-green-800 text-sm font-semibold px-3 py-1 rounded-md">POST</span>
                         <h2 class="text-2xl font-semibold text-slate-800 font-mono">/auth/register/provider</h2>
                     </div>
                     <p class="text-slate-500 mb-6">Cria um novo usuário do tipo "prestador".</p>
-                    <h4 class="font-semibold text-slate-800 mb-2">Corpo da Requisição (Body):</h4>
+                    <h4 class="font-semibold text-slate-800 mb-2">Corpo da Requisição:</h4>
                     <div class="code-block"><button class="copy-btn">Copiar</button>
-                        <pre class="bg-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto whitespace-pre-wrap break-words"><code>{
-    "name": "string",
-    "cnpj": "string",
-    "email": "string",
-    "password": "string",
-    "phone": "string",
-    "servico": "string",
-    "cep": "string",
-    "logradouro": "string",
-    "numero": "string",
-    "complemento": "string (opcional)",
-    "bairro": "string",
-    "cidade": "string",
-    "uf": "string"
+                        <pre class="bg-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto"><code>{
+  "name": "string",
+  "cnpj": "string",
+  "email": "string",
+  "password": "string",
+  "phone": "string",
+  "servico": "string",
+  "cep": "string",
+  "logradouro": "string",
+  "numero": "string",
+  "complemento": "string (opcional)",
+  "bairro": "string",
+  "cidade": "string",
+  "uf": "string"
 }</code></pre>
                     </div>
-                     <h4 class="font-semibold text-slate-800 mb-2 mt-6">Resposta de Sucesso (201 Created):</h4>
-                    <div class="code-block"><button class="copy-btn">Copiar</button><pre class="bg-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto whitespace-pre-wrap break-words"><code>{
-    "message": "Prestador criado com sucesso!",
-    "user": {
-        "id": 2,
-        "name": "Nome do Prestador",
-        "email": "prestador@email.com",
-        "userType": "provider"
-    },
-    "token": "seu_token_jwt_aqui"
-}</code></pre></div>
-                </section>
-
-                <section id="login-provider" class="content-section">
-                    <div class="flex items-center gap-3 mb-2"><span
-                            class="bg-green-100 text-green-800 text-sm font-semibold px-3 py-1 rounded-md">POST</span>
-                        <h2 class="text-2xl font-semibold text-slate-800 font-mono">/auth/login/provider</h2>
-                    </div>
-                    <p class="text-slate-500 mb-6">Autentica um "prestador" e retorna um token de acesso.</p>
-                     <h4 class="font-semibold text-slate-800 mb-2">Corpo da Requisição (Body):</h4>
+                    <h4 class="font-semibold text-slate-800 mb-2 mt-6">Resposta (201 Created):</h4>
                     <div class="code-block"><button class="copy-btn">Copiar</button>
-                        <pre class="bg-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto whitespace-pre-wrap break-words"><code>{
-    "email": "string",
-    "password": "string"
-}</code></pre>
-                    </div>
-                     <h4 class="font-semibold text-slate-800 mb-2 mt-6">Resposta de Sucesso (200 OK):</h4>
-                    <div class="code-block"><button class="copy-btn">Copiar</button><pre class="bg-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto whitespace-pre-wrap break-words"><code>{
-    "message": "Login bem-sucedido!",
-    "user": {
-        "id": 2,
-        "name": "Nome do Prestador",
-        "email": "prestador@email.com",
-        "userType": "provider"
-    },
-    "token": "seu_token_jwt_aqui"
-}</code></pre></div>
-                </section>
-
-                <section id="update-profile-provider" class="content-section">
-                    <div class="flex items-center gap-3 mb-2"><span
-                            class="bg-blue-100 text-blue-800 text-sm font-semibold px-3 py-1 rounded-md">PUT</span>
-                        <h2 class="text-2xl font-semibold text-slate-800 font-mono">/auth/profile</h2><span
-                            class="flex items-center gap-1.5 bg-amber-100 text-amber-800 text-xs font-medium px-2 py-0.5 rounded-full">Protegida</span>
-                    </div>
-                    <p class="text-slate-500 mb-6">Atualiza o nome e email do <strong>prestador</strong> logado. Requer
-                        Bearer Token de prestador.</p>
-                     <h4 class="font-semibold text-slate-800 mb-2">Corpo da Requisição (Body):</h4>
-                    <div class="code-block"><button class="copy-btn">Copiar</button>
-                        <pre class="bg-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto whitespace-pre-wrap break-words"><code>{
-    "name": "string",
-    "email": "string"
-}</code></pre>
-                    </div>
-                     <h4 class="font-semibold text-slate-800 mb-2 mt-6">Resposta de Sucesso (200 OK):</h4>
-                    <div class="code-block"><button class="copy-btn">Copiar</button><pre class="bg-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto whitespace-pre-wrap break-words"><code>{
+                        <pre class="bg-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto"><code>{
+  "message": "Prestador criado com sucesso!",
+  "user": {
     "id": 2,
-    "name": "Novo Nome Prestador",
-    "email": "novoemail@prestador.com",
+    "name": "Nome do Prestador",
+    "email": "prestador@email.com",
     "userType": "provider"
-}</code></pre></div>
-                </section>
-                
-                <section id="create-ad" class="content-section">
-                    <div class="flex items-center gap-3 mb-2"><span
-                            class="bg-green-100 text-green-800 text-sm font-semibold px-3 py-1 rounded-md">POST</span>
-                        <h2 class="text-2xl font-semibold text-slate-800 font-mono">/ads</h2><span
-                            class="flex items-center gap-1.5 bg-amber-100 text-amber-800 text-xs font-medium px-2 py-0.5 rounded-full">Protegida</span>
-                    </div>
-                    <p class="text-slate-500 mb-6">Cria um novo anúncio. Requer Bearer Token de um usuário do tipo
-                        <strong>prestador</strong>.</p>
-                    <h4 class="font-semibold text-slate-800 mb-2">Corpo da Requisição (Body):</h4>
-                    <div class="code-block"><button class="copy-btn">Copiar</button>
-                        <pre class="bg-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto whitespace-pre-wrap break-words"><code>{
-    "title": "string",
-    "description": "string",
-    "price": "number",
-    "category": "string"
+  },
+  "token": "seu_token_jwt_aqui"
 }</code></pre>
                     </div>
-                     <h4 class="font-semibold text-slate-800 mb-2 mt-6">Resposta de Sucesso (201 Created):</h4>
-                    <div class="code-block"><button class="copy-btn">Copiar</button><pre class="bg-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto whitespace-pre-wrap break-words"><code>{
-    "message": "Anúncio criado com sucesso!",
-    "ad": {
-        "id": 101,
-        "title": "Pintura Residencial Completa",
-        "description": "Serviço de pintura profissional para interiores e exteriores.",
-        "price": 1500,
-        "category": "Pintor",
-        "providerId": 2
-    }
-}</code></pre></div>
                 </section>
 
-                <section id="update-ad" class="content-section">
-                    <div class="flex items-center gap-3 mb-2"><span
-                            class="bg-blue-100 text-blue-800 text-sm font-semibold px-3 py-1 rounded-md">PUT</span>
-                        <h2 class="text-2xl font-semibold text-slate-800 font-mono">/ads/:id</h2><span
-                            class="flex items-center gap-1.5 bg-amber-100 text-amber-800 text-xs font-medium px-2 py-0.5 rounded-full">Protegida</span>
+                <section id="login" class="content-section">
+                    <div class="flex items-center gap-3 mb-2"><span class="bg-green-100 text-green-800 text-sm font-semibold px-3 py-1 rounded-md">POST</span>
+                        <h2 class="text-2xl font-semibold text-slate-800 font-mono">/auth/login</h2>
                     </div>
-                    <p class="text-slate-500 mb-6">Atualiza um anúncio existente. Apenas o <strong>prestador</strong> que criou o anúncio ou um <strong>administrador</strong> pode atualizá-lo.</p>
-                    <h4 class="font-semibold text-slate-800 mb-2">Corpo da Requisição (Body):</h4>
+                    <p class="text-slate-500 mb-6">Autentica um usuário (cliente ou prestador) e retorna um token de acesso.</p>
+                    <h4 class="font-semibold text-slate-800 mb-2">Corpo da Requisição:</h4>
                     <div class="code-block"><button class="copy-btn">Copiar</button>
-                        <pre class="bg-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto whitespace-pre-wrap break-words"><code>{
-    "title": "string",
-    "description": "string",
-    "price": "number",
-    "category": "string"
+                        <pre class="bg-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto"><code>{
+  "email": "string",
+  "password": "string"
 }</code></pre>
                     </div>
-                    <h4 class="font-semibold text-slate-800 mb-2 mt-6">Resposta de Sucesso (200 OK):</h4>
-                    <div class="code-block"><button class="copy-btn">Copiar</button><pre class="bg-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto whitespace-pre-wrap break-words"><code>{
-    "message": "Anúncio atualizado com sucesso."
-}</code></pre></div>
+                    <h4 class="font-semibold text-slate-800 mb-2 mt-6">Resposta (200 OK):</h4>
+                    <div class="code-block"><button class="copy-btn">Copiar</button>
+                        <pre class="bg-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto"><code>{
+  "message": "Login bem-sucedido!",
+  "user": {
+    "id": 1,
+    "name": "Nome do Usuário",
+    "email": "usuario@email.com",
+    "userType": "client | provider"
+  },
+  "token": "seu_token_jwt_aqui"
+}</code></pre>
+                    </div>
                 </section>
 
-                <section id="delete-ad" class="content-section">
-                    <div class="flex items-center gap-3 mb-2"><span
-                            class="bg-red-100 text-red-800 text-sm font-semibold px-3 py-1 rounded-md">DELETE</span>
-                        <h2 class="text-2xl font-semibold text-slate-800 font-mono">/ads/:id</h2><span
-                            class="flex items-center gap-1.5 bg-amber-100 text-amber-800 text-xs font-medium px-2 py-0.5 rounded-full">Protegida</span>
+                <section id="update-profile" class="content-section">
+                    <div class="flex items-center gap-3 mb-2"><span class="bg-blue-100 text-blue-800 text-sm font-semibold px-3 py-1 rounded-md">PUT</span>
+                        <h2 class="text-2xl font-semibold text-slate-800 font-mono">/auth/profile</h2><span class="flex items-center gap-1.5 bg-amber-100 text-amber-800 text-xs font-medium px-2 py-0.5 rounded-full">Protegida</span>
                     </div>
-                    <p class="text-slate-500 mb-6">Deleta um anúncio existente. Apenas o <strong>prestador</strong> que criou o anúncio pode deletá-lo.</p>
-                     <h4 class="font-semibold text-slate-800 mb-2 mt-6">Resposta de Sucesso (200 OK):</h4>
-                    <div class="code-block"><button class="copy-btn">Copiar</button><pre class="bg-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto whitespace-pre-wrap break-words"><code>{
-    "message": "Anúncio deletado com sucesso."
-}</code></pre></div>
+                    <p class="text-slate-500 mb-6">Atualiza nome e email do usuário logado. Requer Bearer Token.</p>
+                    <h4 class="font-semibold text-slate-800 mb-2">Corpo da Requisição:</h4>
+                    <div class="code-block"><button class="copy-btn">Copiar</button>
+                        <pre class="bg-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto"><code>{
+  "name": "string",
+  "email": "string"
+}</code></pre>
+                    </div>
+                    <h4 class="font-semibold text-slate-800 mb-2 mt-6">Resposta (200 OK):</h4>
+                    <div class="code-block"><button class="copy-btn">Copiar</button>
+                        <pre class="bg-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto"><code>{
+  "id": 1,
+  "name": "Novo Nome",
+  "email": "novoemail@email.com",
+  "userType": "client | provider"
+}</code></pre>
+                    </div>
                 </section>
 
                 <section id="list-ads" class="content-section">
-                    <div class="flex items-center gap-3 mb-2"><span
-                            class="bg-sky-100 text-sky-800 text-sm font-semibold px-3 py-1 rounded-md">GET</span>
+                    <div class="flex items-center gap-3 mb-2"><span class="bg-sky-100 text-sky-800 text-sm font-semibold px-3 py-1 rounded-md">GET</span>
                         <h2 class="text-2xl font-semibold text-slate-800 font-mono">/ads</h2>
                     </div>
-                    <p class="text-slate-500 mb-6">Retorna uma lista de todos os anúncios disponíveis. Rota pública.</p>
-                    <h4 class="font-semibold text-slate-800 mb-2">Resposta de Sucesso (200 OK):</h4>
+                    <p class="text-slate-500 mb-6">Retorna todos os anúncios disponíveis. Rota pública.</p>
+                    <h4 class="font-semibold text-slate-800 mb-2">Resposta (200 OK):</h4>
                     <div class="code-block"><button class="copy-btn">Copiar</button>
-                        <pre class="bg-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto whitespace-pre-wrap break-words"><code>[
-    {
-        "id": 101,
-        "title": "Pintura Residencial Completa",
-        "description": "Serviço de pintura profissional para interiores e exteriores.",
-        "price": 1500,
-        "category": "Pintor",
-        "providerId": 2,
-        "providerName": "Nome do Prestador",
-        "providerEmail": "prestador@email.com",
-        "providerPhone": "11987654321"
-    }
+                        <pre class="bg-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto"><code>[
+  {
+    "id": 101,
+    "title": "Pintura Residencial",
+    "description": "Serviço profissional.",
+    "price": 1500,
+    "category": "Pintor",
+    "image": "filename.jpg",
+    "providerId": 2,
+    "providerName": "Nome do Prestador",
+    "providerEmail": "prestador@email.com",
+    "providerPhone": "11987654321"
+  }
 ]</code></pre>
                     </div>
                 </section>
 
                 <section id="get-ad-by-id" class="content-section">
-                    <div class="flex items-center gap-3 mb-2"><span
-                            class="bg-sky-100 text-sky-800 text-sm font-semibold px-3 py-1 rounded-md">GET</span>
+                    <div class="flex items-center gap-3 mb-2"><span class="bg-sky-100 text-sky-800 text-sm font-semibold px-3 py-1 rounded-md">GET</span>
                         <h2 class="text-2xl font-semibold text-slate-800 font-mono">/ads/:id</h2>
                     </div>
-                    <p class="text-slate-500 mb-6">Busca e retorna um único anúncio pelo seu ID. Rota pública.</p>
-                    <h4 class="font-semibold text-slate-800 mb-2">Resposta de Sucesso (200 OK):</h4>
+                    <p class="text-slate-500 mb-6">Busca um anúncio pelo ID. Rota pública.</p>
+                    <h4 class="font-semibold text-slate-800 mb-2">Resposta (200 OK):</h4>
                     <div class="code-block"><button class="copy-btn">Copiar</button>
-                        <pre class="bg-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto whitespace-pre-wrap break-words"><code>{
-    "id": 101,
-    "title": "Pintura Residencial Completa",
-    "description": "Serviço de pintura profissional para interiores e exteriores.",
-    "price": 1500,
-    "category": "Pintor",
-    "providerId": 2
+                        <pre class="bg-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto"><code>{
+  "id": 101,
+  "title": "Pintura Residencial",
+  "description": "Serviço profissional.",
+  "price": 1500,
+  "category": "Pintor",
+  "image": "filename.jpg",
+  "providerId": 2
 }</code></pre>
                     </div>
-                     <h4 class="font-semibold text-slate-800 mb-2 mt-6">Resposta de Erro (404 Not Found):</h4>
-                    <div class="code-block"><button class="copy-btn">Copiar</button><pre class="bg-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto whitespace-pre-wrap break-words"><code>{
-    "message": "Anúncio não encontrado."
-}</code></pre></div>
                 </section>
-                
-                <section id="admin-delete-ad" class="content-section">
-                    <div class="flex items-center gap-3 mb-2"><span
-                            class="bg-red-100 text-red-800 text-sm font-semibold px-3 py-1 rounded-md">DELETE</span>
-                        <h2 class="text-2xl font-semibold text-slate-800 font-mono">/admin/ads/:id</h2><span
-                            class="flex items-center gap-1.5 bg-purple-100 text-purple-800 text-xs font-medium px-2 py-0.5 rounded-full">Admin</span>
+
+                <section id="get-provider-ads" class="content-section">
+                    <div class="flex items-center gap-3 mb-2"><span class="bg-sky-100 text-sky-800 text-sm font-semibold px-3 py-1 rounded-md">GET</span>
+                        <h2 class="text-2xl font-semibold text-slate-800 font-mono">/ads/provider/my-ads</h2><span class="flex items-center gap-1.5 bg-amber-100 text-amber-800 text-xs font-medium px-2 py-0.5 rounded-full">Protegida</span>
                     </div>
-                    <p class="text-slate-500 mb-6">Deleta qualquer anúncio da plataforma usando o ID. Requer permissão de <strong>administrador</strong>.</p>
-                     <h4 class="font-semibold text-slate-800 mb-2 mt-6">Resposta de Sucesso (200 OK):</h4>
-                    <div class="code-block"><button class="copy-btn">Copiar</button><pre class="bg-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto whitespace-pre-wrap break-words"><code>{
-    "message": "Anúncio deletado com sucesso pelo administrador."
-}</code></pre></div>
+                    <p class="text-slate-500 mb-6">Retorna anúncios do prestador logado. Requer Bearer Token de prestador.</p>
+                    <h4 class="font-semibold text-slate-800 mb-2">Resposta (200 OK):</h4>
+                    <div class="code-block"><button class="copy-btn">Copiar</button>
+                        <pre class="bg-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto"><code>[
+  {
+    "id": 101,
+    "title": "Pintura Residencial",
+    "description": "Serviço profissional.",
+    "price": 1500,
+    "category": "Pintor",
+    "image": "filename.jpg",
+    "providerId": 2
+  }
+]</code></pre>
+                    </div>
                 </section>
-                
-                <section id="admin-list-users" class="content-section">
-                    <div class="flex items-center gap-3 mb-2"><span
-                            class="bg-sky-100 text-sky-800 text-sm font-semibold px-3 py-1 rounded-md">GET</span>
-                        <h2 class="text-2xl font-semibold text-slate-800 font-mono">/admin/users</h2><span
-                            class="flex items-center gap-1.5 bg-purple-100 text-purple-800 text-xs font-medium px-2 py-0.5 rounded-full">Admin</span>
+
+                <section id="create-ad" class="content-section">
+                    <div class="flex items-center gap-3 mb-2"><span class="bg-green-100 text-green-800 text-sm font-semibold px-3 py-1 rounded-md">POST</span>
+                        <h2 class="text-2xl font-semibold text-slate-800 font-mono">/ads</h2><span class="flex items-center gap-1.5 bg-amber-100 text-amber-800 text-xs font-medium px-2 py-0.5 rounded-full">Protegida</span>
                     </div>
-                    <p class="text-slate-500 mb-6">Lista todos os usuários (clientes e prestadores) cadastrados na plataforma. Requer permissão de <strong>administrador</strong>.</p>
-                     <h4 class="font-semibold text-slate-800 mb-2 mt-6">Resposta de Sucesso (200 OK):</h4>
-                    <div class="code-block"><button class="copy-btn">Copiar</button><pre class="bg-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto whitespace-pre-wrap break-words"><code>[
-    {
-        "id": 1,
-        "name": "Nome do Cliente",
-        "email": "cliente@email.com",
-        "userType": "client"
-    },
-    {
-        "id": 2,
-        "name": "Nome do Prestador",
-        "email": "prestador@email.com",
-        "userType": "provider"
-    }
-]</code></pre></div>
+                    <p class="text-slate-500 mb-6">Cria um anúncio. Apenas prestadores. Use <code class="font-mono bg-slate-100 px-2 py-1 rounded">form-data</code>.</p>
+                    <h4 class="font-semibold text-slate-800 mb-2">Corpo da Requisição (Form-Data):</h4>
+                    <div class="code-block"><button class="copy-btn">Copiar</button>
+                        <pre class="bg-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto"><code>title: "string"
+description: "string"
+price: "number"
+category: "string"
+image: "arquivo.jpg" (opcional, máx 5MB)</code></pre>
+                    </div>
+                    <h4 class="font-semibold text-slate-800 mb-2 mt-6">Resposta (201 Created):</h4>
+                    <div class="code-block"><button class="copy-btn">Copiar</button>
+                        <pre class="bg-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto"><code>{
+  "message": "Anúncio criado com sucesso!",
+  "ad": {
+    "id": 101,
+    "title": "Pintura Residencial",
+    "description": "Serviço profissional.",
+    "price": 1500,
+    "category": "Pintor",
+    "image": "filename.jpg",
+    "providerId": 2
+  }
+}</code></pre>
+                    </div>
+                </section>
+
+                <section id="update-ad" class="content-section">
+                    <div class="flex items-center gap-3 mb-2"><span class="bg-blue-100 text-blue-800 text-sm font-semibold px-3 py-1 rounded-md">PUT</span>
+                        <h2 class="text-2xl font-semibold text-slate-800 font-mono">/ads/:id</h2><span class="flex items-center gap-1.5 bg-amber-100 text-amber-800 text-xs font-medium px-2 py-0.5 rounded-full">Protegida</span>
+                    </div>
+                    <p class="text-slate-500 mb-6">Atualiza um anúncio. Apenas o criador. Use <code class="font-mono bg-slate-100 px-2 py-1 rounded">form-data</code>.</p>
+                    <h4 class="font-semibold text-slate-800 mb-2">Corpo da Requisição (Form-Data):</h4>
+                    <div class="code-block"><button class="copy-btn">Copiar</button>
+                        <pre class="bg-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto"><code>title: "string"
+description: "string"
+price: "number"
+category: "string"
+image: "arquivo.jpg" (opcional, máx 5MB)</code></pre>
+                    </div>
+                    <h4 class="font-semibold text-slate-800 mb-2 mt-6">Resposta (200 OK):</h4>
+                    <div class="code-block"><button class="copy-btn">Copiar</button>
+                        <pre class="bg-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto"><code>{
+  "message": "Anúncio atualizado com sucesso."
+}</code></pre>
+                    </div>
+                </section>
+
+                <section id="delete-ad" class="content-section">
+                    <div class="flex items-center gap-3 mb-2"><span class="bg-red-100 text-red-800 text-sm font-semibold px-3 py-1 rounded-md">DELETE</span>
+                        <h2 class="text-2xl font-semibold text-slate-800 font-mono">/ads/:id</h2><span class="flex items-center gap-1.5 bg-amber-100 text-amber-800 text-xs font-medium px-2 py-0.5 rounded-full">Protegida</span>
+                    </div>
+                    <p class="text-slate-500 mb-6">Deleta um anúncio. Apenas o criador.</p>
+                    <h4 class="font-semibold text-slate-800 mb-2 mt-6">Resposta (200 OK):</h4>
+                    <div class="code-block"><button class="copy-btn">Copiar</button>
+                        <pre class="bg-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto"><code>{
+  "message": "Anúncio deletado com sucesso."
+}</code></pre>
+                    </div>
+                </section>
+
+                <section id="list-categories" class="content-section">
+                    <div class="flex items-center gap-3 mb-2"><span class="bg-sky-100 text-sky-800 text-sm font-semibold px-3 py-1 rounded-md">GET</span>
+                        <h2 class="text-2xl font-semibold text-slate-800 font-mono">/categories</h2>
+                    </div>
+                    <p class="text-slate-500 mb-6">Lista todas as categorias. Rota pública.</p>
+                    <h4 class="font-semibold text-slate-800 mb-2">Resposta (200 OK):</h4>
+                    <div class="code-block"><button class="copy-btn">Copiar</button>
+                        <pre class="bg-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto"><code>[
+  {
+    "id": 1,
+    "name": "Pintor",
+    "description": "Serviços de pintura residencial"
+  },
+  {
+    "id": 2,
+    "name": "Encanador",
+    "description": "Serviços de encanamento"
+  }
+]</code></pre>
+                    </div>
+                </section>
+
+                <section id="create-category" class="content-section">
+                    <div class="flex items-center gap-3 mb-2"><span class="bg-green-100 text-green-800 text-sm font-semibold px-3 py-1 rounded-md">POST</span>
+                        <h2 class="text-2xl font-semibold text-slate-800 font-mono">/categories</h2><span class="flex items-center gap-1.5 bg-purple-100 text-purple-800 text-xs font-medium px-2 py-0.5 rounded-full">Admin</span>
+                    </div>
+                    <p class="text-slate-500 mb-6">Cria uma nova categoria. Requer permissão admin.</p>
+                    <h4 class="font-semibold text-slate-800 mb-2">Corpo da Requisição:</h4>
+                    <div class="code-block"><button class="copy-btn">Copiar</button>
+                        <pre class="bg-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto"><code>{
+  "name": "string",
+  "description": "string"
+}</code></pre>
+                    </div>
+                    <h4 class="font-semibold text-slate-800 mb-2 mt-6">Resposta (201 Created):</h4>
+                    <div class="code-block"><button class="copy-btn">Copiar</button>
+                        <pre class="bg-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto"><code>{
+  "id": 3,
+  "name": "Eletricista",
+  "description": "Serviços de instalação elétrica"
+}</code></pre>
+                    </div>
+                </section>
+
+                <section id="list-users" class="content-section">
+                    <div class="flex items-center gap-3 mb-2"><span class="bg-sky-100 text-sky-800 text-sm font-semibold px-3 py-1 rounded-md">GET</span>
+                        <h2 class="text-2xl font-semibold text-slate-800 font-mono">/users</h2><span class="flex items-center gap-1.5 bg-purple-100 text-purple-800 text-xs font-medium px-2 py-0.5 rounded-full">Admin</span>
+                    </div>
+                    <p class="text-slate-500 mb-6">Lista todos os usuários. Requer permissão admin.</p>
+                    <h4 class="font-semibold text-slate-800 mb-2 mt-6">Resposta (200 OK):</h4>
+                    <div class="code-block"><button class="copy-btn">Copiar</button>
+                        <pre class="bg-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto"><code>[
+  {
+    "id": 1,
+    "name": "Nome do Cliente",
+    "email": "cliente@email.com",
+    "userType": "client"
+  },
+  {
+    "id": 2,
+    "name": "Nome do Prestador",
+    "email": "prestador@email.com",
+    "userType": "provider"
+  }
+]</code></pre>
+                    </div>
                 </section>
             </div>
         </main>
