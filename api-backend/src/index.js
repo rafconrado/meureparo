@@ -62,10 +62,10 @@ app.get("/docs", (req, res) => {
 // ROTAS DA API COM PREFIXO
 // ============================================
 
-app.use("/api-backend/auth", authRoutes);
-app.use("/api-backend/ads", adRoutes);
-app.use("/api-backend/users", userRoutes);
-app.use("/api-backend/categories", categoryRoutes);
+app.use("/v1/auth", authRoutes);
+app.use("/v1/ads", adRoutes);
+app.use("/v1/users", userRoutes);
+app.use("/v1/categories", categoryRoutes);
 
 // ============================================
 // MIDDLEWARE DE ERRO GLOBAL
