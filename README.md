@@ -19,7 +19,7 @@ O escopo do projeto inclui as seguintes funcionalidades:
 #### ✅ Concluídas Recentemente
 
 - **Autenticação Robusta (Backend):** Sistema de cadastro e login seguro com JWT para Clientes e Prestadores, com validação de dados duplicados (CPF/CNPJ, E-mail).
-  **API de Anúncios (Backend):** CRUD completo (Criar, Ler, Atualizar, Deletar) para gerenciamento de serviços, com upload de imagens e rotas protegidas por autenticação.
+- **API de Anúncios (Backend):** CRUD completo (Criar, Ler, Atualizar, Deletar) para gerenciamento de serviços com upload de imagens e rotas protegidas por autenticação.
 - **Gerenciamento de Anúncios (Frontend):** Tela do prestador 100% funcional, permitindo criar, visualizar, editar e excluir anúncios, incluindo o upload de imagens e a correta manipulação de categorias.
 - **Fluxo de Dados Otimizado:** Comunicação segura e tipada entre front-end e back-end, com um padrão de formatação de dados (Presenter) no servidor para garantir consistência.
 - **Documentação da API:** Página de documentação estática para detalhar todos os endpoints, facilitando o desenvolvimento e a manutenção.
@@ -74,7 +74,7 @@ Para rodar este projeto localmente, você precisará ter `Node.js`, `npm` (ou `y
 1.  **Clone o repositório:**
 
     ```bash
-    git clone https://SEU_LINK_DO_REPOSITORIO/find-and-fix.git
+    git clone https://https://github.com/rafconrado/meureparo.git
     cd find-and-fix
     ```
 
