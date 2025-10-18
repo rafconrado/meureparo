@@ -110,7 +110,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     } catch (error: any) {
       console.error("Erro no contexto de signIn:", error);
 
-      // Retorna mensagens mais amigáveis e neutras
       const message =
         error.response?.data?.message ||
         error.message ||

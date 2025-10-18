@@ -72,7 +72,7 @@ const HomeClient = () => {
         providers: adsResponse.data.data || [],
         categories: categoriesResponse.data || [],
         promos: promosData,
-        partners: partnersData
+        partners: partnersData,
       });
     } catch (err) {
       console.error("Erro ao buscar dados da API:", err);
@@ -178,15 +178,21 @@ const HomeClient = () => {
         {/* Categorias Populares */}
         <Section>
           <SectionTitle>Categorias Populares</SectionTitle>
+
           <FlatList
-            data={apiData.categories}
+            data={apiData.categories.slice(0, 8)}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
               <CategoryCardItem item={item} onPress={handleCategoryPress} />
             )}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ paddingHorizontal: 12 }}
+            numColumns={4}
+            scrollEnabled={false}
+            contentContainerStyle={{ paddingHorizontal: 8 }}
+            ListEmptyComponent={
+              <Text style={{ padding: 20, textAlign: "center" }}>
+                Nenhuma categoria encontrada. Verifique os dados.
+              </Text>
+            }
           />
         </Section>
 

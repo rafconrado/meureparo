@@ -2,9 +2,10 @@ import styled from "styled-components/native";
 import { TouchableOpacity } from "react-native";
 
 export const CategoryCard = styled(TouchableOpacity)`
+  flex: 1;
   align-items: center;
-  margin-right: 16px;
-  width: 90px;
+  margin-bottom: 16px;
+  margin-horizontal: 4px;
 `;
 
 export const CategoryIcon = styled.View`

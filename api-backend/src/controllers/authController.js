@@ -264,3 +264,48 @@ exports.updateProfile = async (req, res) => {
     });
   }
 };
+
+exports.loginAdmin = async (req, res, next) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ message: "Email e senha são obrigatórios." });
+  }
+
+  try {
+    const stmt = db.Get("SELECT * FROM admins WHERE email = ?");
+    const adminUser = stmt.get(email);
+
+    if (!adminUser) {
+      console.log(
+        `Tentativa de login admin falhou (email não encontrado): ${email}`
+      );
+      return res
+        .status(401)
+        .json({ message: "Credenciais de admin inválidas." });
+    }
+
+    const isMatch = await bcrypt.compare(password, adminUser.password);
+    if (!isMatch) {
+      console.log(
+        `Tentativa de login admin falhou (senha incorreta): ${email}`
+      );
+      return res
+        .status(401)
+        .json({ message: "Credenciais de admin inválidas." });
+    }
+
+    const token = generateToken(adminUser.id, adminUser.email, "admin");
+
+    delete adminUser.password;
+
+    res.status(200).json({
+      message: "Login de admin bem-sucedido!",
+      user: adminUser,
+      token: token,
+    });
+  } catch (err) {
+    console.error("Erro no loginAdmin:", err);
+    next(err);
+  }
+};
