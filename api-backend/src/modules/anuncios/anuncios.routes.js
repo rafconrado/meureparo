@@ -1,9 +1,8 @@
 const express = require("express");
 const router = express.Router();
-
-const adController = require("../controllers/adController");
-const { verifyToken, checkRole } = require("../middlewares/auth");
-const upload = require("../config/upload");
+const adController = require("./anuncios.controller");
+const { verifyToken, checkRole } = require("../../shared/middlewares/auth");
+const upload = require("../../config/upload");
 
 // --- ROTAS PÚBLICAS ---
 router.get("/", adController.getAllAds);

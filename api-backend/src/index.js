@@ -4,9 +4,9 @@ const cors = require("cors");
 const path = require("path");
 const fs = require("fs");
 
-const { db } = require("../database.js");
+const { db } = require("./config/database.js");
 
-const authRoutes = require("./routes/auth.js");
+const authRoutes = require("./modules/auth/auth.routes.js");
 const adRoutes = require("./routes/adRoutes.js");
 const userRoutes = require("./routes/userRoutes.js");
 const categoryRoutes = require("./routes/categoryRoutes.js");

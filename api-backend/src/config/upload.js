@@ -2,7 +2,6 @@ const multer = require("multer");
 const path = require("path");
 const crypto = require("crypto");
 
-// Caminho absoluto para a pasta de uploads
 const uploadsPath = path.resolve(__dirname, "..", "public", "uploads");
 
 // Configuração de armazenamento em disco

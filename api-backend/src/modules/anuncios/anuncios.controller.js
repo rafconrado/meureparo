@@ -1,7 +1,7 @@
-const Ad = require("../models/Ad");
+const Ad = require("./anuncios.model");
 const path = require("path");
 const fs = require("fs").promises;
-const adPresenter = require("../presenters/adPresenter");
+const adPresenter = require("./anuncios.presenter");
 
 // --- FUNÇÃO DE CRIAÇÃO COM UPLOAD DE IMAGEM ---
 exports.createAd = async (req, res) => {

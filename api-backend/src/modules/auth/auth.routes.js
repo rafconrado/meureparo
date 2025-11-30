@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const authController = require("../controllers/authController");
-const { verifyToken } = require("../middlewares/auth");
+const authController = require("./authController");
+const { verifyToken } = require("../../shared/middlewares/auth");
 
 // --- ROTAS DE REGISTRO  ---
 router.post("/register/client", authController.registerClient);
