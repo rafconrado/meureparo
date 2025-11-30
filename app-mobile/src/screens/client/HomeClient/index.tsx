@@ -64,8 +64,14 @@ const HomeClient = () => {
     }
     try {
       const [adsResponse, categoriesResponse] = await Promise.all([
-        api.get("/ads"),
-        api.get("/categories"),
+        api.get("/ads").catch((err) => {
+          console.warn("Erro ao buscar anúncios:", err.message);
+          return { data: { data: [], success: false } };
+        }),
+        api.get("/categories").catch((err) => {
+          console.warn("Erro ao buscar categorias:", err.message);
+          return { data: [] };
+        }),
       ]);
 
       setApiData({
@@ -75,8 +81,13 @@ const HomeClient = () => {
         partners: partnersData,
       });
     } catch (err) {
-      console.error("Erro ao buscar dados da API:", err);
-      setError("Não foi possível carregar os dados. Verifique sua conexão.");
+      console.error("Erro geral ao buscar dados:", err);
+      setApiData({
+        providers: [],
+        categories: [],
+        promos: promosData,
+        partners: partnersData,
+      });
     } finally {
       setIsLoading(false);
       setRefreshing(false);

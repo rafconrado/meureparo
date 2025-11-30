@@ -1,6 +1,5 @@
 const Category = require("../models/Category");
 
-// Função para buscar todas as categorias
 exports.getAllCategories = async (req, res) => {
   try {
     const categories = await Category.findAll();
@@ -13,7 +12,6 @@ exports.getAllCategories = async (req, res) => {
   }
 };
 
-// Função para criar uma nova categoria pelo admin
 exports.createCategory = async (req, res) => {
   const { name, icon } = req.body;
   if (!name) {

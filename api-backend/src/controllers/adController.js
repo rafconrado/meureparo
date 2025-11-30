@@ -117,15 +117,21 @@ exports.getAllAds = async (req, res) => {
     const formattedAds = adPresenter.formatMany(ads, req);
 
     return res.status(200).json({
-      message: "Anúncios obtidos com sucesso",
+      success: true,
+      message:
+        ads.length > 0
+          ? "Anúncios obtidos com sucesso"
+          : "Nenhum anúncio encontrado ainda",
       count: ads.length,
-      data: formattedAds,
+      data: formattedAds || [],
     });
   } catch (error) {
     console.error("❌ Erro ao buscar anúncios:", error);
     return res.status(500).json({
+      success: false,
       message: "Erro ao buscar anúncios.",
       error: error.message,
+      data: [],
     });
   }
 };

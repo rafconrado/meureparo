@@ -24,6 +24,8 @@ exports.verifyToken = (req, res, next) => {
 
 exports.checkRole = (allowedRoles) => {
   return (req, res, next) => {
+    console.log("🔍 User role:", req.user?.role); // DEBUG
+    console.log("🔍 Allowed roles:", allowedRoles); // DEBUG
     if (!req.user || !allowedRoles.includes(req.user.role)) {
       return res.status(403).json({
         message:

@@ -2,7 +2,6 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import api from "../services/api";
 
-// 1. Importe seus serviços de API
 import {
   loginClient,
   loginProvider,
@@ -89,14 +88,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
       const fetchedUser = apiResponse.user;
 
-      // 🚨 Validação de ambiente/role
-      if (fetchedUser.role !== type) {
-        throw new Error(
-          "Acesso inválido para este ambiente.."
-        );
+      console.log("Role do usuário:", fetchedUser.role);
+      console.log("Type esperado:", type);
+
+      const roleMap: Record<string, string> = {
+        CLIENTE: "client",
+        PRESTADOR: "provider",
+        client: "client",
+        provider: "provider",
+      };
+
+      const userRole = roleMap[fetchedUser.role?.trim() || ""];
+
+      console.log("Role mapeado:", userRole);
+
+      if (!userRole || userRole !== type) {
+        throw new Error("Acesso inválido para este ambiente.");
       }
 
-      // Configura token global
       api.defaults.headers.common[
         "Authorization"
       ] = `Bearer ${apiResponse.token}`;

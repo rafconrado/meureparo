@@ -33,7 +33,7 @@ router.put(
   "/:id",
   verifyToken,
   checkRole(["provider"]),
-  upload.single("image"), 
+  upload.single("image"),
   adController.updateAd
 );
 

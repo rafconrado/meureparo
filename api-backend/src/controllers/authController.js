@@ -2,7 +2,9 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { db } = require("../../database.js");
 
-const JWT_SECRET = process.env.JWT_SECRET || "seu_segredo_padrao_para_testes";
+const JWT_SECRET =
+  process.env.JWT_SECRET ||
+  "014c3590972dffd7a5215185d301cab5c39db03a4daef41e2561b82cea6e30d8";
 
 const dbGet = (sql, params) => {
   return new Promise((resolve, reject) => {
@@ -26,6 +28,9 @@ const generateToken = (id, email, role) => {
   return jwt.sign({ id, email, role }, JWT_SECRET, { expiresIn: "24h" });
 };
 
+// ============================================
+// REGISTRAR CLIENTE
+// ============================================
 exports.registerClient = async (req, res) => {
   const {
     name,
@@ -51,7 +56,7 @@ exports.registerClient = async (req, res) => {
 
   try {
     const existingClient = await dbGet(
-      "SELECT id FROM clients WHERE email = ? OR cpf = ?",
+      "SELECT ID FROM CLIENTES WHERE EMAIL = ? OR CPF = ?",
       [email, cpf]
     );
     if (existingClient) {
@@ -61,7 +66,7 @@ exports.registerClient = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const sql = `
-      INSERT INTO clients (name, cpf, email, password, phone, cep, logradouro, numero, complemento, bairro, cidade, uf, comoFicouSabendo, role)
+      INSERT INTO CLIENTES (NOME, CPF, EMAIL, SENHA, TELEFONE, CEP, LOGRADOURO, NUMERO, COMPLEMENTO, BAIRRO, CIDADE, UF, COMO_FICOU_SABENDO, ROLE)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
     const params = [
@@ -70,23 +75,23 @@ exports.registerClient = async (req, res) => {
       email,
       hashedPassword,
       phone,
-      cep,
-      logradouro,
-      numero,
+      cep || null,
+      logradouro || null,
+      numero || null,
       complemento || null,
-      bairro,
-      cidade,
-      uf,
+      bairro || null,
+      cidade || null,
+      uf || null,
       comoFicouSabendo || null,
-      "client",
+      "CLIENTE",
     ];
     const result = await dbRun(sql, params);
     const newUserId = result.lastID;
 
-    const token = generateToken(newUserId, email, "client");
+    const token = generateToken(newUserId, email, "CLIENTE");
     res.status(201).json({
       message: "Cliente criado com sucesso!",
-      user: { id: newUserId, name, email, role: "client" },
+      user: { id: newUserId, name, email, role: "CLIENTE" },
       token,
     });
   } catch (error) {
@@ -98,10 +103,15 @@ exports.registerClient = async (req, res) => {
   }
 };
 
+// ============================================
+// REGISTRAR PRESTADOR
+// ============================================
 exports.registerProvider = async (req, res) => {
   const {
-    name,
+    razaoSocial,
+    nomeFantasia,
     cnpj,
+    inscricaoEstadual,
     email,
     password,
     phone,
@@ -112,53 +122,60 @@ exports.registerProvider = async (req, res) => {
     bairro,
     cidade,
     uf,
-    servico,
+    descricaoEmpresa,
+    logo,
+    comoFicouSabendo,
   } = req.body;
 
-  if (!name || !cnpj || !email || !password || !phone || !servico) {
+  if (!razaoSocial || !nomeFantasia || !cnpj || !email || !password || !phone) {
     return res.status(400).json({
-      message: "Nome, CNPJ, email, senha, telefone e serviço são obrigatórios.",
+      message:
+        "Razão Social, Nome Fantasia, CNPJ, email, senha e telefone são obrigatórios.",
     });
   }
 
   try {
-    const existingProvider = await dbGet(
-      "SELECT id FROM providers WHERE email = ? OR cnpj = ?",
+    const existingPrestador = await dbGet(
+      "SELECT ID FROM PRESTADORES WHERE EMAIL = ? OR CNPJ = ?",
       [email, cnpj]
     );
-    if (existingProvider) {
+    if (existingPrestador) {
       return res.status(409).json({ message: "Email ou CNPJ já cadastrado." });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const sql = `
-      INSERT INTO providers (name, cnpj, email, password, phone, cep, logradouro, numero, complemento, bairro, cidade, uf, servico, role)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO PRESTADORES (RAZAO_SOCIAL, NOME_FANTASIA, CNPJ, INSCRICAO_ESTADUAL, EMAIL, SENHA, TELEFONE, CEP, LOGRADOURO, NUMERO, COMPLEMENTO, BAIRRO, CIDADE, UF, DESCRICAO_EMPRESA, LOGO, COMO_FICOU_SABENDO, ROLE)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
     const params = [
-      name,
+      razaoSocial,
+      nomeFantasia,
       cnpj,
+      inscricaoEstadual || null,
       email,
       hashedPassword,
       phone,
-      cep,
-      logradouro,
-      numero,
+      cep || null,
+      logradouro || null,
+      numero || null,
       complemento || null,
-      bairro,
-      cidade,
-      uf,
-      servico,
-      "provider",
+      bairro || null,
+      cidade || null,
+      uf || null,
+      descricaoEmpresa || null,
+      logo || null,
+      comoFicouSabendo || null,
+      "PRESTADOR",
     ];
     const result = await dbRun(sql, params);
     const newUserId = result.lastID;
 
-    const token = generateToken(newUserId, email, "provider");
+    const token = generateToken(newUserId, email, "PRESTADOR");
     res.status(201).json({
       message: "Prestador criado com sucesso!",
-      user: { id: newUserId, name, email, role: "provider" },
+      user: { id: newUserId, nomeFantasia, email, role: "PRESTADOR" },
       token,
     });
   } catch (error) {
@@ -170,6 +187,9 @@ exports.registerProvider = async (req, res) => {
   }
 };
 
+// ============================================
+// LOGIN
+// ============================================
 exports.login = async (req, res) => {
   const { email, password } = req.body;
 
@@ -179,32 +199,44 @@ exports.login = async (req, res) => {
 
   try {
     let user = null;
+    let userName = null;
 
-    user = await dbGet("SELECT * FROM admins WHERE email = ?", [email]);
-    if (!user) {
-      user = await dbGet("SELECT * FROM providers WHERE email = ?", [email]);
+    // Busca em CLIENTES
+    user = await dbGet("SELECT * FROM CLIENTES WHERE EMAIL = ?", [email]);
+    if (user) {
+      userName = user.NOME;
     }
+
+    // Busca em PRESTADORES
     if (!user) {
-      user = await dbGet("SELECT * FROM clients WHERE email = ?", [email]);
+      user = await dbGet("SELECT * FROM PRESTADORES WHERE EMAIL = ?", [email]);
+      if (user) {
+        userName = user.NOME_FANTASIA;
+      }
+    }
+
+    if (!user) {
+      user = await dbGet("SELECT * FROM ADMINS WHERE EMAIL = ?", [email]);
+      if (user) userName = user.NOME;
     }
 
     if (!user) {
       return res.status(401).json({ message: "Email ou senha inválidos." });
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await bcrypt.compare(password, user.SENHA);
     if (!isMatch) {
       return res.status(401).json({ message: "Email ou senha inválidos." });
     }
 
-    const token = generateToken(user.id, user.email, user.role);
+    const token = generateToken(user.ID, user.EMAIL, user.ROLE);
     res.status(200).json({
       message: "Login bem-sucedido!",
       user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
+        id: user.ID,
+        name: userName,
+        email: user.EMAIL,
+        role: user.ROLE,
       },
       token,
     });
@@ -217,6 +249,9 @@ exports.login = async (req, res) => {
   }
 };
 
+// ============================================
+// ATUALIZAR PERFIL
+// ============================================
 exports.updateProfile = async (req, res) => {
   try {
     const { id: userId, role } = req.user;
@@ -229,29 +264,31 @@ exports.updateProfile = async (req, res) => {
     }
 
     let tableName;
-    if (role === "client") {
-      tableName = "clients";
-    } else if (role === "provider") {
-      tableName = "providers";
-    } else if (role === "admin") {
-      tableName = "admins";
+    let nameColumn;
+
+    if (role === "CLIENTE") {
+      tableName = "CLIENTES";
+      nameColumn = "NOME";
+    } else if (role === "PRESTADOR") {
+      tableName = "PRESTADORES";
+      nameColumn = "NOME_FANTASIA";
     } else {
       return res.status(400).json({ message: "Tipo de usuário inválido." });
     }
 
     const existingUser = await dbGet(
-      `SELECT id FROM ${tableName} WHERE email = ? AND id != ?`,
+      `SELECT ID FROM ${tableName} WHERE EMAIL = ? AND ID != ?`,
       [email, userId]
     );
     if (existingUser) {
       return res.status(409).json({ message: "Este e-mail já está em uso." });
     }
 
-    const sql = `UPDATE ${tableName} SET name = ?, email = ? WHERE id = ?`;
+    const sql = `UPDATE ${tableName} SET ${nameColumn} = ?, EMAIL = ? WHERE ID = ?`;
     await dbRun(sql, [name, email, userId]);
 
     const updatedUser = await dbGet(
-      `SELECT id, name, email, role FROM ${tableName} WHERE id = ?`,
+      `SELECT ID, ${nameColumn} as name, EMAIL, ROLE FROM ${tableName} WHERE ID = ?`,
       [userId]
     );
 
@@ -265,7 +302,56 @@ exports.updateProfile = async (req, res) => {
   }
 };
 
-exports.loginAdmin = async (req, res, next) => {
+// ============================================
+// REGISTRAR ADMIN (só outro admin pode criar)
+// ============================================
+exports.registerAdmin = async (req, res) => {
+  const { name, email, password } = req.body;
+
+  if (!name || !email || !password) {
+    return res.status(400).json({
+      message: "Nome, email e senha são obrigatórios.",
+    });
+  }
+
+  try {
+    // Verifica se já existe
+    const existingAdmin = await dbGet("SELECT ID FROM ADMINS WHERE EMAIL = ?", [
+      email,
+    ]);
+    if (existingAdmin) {
+      return res.status(409).json({ message: "Email já cadastrado." });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const sql = `
+      INSERT INTO ADMINS (NOME, EMAIL, SENHA, ROLE)
+      VALUES (?, ?, ?, ?)
+    `;
+    const params = [name, email, hashedPassword, "ADMIN"];
+    const result = await dbRun(sql, params);
+    const newUserId = result.lastID;
+
+    const token = generateToken(newUserId, email, "ADMIN");
+    res.status(201).json({
+      message: "Admin criado com sucesso!",
+      user: { id: newUserId, name, email, role: "ADMIN" },
+      token,
+    });
+  } catch (error) {
+    console.error("[ERROR] registerAdmin:", error);
+    res.status(500).json({
+      message: "Erro no servidor ao registrar admin.",
+      error: error.message,
+    });
+  }
+};
+
+// ============================================
+// LOGIN ADMIN
+// ============================================
+exports.loginAdmin = async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -273,39 +359,33 @@ exports.loginAdmin = async (req, res, next) => {
   }
 
   try {
-    const stmt = db.Get("SELECT * FROM admins WHERE email = ?");
-    const adminUser = stmt.get(email);
+    const admin = await dbGet("SELECT * FROM ADMINS WHERE EMAIL = ?", [email]);
 
-    if (!adminUser) {
-      console.log(
-        `Tentativa de login admin falhou (email não encontrado): ${email}`
-      );
-      return res
-        .status(401)
-        .json({ message: "Credenciais de admin inválidas." });
+    if (!admin) {
+      return res.status(401).json({ message: "Credenciais inválidas." });
     }
 
-    const isMatch = await bcrypt.compare(password, adminUser.password);
+    const isMatch = await bcrypt.compare(password, admin.SENHA);
     if (!isMatch) {
-      console.log(
-        `Tentativa de login admin falhou (senha incorreta): ${email}`
-      );
-      return res
-        .status(401)
-        .json({ message: "Credenciais de admin inválidas." });
+      return res.status(401).json({ message: "Credenciais inválidas." });
     }
 
-    const token = generateToken(adminUser.id, adminUser.email, "admin");
-
-    delete adminUser.password;
-
+    const token = generateToken(admin.ID, admin.EMAIL, admin.ROLE);
     res.status(200).json({
       message: "Login de admin bem-sucedido!",
-      user: adminUser,
-      token: token,
+      user: {
+        id: admin.ID,
+        name: admin.NOME,
+        email: admin.EMAIL,
+        role: admin.ROLE,
+      },
+      token,
     });
-  } catch (err) {
-    console.error("Erro no loginAdmin:", err);
-    next(err);
+  } catch (error) {
+    console.error("[ERROR] loginAdmin:", error);
+    res.status(500).json({
+      message: "Erro no servidor durante o login.",
+      error: error.message,
+    });
   }
 };

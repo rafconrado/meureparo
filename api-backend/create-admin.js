@@ -1,6 +1,6 @@
 const readline = require("readline");
 const bcrypt = require("bcryptjs");
-const { db, initDb } = require("./database.js");
+const { db } = require("./database.js");
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -9,8 +9,6 @@ const rl = readline.createInterface({
 
 const createAdmin = async () => {
   try {
-    await initDb();
-    console.log("--- Banco de Dados Pronto ---");
     console.log("--- Criação de Novo Administrador ---");
 
     const name = await new Promise((resolve) =>
@@ -51,9 +49,9 @@ const createAdmin = async () => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const sql =
-      "INSERT INTO admins (name, email, password, role) VALUES (?, ?, ?, ?)";
-    const params = [name, email, hashedPassword, "admin"];
+    
+    const sql = "INSERT INTO ADMINS (NOME, EMAIL, SENHA, ROLE) VALUES (?, ?, ?, ?)";
+    const params = [name, email, hashedPassword, "ADMIN"];
 
     db.run(sql, params, function (err) {
       if (err) {

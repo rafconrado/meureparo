@@ -4,7 +4,7 @@ const cors = require("cors");
 const path = require("path");
 const fs = require("fs");
 
-const { initDb } = require("../database.js");
+const { db } = require("../database.js");
 
 const authRoutes = require("./routes/auth.js");
 const adRoutes = require("./routes/adRoutes.js");
@@ -111,20 +111,10 @@ app.use((req, res) => {
 
 const PORT = process.env.PORT || 3000;
 
-const startServer = async () => {
-  try {
-    await initDb();
-
-    app.listen(PORT, () => {
-      console.log(`✅ Servidor rodando na porta ${PORT}`);
-      console.log(
-        `📁 Uploads disponíveis em: http://localhost:${PORT}/uploads`
-      );
-    });
-  } catch (error) {
-    console.error("❌ Falha ao inicializar o banco de dados:", error);
-    process.exit(1);
-  }
+const startServer = () => {
+  app.listen(PORT, () => {
+    console.log(`✅ Servidor rodando na porta ${PORT}`);
+  });
 };
 
 startServer();

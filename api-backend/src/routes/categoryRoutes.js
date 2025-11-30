@@ -10,7 +10,7 @@ router.get("/", categoryController.getAllCategories);
 router.post(
   "/",
   verifyToken,
-  checkRole(["admin"]),
+  checkRole(["ADMIN"]),
   categoryController.createCategory
 );
 

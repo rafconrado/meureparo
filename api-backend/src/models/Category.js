@@ -1,96 +1,66 @@
 const { db } = require("../../database");
 
 class Category {
-  /**
-   * Cria uma nova categoria no banco de dados.
-   * @param {object} categoryData - Dados da categoria { name, icon }.
-   * @returns {Promise<object>} O objeto da categoria criada.
-   */
-  static create(categoryData) {
+  static create(data) {
     return new Promise((resolve, reject) => {
-      const { name, icon } = categoryData;
-      const sql = "INSERT INTO categories (name, icon) VALUES (?, ?)";
+      const { name, icon } = data;
 
-      db.run(sql, [name, icon], function (err) {
-        if (err) {
-          reject(err);
-        } else {
-          resolve({ id: this.lastID, ...categoryData });
-        }
+      const sql = `INSERT INTO CATEGORIAS (NOME, ICON) VALUES (?, ?)`;
+      const params = [name, icon || null];
+
+      db.run(sql, params, function (err) {
+        if (err) reject(err);
+        else resolve({ id: this.lastID, name, icon });
       });
     });
   }
 
-  /**
-   * Busca todas as categorias no banco de dados.
-   * @returns {Promise<Array>} Uma lista de todas as categorias.
-   */
   static findAll() {
     return new Promise((resolve, reject) => {
-      const sql = "SELECT * FROM categories";
+      const sql = `SELECT ID as id, NOME as name, ICON as icon, DESATIVADO, CREATED_AT, UPDATED_AT FROM CATEGORIAS WHERE DESATIVADO = 'N' ORDER BY NOME`;
+
       db.all(sql, [], (err, rows) => {
         if (err) {
-          reject(err);
+          console.error("Erro ao buscar categorias:", err);
+          resolve([]);
         } else {
-          resolve(rows);
+          resolve(rows || []);
         }
       });
     });
   }
 
-  /**
-   * Busca uma categoria específica pelo seu ID.
-   * @param {number} id - O ID da categoria.
-   * @returns {Promise<object>} O objeto da categoria encontrada.
-   */
   static findById(id) {
     return new Promise((resolve, reject) => {
-      const sql = "SELECT * FROM categories WHERE id = ?";
+      const sql = `SELECT ID as id, NOME as name, ICON as icon FROM CATEGORIAS WHERE ID = ? AND DESATIVADO = 'N'`;
+
       db.get(sql, [id], (err, row) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(row);
-        }
+        if (err) reject(err);
+        else resolve(row);
       });
     });
   }
 
-  /**
-   * Atualiza uma categoria existente.
-   * @param {number} id - O ID da categoria a ser atualizada.
-   * @param {object} data - Os novos dados { name, icon }.
-   * @returns {Promise<object>} Um objeto com o número de linhas alteradas.
-   */
   static update(id, data) {
     return new Promise((resolve, reject) => {
       const { name, icon } = data;
-      const sql = "UPDATE categories SET name = ?, icon = ? WHERE id = ?";
+      const sql = `UPDATE CATEGORIAS SET NOME = ?, ICON = ?, UPDATED_AT = CURRENT_TIMESTAMP WHERE ID = ?`;
 
       db.run(sql, [name, icon, id], function (err) {
-        if (err) {
-          reject(err);
-        } else {
-          resolve({ id: id, changes: this.changes });
-        }
+        if (err) reject(err);
+        else resolve({ changes: this.changes });
       });
     });
   }
 
-  /**
-   * Deleta uma categoria do banco de dados.
-   * @param {number} id - O ID da categoria a ser deletada.
-   * @returns {Promise<object>} Um objeto com o número de linhas alteradas.
-   */
   static delete(id) {
     return new Promise((resolve, reject) => {
-      const sql = "DELETE FROM categories WHERE id = ?";
+      // Soft delete
+      const sql = `UPDATE CATEGORIAS SET DESATIVADO = 'S' WHERE ID = ?`;
+
       db.run(sql, [id], function (err) {
-        if (err) {
-          reject(err);
-        } else {
-          resolve({ changes: this.changes });
-        }
+        if (err) reject(err);
+        else resolve({ changes: this.changes });
       });
     });
   }
