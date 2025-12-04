@@ -1,15 +1,15 @@
-require("dotenv").config();
-const express = require("express");
-const cors = require("cors");
-const path = require("path");
-const fs = require("fs");
+import dotenv from 'dotenv';
+dotenv.config();
 
-const { db } = require("./config/database.js");
+import express, { Request, Response, NextFunction } from 'express';
+import cors from 'cors';
+import path from 'path';
+import fs from 'fs';
 
-const authRoutes = require("./modules/auth/auth.routes.js");
-const adRoutes = require("./routes/adRoutes.js");
-const userRoutes = require("./routes/userRoutes.js");
-const categoryRoutes = require("./routes/categoryRoutes.js");
+import authRoutes from "./modules/auth/auth.routes";
+import adRoutes from "./modules/anuncios/anuncios.routes"; 
+import userRoutes from "./modules/usuarios/usuarios.routes";
+import categoryRoutes from "./modules/categorias/categorias.routes";
 
 const app = express();
 
@@ -20,10 +20,8 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve arquivos estáticos (CSS, JS, etc)
 app.use(express.static(path.join(__dirname, "public")));
 
-// Serve arquivos de upload (imagens)
 app.use("/uploads", express.static(path.join(__dirname, "public/uploads")));
 
 // ============================================
@@ -39,7 +37,7 @@ if (!fs.existsSync(uploadsDir)) {
 // ROTAS PÚBLICAS
 // ============================================
 
-app.get("/", (req, res) => {
+app.get("/", (req: Request, res: Response) => {
   res.status(200).send(`
     <div style="font-family: Arial, sans-serif; text-align: center; margin-top: 50px;">
       <h1 style="color: #2c3e50;">🚀 API Find & Fix</h1>
@@ -54,7 +52,7 @@ app.get("/", (req, res) => {
   `);
 });
 
-app.get("/docs", (req, res) => {
+app.get("/docs", (req: Request, res: Response) => {
   res.sendFile(path.join(__dirname, "public", "documentacao.html"));
 });
 
@@ -71,7 +69,7 @@ app.use("/v1/categories", categoryRoutes);
 // MIDDLEWARE DE ERRO GLOBAL
 // ============================================
 
-app.use((err, req, res, next) => {
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   console.error("❌ Erro global:", err);
 
   // Erros de multer
@@ -98,7 +96,7 @@ app.use((err, req, res, next) => {
 // ROTA 404
 // ============================================
 
-app.use((req, res) => {
+app.use((req: Request, res: Response) => {
   res.status(404).json({
     message: "Rota não encontrada",
     path: req.path,

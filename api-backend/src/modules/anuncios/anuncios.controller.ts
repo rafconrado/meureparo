@@ -1,14 +1,20 @@
-const Ad = require("./anuncios.model");
-const path = require("path");
-const fs = require("fs").promises;
-const adPresenter = require("./anuncios.presenter");
+import { Response } from 'express';
+import path from 'path';
+import fs from 'fs/promises';
+import { AuthRequest } from '../auth/auth.interface'; 
+
+
+import Ad from './anuncios.model'; 
+import * as adPresenter from './anuncios.presenter';
+import { ICreateAdDTO, IUpdateAdDTO } from './anuncios.interface';
 
 // --- FUNÇÃO DE CRIAÇÃO COM UPLOAD DE IMAGEM ---
-exports.createAd = async (req, res) => {
+export const createAd = async (req: AuthRequest, res: Response) => {
   try {
-    const providerId = req.user.id;
+    const providerId = req.user?.id;
+    if (!providerId) return res.status(401).json({ message: "Usuário não autenticado" });
 
-    const { title, description, price, category } = req.body;
+    const { title, description, price, category } = req.body as ICreateAdDTO;
 
     // Validações
     if (!title || !description || !price || !category) {
@@ -20,7 +26,9 @@ exports.createAd = async (req, res) => {
       });
     }
 
-    if (isNaN(price) || price <= 0) {
+    const priceNumber = parseFloat(price.toString());
+    
+    if (isNaN(priceNumber) || priceNumber <= 0) {
       if (req.file) {
         await fs.unlink(req.file.path);
       }
@@ -29,19 +37,17 @@ exports.createAd = async (req, res) => {
         .json({ message: "Preço deve ser um número maior que zero." });
     }
 
-    // Processa upload de imagem se houver
-    let imageUrl = null;
+    let imageUrl: string | null = null;
     if (req.file) {
       imageUrl = `/uploads/${req.file.filename}`;
       console.log("📸 Imagem salva:", imageUrl);
     }
 
-    // Prepara dados do anúncio
     const adData = {
       title: title.trim(),
       description: description.trim(),
-      price: parseFloat(price),
-      categoryId: category,
+      price: priceNumber,
+      categoryId: parseInt(category.toString()),
       providerId,
       imageUrl,
       rating: 0,
@@ -60,7 +66,6 @@ exports.createAd = async (req, res) => {
   } catch (error) {
     console.error("❌ Erro ao criar anúncio:", error);
 
-    // Remove arquivo se houver erro
     if (req.file) {
       try {
         await fs.unlink(req.file.path);
@@ -71,18 +76,20 @@ exports.createAd = async (req, res) => {
 
     return res.status(500).json({
       message: "Erro ao criar anúncio.",
-      error: error.message,
+      error: (error as Error).message,
     });
   }
 };
 
 // --- FUNÇÃO PARA BUSCAR ANÚNCIOS DO PROVIDER ---
-exports.getProviderAds = async (req, res) => {
+export const getProviderAds = async (req: AuthRequest, res: Response) => {
   try {
-    console.log("--- ROTA /provider/my-ads FOI ACESSADA ---");
-    console.log("ID do usuário logado:", req.user.id);
+    const providerId = req.user?.id;
+    if (!providerId) return res.status(401).json({ message: "Usuário não autenticado" });
 
-    const providerId = req.user.id;
+    console.log("--- ROTA /provider/my-ads FOI ACESSADA ---");
+    console.log("ID do usuário logado:", providerId);
+
     const ads = await Ad.findByProviderId(providerId);
     const formattedAds = adPresenter.formatMany(ads, req);
 
@@ -95,22 +102,22 @@ exports.getProviderAds = async (req, res) => {
     console.error("❌ Erro ao buscar anúncios do prestador:", error);
     return res.status(500).json({
       message: "Erro ao buscar seus anúncios.",
-      error: error.message,
+      error: (error as Error).message,
     });
   }
 };
 
 // --- FUNÇÃO PARA BUSCAR TODOS OS ANÚNCIOS ---
-exports.getAllAds = async (req, res) => {
+export const getAllAds = async (req: AuthRequest, res: Response) => {
   try {
     const { categoryId, providerId } = req.query;
 
-    const filter = {};
+    const filter: any = {};
     if (categoryId) {
-      filter.categoryId = parseInt(categoryId);
+      filter.categoryId = parseInt(categoryId as string);
     }
     if (providerId) {
-      filter.providerId = parseInt(providerId);
+      filter.providerId = parseInt(providerId as string);
     }
 
     const ads = await Ad.findAll(filter);
@@ -130,18 +137,18 @@ exports.getAllAds = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Erro ao buscar anúncios.",
-      error: error.message,
+      error: (error as Error).message,
       data: [],
     });
   }
 };
 
 // --- FUNÇÃO PARA BUSCAR ANÚNCIO POR ID ---
-exports.getAdById = async (req, res) => {
+export const getAdById = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
 
-    const ad = await Ad.findById(id);
+    const ad = await Ad.findById(parseInt(id));
 
     if (!ad) {
       return res.status(404).json({ message: "Anúncio não encontrado." });
@@ -155,18 +162,19 @@ exports.getAdById = async (req, res) => {
     console.error("❌ Erro ao buscar anúncio:", error);
     return res.status(500).json({
       message: "Erro ao buscar o anúncio.",
-      error: error.message,
+      error: (error as Error).message,
     });
   }
 };
 
 // --- FUNÇÃO DE ATUALIZAÇÃO COM UPLOAD DE IMAGEM ---
-exports.updateAd = async (req, res) => {
+export const updateAd = async (req: AuthRequest, res: Response) => {
   try {
-    const adId = req.params.id;
-    const providerIdFromToken = req.user.id;
+    const adId = parseInt(req.params.id);
+    const providerIdFromToken = req.user?.id;
 
-    // Verifica se o anúncio existe
+    if (!providerIdFromToken) return res.status(401).json({ message: "Auth error" });
+
     const ad = await Ad.findById(adId);
     if (!ad) {
       if (req.file) {
@@ -175,25 +183,25 @@ exports.updateAd = async (req, res) => {
       return res.status(404).json({ message: "Anúncio não encontrado." });
     }
 
-    // Verifica se o usuário é o dono
     if (ad.providerId !== providerIdFromToken) {
       if (req.file) {
         await fs.unlink(req.file.path);
       }
       return res.status(403).json({
-        message:
-          "Acesso negado. Você não tem permissão para editar este anúncio.",
+        message: "Acesso negado. Você não tem permissão para editar este anúncio.",
       });
     }
 
-    // Prepara dados de atualização
-    const updateData = {};
+    // Cast do body para a interface de update
+    const body = req.body as IUpdateAdDTO;
+    const updateData: any = {};
 
-    if (req.body.title) updateData.title = req.body.title.trim();
-    if (req.body.description)
-      updateData.description = req.body.description.trim();
-    if (req.body.price) {
-      if (isNaN(req.body.price) || req.body.price <= 0) {
+    if (body.title) updateData.title = body.title.trim();
+    if (body.description) updateData.description = body.description.trim();
+    
+    if (body.price) {
+      const priceVal = parseFloat(body.price.toString());
+      if (isNaN(priceVal) || priceVal <= 0) {
         if (req.file) {
           await fs.unlink(req.file.path);
         }
@@ -201,28 +209,30 @@ exports.updateAd = async (req, res) => {
           message: "Preço deve ser um número maior que zero.",
         });
       }
-      updateData.price = parseFloat(req.body.price);
+      updateData.price = priceVal;
     }
-    if (req.body.category) updateData.categoryId = req.body.category;
-    if (req.body.rating !== undefined) updateData.rating = req.body.rating;
-    if (req.body.reviews !== undefined) updateData.reviews = req.body.reviews;
-    if (req.body.isVerified !== undefined)
-      updateData.isVerified = req.body.isVerified;
-    if (req.body.isPromoted !== undefined)
-      updateData.isPromoted = req.body.isPromoted;
-    if (req.body.discount !== undefined)
-      updateData.discount = req.body.discount;
+
+    if (body.category) updateData.categoryId = body.category;
+    if (body.rating !== undefined) updateData.rating = body.rating;
+    if (body.reviews !== undefined) updateData.reviews = body.reviews;
+    if (body.isVerified !== undefined) updateData.isVerified = body.isVerified;
+    if (body.isPromoted !== undefined) updateData.isPromoted = body.isPromoted;
+    if (body.discount !== undefined) updateData.discount = body.discount;
 
     // Se houver nova imagem, deleta a antiga
     if (req.file) {
       if (ad.imageUrl) {
         try {
+          // __dirname no TS (CommonJS) funciona, mas path.resolve é mais seguro
           const oldImagePath = path.join(
             __dirname,
             "../../public",
             ad.imageUrl
           );
-          await fs.unlink(oldImagePath);
+          // Usamos um truque aqui, pois unlink lança erro se arquivo não existir
+          // Verifique se o caminho bate com a sua estrutura de pastas real
+           await fs.unlink(oldImagePath).catch(e => console.log("Arquivo antigo não encontrado para deletar"));
+          
           console.log("🗑️ Imagem antiga deletada:", ad.imageUrl);
         } catch (error) {
           console.error("Erro ao deletar imagem antiga:", error);
@@ -261,16 +271,18 @@ exports.updateAd = async (req, res) => {
 
     return res.status(500).json({
       message: "Erro ao atualizar o anúncio.",
-      error: error.message,
+      error: (error as Error).message,
     });
   }
 };
 
 // --- FUNÇÃO DE DELEÇÃO ---
-exports.deleteAd = async (req, res) => {
+export const deleteAd = async (req: AuthRequest, res: Response) => {
   try {
-    const adId = req.params.id;
-    const providerIdFromToken = req.user.id;
+    const adId = parseInt(req.params.id);
+    const providerIdFromToken = req.user?.id;
+
+    if (!providerIdFromToken) return res.status(401).json({message: "Auth error"});
 
     // Verifica se o anúncio existe
     const ad = await Ad.findById(adId);
@@ -281,8 +293,7 @@ exports.deleteAd = async (req, res) => {
     // Verifica se o usuário é o dono
     if (ad.providerId !== providerIdFromToken) {
       return res.status(403).json({
-        message:
-          "Acesso negado. Você não tem permissão para deletar este anúncio.",
+        message: "Acesso negado. Você não tem permissão para deletar este anúncio.",
       });
     }
 
@@ -290,7 +301,7 @@ exports.deleteAd = async (req, res) => {
     if (ad.imageUrl) {
       try {
         const imagePath = path.join(__dirname, "../../public", ad.imageUrl);
-        await fs.unlink(imagePath);
+        await fs.unlink(imagePath).catch(() => {}); // Ignora se não achar
         console.log("🗑️ Imagem deletada:", ad.imageUrl);
       } catch (error) {
         console.error("Erro ao deletar imagem:", error);
@@ -313,7 +324,7 @@ exports.deleteAd = async (req, res) => {
     console.error("❌ Erro ao deletar anúncio:", error);
     return res.status(500).json({
       message: "Erro ao deletar o anúncio.",
-      error: error.message,
+      error: (error as Error).message,
     });
   }
 };

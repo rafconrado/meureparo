@@ -1,7 +1,19 @@
-const { db } = require("../../config/database");
+import { db } from "../../config/database";
+import { IAd, ICreateAdDTO, IUpdateAdDTO } from "./anuncios.interface";
 
-class Ad {
-  static create(data) {
+interface IDbResult {
+  id?: number;
+  changes?: number;
+}
+
+interface IAdFilter {
+  categoryId?: number;
+  providerId?: number;
+}
+
+export class Ad {
+  
+  static create(data: any): Promise<IAd> {
     return new Promise((resolve, reject) => {
       const {
         title,
@@ -32,20 +44,28 @@ class Ad {
         imageUrl,
       ];
 
-      db.run(sql, params, function (err) {
+      db.run(sql, params, function (this: any, err: Error | null) {
         if (err) reject(err);
-        else resolve({ id: this.lastID, ...data });
+        else resolve({ id: this.lastID, ...data } as IAd);
       });
     });
   }
 
-  static findAll(filter = {}) {
+  static findAll(filter: IAdFilter = {}): Promise<IAd[]> {
     return new Promise((resolve, reject) => {
       let sql = `
         SELECT 
-          a.ID, a.TITLE, a.DESCRICAO, a.VALOR, a.DESCONTO, 
-          a.CATEGORY_ID, a.ID_USUARIO, a.IMAGE, 
-          a.CREATED_AT, a.UPDATED_AT,
+          a.ID as id, 
+          a.TITLE as title, 
+          a.DESCRICAO as description, 
+          a.VALOR as price, 
+          a.DESCONTO as discount, 
+          a.CATEGORY_ID as categoryId, 
+          a.ID_USUARIO as providerId, 
+          a.IMAGE as imageUrl, 
+          a.CREATED_AT as createdAt, 
+          a.UPDATED_AT as updatedAt,
+          a.DESATIVADO as isVerified, -- mapeando provisoriamente
           p.NOME_FANTASIA as providerName, 
           p.EMAIL as providerEmail,
           p.TELEFONE as providerPhone
@@ -54,8 +74,8 @@ class Ad {
         WHERE a.DESATIVADO = 'N'
       `;
 
-      const conditions = [];
-      const params = [];
+      const conditions: string[] = [];
+      const params: any[] = [];
 
       if (filter.categoryId) {
         conditions.push("a.CATEGORY_ID = ?");
@@ -73,7 +93,7 @@ class Ad {
 
       sql += " ORDER BY a.CREATED_AT DESC";
 
-      db.all(sql, params, (err, rows) => {
+      db.all(sql, params, (err: Error | null, rows: any[]) => {
         if (err) {
           console.error("❌ Erro SQL no findAll:", err);
           resolve([]);
@@ -84,11 +104,20 @@ class Ad {
     });
   }
 
-  static findById(id) {
+  static findById(id: number): Promise<IAd | undefined> {
     return new Promise((resolve, reject) => {
       const sql = `
         SELECT 
-          a.*, 
+          a.ID as id, 
+          a.TITLE as title, 
+          a.DESCRICAO as description, 
+          a.VALOR as price, 
+          a.DESCONTO as discount, 
+          a.CATEGORY_ID as categoryId, 
+          a.ID_USUARIO as providerId, 
+          a.IMAGE as imageUrl, 
+          a.CREATED_AT as createdAt, 
+          a.UPDATED_AT as updatedAt,
           p.NOME_FANTASIA as providerName,
           p.EMAIL as providerEmail,
           p.TELEFONE as providerPhone,
@@ -97,17 +126,20 @@ class Ad {
         JOIN PRESTADORES p ON a.ID_USUARIO = p.ID 
         WHERE a.ID = ? AND a.DESATIVADO = 'N'
       `;
-      db.get(sql, [id], (err, row) => {
+      db.get(sql, [id], (err: Error | null, row: IAd) => {
         if (err) reject(err);
         else resolve(row);
       });
     });
   }
 
-  static update(id, data) {
+  static findByProviderId(providerId: number): Promise<IAd[]> {
+    return this.findAll({ providerId });
+  }
+
+  static update(id: number, data: any): Promise<IDbResult> {
     return new Promise((resolve, reject) => {
-      const { title, description, price, categoryId, imageUrl, discount } =
-        data;
+      const { title, description, price, categoryId, imageUrl, discount } = data;
 
       const sql = `
         UPDATE ANUNCIOS 
@@ -131,18 +163,18 @@ class Ad {
         id,
       ];
 
-      db.run(sql, params, function (err) {
+      db.run(sql, params, function (this: any, err: Error | null) {
         if (err) reject(err);
         else resolve({ changes: this.changes });
       });
     });
   }
 
-  static delete(id) {
+  static delete(id: number): Promise<IDbResult> {
     return new Promise((resolve, reject) => {
       // Soft delete
       const sql = "UPDATE ANUNCIOS SET DESATIVADO = 'S' WHERE ID = ?";
-      db.run(sql, [id], function (err) {
+      db.run(sql, [id], function (this: any, err: Error | null) {
         if (err) reject(err);
         else resolve({ changes: this.changes });
       });
@@ -150,4 +182,4 @@ class Ad {
   }
 }
 
-module.exports = Ad;
+export default Ad;

@@ -1,6 +1,6 @@
-const readline = require("readline");
-const bcrypt = require("bcryptjs");
-const { db } = require("./database.js");
+import readline from 'readline';
+import bcrypt from 'bcryptjs';
+import { db } from './src/config/database'; 
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -11,17 +11,18 @@ const createAdmin = async () => {
   try {
     console.log("--- Criação de Novo Administrador ---");
 
-    const name = await new Promise((resolve) =>
+    const name = await new Promise<string>((resolve) =>
       rl.question("Nome do admin: ", resolve)
     );
-    const email = await new Promise((resolve) =>
+    const email = await new Promise<string>((resolve) =>
       rl.question("Email do admin: ", resolve)
     );
 
     const HIDE_PASS_SYMBOL = "*";
-    const onDataHandler = (char) => {
-      char = char + "";
-      switch (char) {
+    
+    const onDataHandler = (char: Buffer) => {
+      const charStr = char.toString();
+      switch (charStr) {
         case "\n":
         case "\r":
         case "\u0004":
@@ -32,9 +33,10 @@ const createAdmin = async () => {
           break;
       }
     };
+    
     process.stdin.on("data", onDataHandler);
 
-    const password = await new Promise((resolve) =>
+    const password = await new Promise<string>((resolve) =>
       rl.question("Senha do admin: ", resolve)
     );
 
@@ -44,7 +46,6 @@ const createAdmin = async () => {
 
     if (!name || !email || !password) {
       console.error("\nTodos os campos são obrigatórios.");
-      db.close();
       return;
     }
 
@@ -53,7 +54,7 @@ const createAdmin = async () => {
     const sql = "INSERT INTO ADMINS (NOME, EMAIL, SENHA, ROLE) VALUES (?, ?, ?, ?)";
     const params = [name, email, hashedPassword, "ADMIN"];
 
-    db.run(sql, params, function (err) {
+    db.run(sql, params, function (this: any, err: Error | null) {
       if (err) {
         console.error("\nErro ao criar admin:", err.message);
       } else {
@@ -61,14 +62,14 @@ const createAdmin = async () => {
           `\n✅ Administrador '${name}' criado com sucesso! ID: ${this.lastID}`
         );
       }
-      db.close((err) => {
+      db.close((err: Error | null) => {
         if (err) console.error("Erro ao fechar o banco:", err.message);
       });
     });
+
   } catch (error) {
     console.error("Ocorreu um erro geral:", error);
-    if (db) db.close();
-    if (rl) rl.close();
+    rl.close();
   }
 };
 

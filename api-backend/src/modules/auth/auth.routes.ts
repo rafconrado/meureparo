@@ -1,17 +1,18 @@
-const express = require("express");
-const router = express.Router();
-const authController = require("./authController");
-const { verifyToken } = require("../../shared/middlewares/auth");
+import { Router } from 'express';
+import * as authController from './auth.controller';
+import { verifyToken } from '../../shared/middlewares/auth';
 
-// --- ROTAS DE REGISTRO  ---
+const router = Router();
+
+// --- ROTAS DE REGISTRO ---
 router.post("/register/client", authController.registerClient);
 router.post("/register/provider", authController.registerProvider);
 
-// --- ROTA DE LOGIN  ---
+// --- ROTA DE LOGIN ---
 router.post("/login", authController.login);
 router.post("/login/admin", authController.loginAdmin);
 
 // --- ROTA PROTEGIDA PARA ATUALIZAÇÃO DE PERFIL ---
 router.put("/profile", verifyToken, authController.updateProfile);
 
-module.exports = router;
+export default router;
