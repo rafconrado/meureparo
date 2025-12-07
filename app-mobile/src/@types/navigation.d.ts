@@ -72,6 +72,12 @@ export type ProviderStackParamList = {
     email: string;
     password: string;
   };
+  ProfileProvider: undefined;
+  MessagesProvider: undefined;
+  ChatDetail: {
+    chatId: string;
+    clientName: string;
+  };
 };
 
 // ========================================

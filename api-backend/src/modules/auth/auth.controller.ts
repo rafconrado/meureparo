@@ -288,40 +288,33 @@ export const updateProfile = async (req: AuthRequest, res: Response) => {
 
     const { id: userId, role } = req.user;
 
-    const { name, email } = req.body as IUpdateProfileDTO;
+    const { name } = req.body as { name: string };
 
-    if (!name || !email) {
+    if (!name || name.trim() === "") {
       return res
         .status(400)
-        .json({ message: "Nome e e-mail são obrigatórios." });
+        .json({ message: "O nome é obrigatório para a atualização." });
     }
 
     let tableName: string;
     let nameColumn: string;
 
-    if (role === "CLIENTE") {
+    if (role === "CLIENTE" || role === "client") {
       tableName = "CLIENTES";
       nameColumn = "NOME";
-    } else if (role === "PRESTADOR") {
+    } else if (role === "PRESTADOR" || role === "provider") {
       tableName = "PRESTADORES";
       nameColumn = "NOME_FANTASIA";
     } else {
       return res.status(400).json({ message: "Tipo de usuário inválido." });
     }
 
-    const existingUser = await dbGet<{ ID: number }>(
-      `SELECT ID FROM ${tableName} WHERE EMAIL = ? AND ID != ?`,
-      [email, userId]
-    );
-    if (existingUser) {
-      return res.status(409).json({ message: "Este e-mail já está em uso." });
-    }
+    const sql = `UPDATE ${tableName} SET ${nameColumn} = ? WHERE ID = ?`;
 
-    const sql = `UPDATE ${tableName} SET ${nameColumn} = ?, EMAIL = ? WHERE ID = ?`;
-    await dbRun(sql, [name, email, userId]);
+    await dbRun(sql, [name.trim(), userId]);
 
     const updatedUser = await dbGet(
-      `SELECT ID, ${nameColumn} as name, EMAIL, ROLE FROM ${tableName} WHERE ID = ?`,
+      `SELECT ID, ${nameColumn} as name, EMAIL as email, ROLE as role FROM ${tableName} WHERE ID = ?`,
       [userId]
     );
 
