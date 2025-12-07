@@ -24,6 +24,12 @@ export const ProviderInfo = styled.View`
   padding: 14px;
 `;
 
+export const ProviderNameContainer = styled.View`
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+`;
+
 export const ProviderName = styled.Text`
   font-family: "Inter-Bold";
   font-size: 16px;
@@ -49,12 +55,6 @@ export const RatingText = styled.Text`
   font-family: "Inter-SemiBold";
   font-size: 13px;
   color: #0c0c0c;
-`;
-
-export const ProviderRating = styled.Text`
-  font-family: "Inter-Bold";
-  font-size: 13px;
-  color: #ffb800;
 `;
 
 export const RatingReviewsText = styled(RatingText)`
@@ -90,10 +90,4 @@ export const BadgeText = styled.Text`
   font-size: 11px;
   color: #fff;
   letter-spacing: 0.3px;
-`;
-
-export const ProviderNameContainer = styled.View`
-  flex-direction: row;
-  align-items: center;
-  gap: 6px;
 `;

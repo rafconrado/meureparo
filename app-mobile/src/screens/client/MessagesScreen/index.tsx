@@ -1,10 +1,14 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { MessagesScreenProps } from "./types"; // Importado para uso futuro
+import { Container, CenterContainer, Title, Subtitle } from "./styles";
 
-export default function MessagesScreen() {
+export function MessagesScreen() {
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Mensagens</Text>
-    </View>
+    <Container>
+      <CenterContainer>
+        <Title>Mensagens</Title>
+        <Subtitle>Você ainda não tem conversas iniciadas.</Subtitle>
+      </CenterContainer>
+    </Container>
   );
 }

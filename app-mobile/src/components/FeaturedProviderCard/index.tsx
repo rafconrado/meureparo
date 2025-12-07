@@ -1,7 +1,7 @@
 import React from "react";
 import { Ionicons } from "@expo/vector-icons";
-import { Provider } from "../../types";
 
+import { FeaturedProviderCardProps, ProviderBadgeProps } from "./types";
 import {
   ProviderCard,
   ProviderImage,
@@ -15,38 +15,44 @@ import {
   ProviderPrice,
   ProviderBadge,
   BadgeText,
-} from "./style";
+} from "./styles";
 
-interface FeaturedProviderCardProps {
-  provider: Provider;
-  onPress: (provider: Provider) => void;
-}
+const BADGE_DISCOUNT_COLOR = "#FF4444";
+const BADGE_DEFAULT_COLOR = "#ff8724";
 
-const ProviderBadgeComponent = ({ provider }: { provider: Provider }) => {
+const ProviderBadgeComponent = ({ provider }: ProviderBadgeProps) => {
   if (provider.discount) {
     return (
-      <ProviderBadge backgroundColor="#FF4444">
+      <ProviderBadge backgroundColor={BADGE_DISCOUNT_COLOR}>
         <BadgeText>{provider.discount}% OFF</BadgeText>
       </ProviderBadge>
     );
   }
+
   if (provider.isPromoted) {
     return (
-      <ProviderBadge>
+      <ProviderBadge backgroundColor={BADGE_DEFAULT_COLOR}>
         <BadgeText>DESTAQUE</BadgeText>
       </ProviderBadge>
     );
   }
-  return null; // Não mostra nada se não houver desconto ou promoção
+
+  return null;
 };
 
 export const FeaturedProviderCard = React.memo(
   ({ provider, onPress }: FeaturedProviderCardProps) => {
+    const hasRating = provider.rating > 0;
+
+    const handlePress = () => {
+      onPress(provider);
+    };
+
     return (
-      <ProviderCard onPress={() => onPress(provider)} activeOpacity={0.9}>
+      <ProviderCard onPress={handlePress} activeOpacity={0.9}>
         <ProviderBadgeComponent provider={provider} />
 
-        <ProviderImage source={provider.image} />
+        <ProviderImage source={{ uri: provider.image }} />
         <ProviderInfo>
           <ProviderNameContainer>
             <ProviderName>{provider.name}</ProviderName>
@@ -57,7 +63,7 @@ export const FeaturedProviderCard = React.memo(
 
           <ProviderCategory>{provider.category}</ProviderCategory>
 
-          {provider.rating > 0 && (
+          {hasRating && (
             <RatingContainer>
               <Ionicons name="star" size={14} color="#FFB800" />
               <RatingText>{provider.rating.toFixed(1)}</RatingText>

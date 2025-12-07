@@ -1,55 +1,38 @@
-import React, { ReactNode } from "react";
-import { View, Text, Dimensions } from "react-native";
+import React from "react";
+import { Dimensions } from "react-native";
 import Carousel from "react-native-reanimated-carousel";
 
-const { width } = Dimensions.get("window");
+import { CustomCarouselProps } from "./types";
+import { Container, Title, ItemWrapper } from "./styles";
 
-type Props<T> = {
-  title: string;
-  data: T[];
-  renderItem: (item: T) => ReactNode;
-  height?: number;
-};
+const { width: SCREEN_WIDTH } = Dimensions.get("window");
+
+const DEFAULT_HEIGHT = 180;
+const DEFAULT_ANIMATION_DURATION = 1000;
 
 export function CustomCarousel<T>({
   title,
   data,
   renderItem,
-  height = 180,
-}: Props<T>) {
+  height = DEFAULT_HEIGHT,
+  autoPlay = true,
+  loop = true,
+  scrollAnimationDuration = DEFAULT_ANIMATION_DURATION,
+  style,
+}: CustomCarouselProps<T>) {
   return (
-    <View style={{ marginBottom: 24 }}>
-      <Text
-        style={{
-          fontSize: 16,
-          fontFamily: "Inter-Bold",
-          marginBottom: 10,
-          marginLeft: 8,
-          color: "#0C0C0C",
-        }}
-      >
-        {title}
-      </Text>
+    <Container style={style}>
+      <Title>{title}</Title>
 
       <Carousel
-        loop
-        width={width}
+        loop={loop}
+        width={SCREEN_WIDTH}
         height={height}
-        autoPlay
+        autoPlay={autoPlay}
         data={data}
-        scrollAnimationDuration={1000}
-        renderItem={({ item }) => (
-          <View
-            style={{
-              flex: 1,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            {renderItem(item)}
-          </View>
-        )}
+        scrollAnimationDuration={scrollAnimationDuration}
+        renderItem={({ item }) => <ItemWrapper>{renderItem(item)}</ItemWrapper>}
       />
-    </View>
+    </Container>
   );
 }

@@ -13,7 +13,27 @@ export const ServiceCard = styled.View`
   justify-content: space-between;
 `;
 
-// Você pode usar este componente para a imagem quando a tiver
+export const VerifiedBadge = styled.View`
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 1;
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 4px;
+  elevation: 2;
+`;
+
+export const ImagePlaceholder = styled.View`
+  width: 100%;
+  height: 140px;
+  background-color: #f0f0f0;
+  border-radius: 16px;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 12px;
+`;
+
 export const ServiceImage = styled.Image`
   width: 100%;
   height: 140px;
@@ -36,6 +56,11 @@ export const ProviderCategory = styled.Text`
   font-size: 13px;
   color: #6e6e6e;
   margin-top: 2px;
+`;
+
+export const RatingWrapper = styled.View`
+  margin-top: 6px;
+  margin-bottom: 4px;
 `;
 
 export const RatingContainer = styled.View`

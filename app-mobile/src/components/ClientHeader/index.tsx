@@ -1,23 +1,31 @@
-// src/components/ClientHeader/index.tsx
-
 import React from "react";
-import { Image } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { Container, AvatarButton } from "./style";
 
-export function ClientHeader() {
-  const navigation = useNavigation();
+import { useAuth } from "../../contexts/AuthContext";
+import { ClientNavigationProp } from "../../@types/navigation";
+import { ClientHeaderProps } from "./types";
+import { Container, AvatarButton, Avatar } from "./styles";
+
+const DEFAULT_AVATAR = "https://avatars.githubusercontent.com/u/156972984?v=4";
+
+export function ClientHeader({ avatarUrl, onAvatarPress }: ClientHeaderProps) {
+  const { user } = useAuth();
+  const navigation = useNavigation<ClientNavigationProp>();
+
+  const handleAvatarPress = () => {
+    if (onAvatarPress) {
+      onAvatarPress();
+    } else {
+      navigation.navigate("ProfileScreen");
+    }
+  };
+
+  const imageUri = avatarUrl || user?.avatarUrl || DEFAULT_AVATAR;
 
   return (
     <Container>
-      <AvatarButton onPress={() => navigation.navigate("Perfil" as never)}>
-        <Image
-          source={{
-            uri: "https://avatars.githubusercontent.com/u/156972984?v=4",
-          }}
-          style={{ width: 36, height: 36, borderRadius: 18 }}
-        />
+      <AvatarButton onPress={handleAvatarPress} activeOpacity={0.7}>
+        <Avatar source={{ uri: imageUri }} />
       </AvatarButton>
     </Container>
   );

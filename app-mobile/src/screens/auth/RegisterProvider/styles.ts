@@ -103,7 +103,7 @@ export const RegisterButton = styled.TouchableOpacity<{ disabled?: boolean }>`
   min-height: 58px;
   justify-content: center;
   align-items: center;
-  opacity: ${props => props.disabled ? 0.7 : 1};
+  opacity: ${(props) => (props.disabled ? 0.7 : 1)};
 `;
 
 export const ButtonText = styled.Text`
@@ -132,4 +132,21 @@ export const LoginLink = styled.Text`
   color: #57b2c5;
   font-weight: 700;
   text-decoration-line: underline;
+`;
+
+export const SwitchContainer = styled.View`
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 15px;
+  padding: 15px 20px;
+  margin-bottom: 20px;
+`;
+
+export const SwitchLabel = styled.Text`
+  font-size: 16px;
+  color: #6c757d;
+  font-weight: 500;
 `;

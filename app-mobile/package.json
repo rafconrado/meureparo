@@ -40,6 +40,7 @@
     "@babel/core": "^7.25.2",
     "@types/bcryptjs": "^3.0.0",
     "@types/react": "~19.1.10",
+    "baseline-browser-mapping": "^2.9.4",
     "typescript": "~5.9.2"
   },
   "private": true

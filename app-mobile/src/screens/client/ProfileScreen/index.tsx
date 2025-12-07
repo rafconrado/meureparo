@@ -3,15 +3,16 @@ import { Alert } from "react-native";
 import { useAuth } from "../../../contexts/AuthContext";
 import {
   Container,
+  ContentContainer,
   Title,
   Card,
   Label,
   Value,
   Button,
   ButtonText,
-} from "./style";
+} from "./styles";
 
-export default function ProfileScreen() {
+export function ProfileScreen() {
   const { user, signOut } = useAuth();
 
   const handleLogout = async () => {
@@ -25,22 +26,24 @@ export default function ProfileScreen() {
 
   return (
     <Container>
-      <Title>Meu Perfil</Title>
+      <ContentContainer>
+        <Title>Meu Perfil</Title>
 
-      <Card>
-        <Label>Nome:</Label>
-        <Value>{user?.name || "Nome não disponível"}</Value>
+        <Card>
+          <Label>Nome:</Label>
+          <Value>{user?.name || "Nome não disponível"}</Value>
 
-        <Label>E-mail:</Label>
-        <Value>{user?.email || "E-mail não disponível"}</Value>
+          <Label>E-mail:</Label>
+          <Value>{user?.email || "E-mail não disponível"}</Value>
 
-        <Label>Tipo de Usuário:</Label>
-        <Value>Cliente</Value>
-      </Card>
+          <Label>Tipo de Usuário:</Label>
+          <Value>Cliente</Value>
+        </Card>
 
-      <Button onPress={handleLogout}>
-        <ButtonText>Sair da conta</ButtonText>
-      </Button>
+        <Button onPress={handleLogout}>
+          <ButtonText>Sair da conta</ButtonText>
+        </Button>
+      </ContentContainer>
     </Container>
   );
 }

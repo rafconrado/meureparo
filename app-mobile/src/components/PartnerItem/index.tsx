@@ -1,16 +1,27 @@
 import React from "react";
-import { Partner } from "../../types";
-import { PartnerContainer, PartnerLogo, PartnerName } from "./style";
+import { TouchableOpacity } from "react-native";
 
-interface PartnerItemProps {
-  partner: Partner;
-}
+import { PartnerItemProps } from "./types";
+import { PartnerContainer, PartnerLogo, PartnerName } from "./styles";
 
-export const PartnerItem = React.memo(({ partner }: PartnerItemProps) => {
-  return (
-    <PartnerContainer>
-      <PartnerLogo source={partner.logo} resizeMode="contain" />
-      <PartnerName>{partner.name}</PartnerName>
-    </PartnerContainer>
-  );
-});
+export const PartnerItem = React.memo(
+  ({ partner, onPress }: PartnerItemProps) => {
+    const handlePress = () => {
+      onPress?.(partner);
+    };
+
+    const Container = onPress ? TouchableOpacity : PartnerContainer;
+
+    return (
+      <Container
+        onPress={onPress ? handlePress : undefined}
+        activeOpacity={0.7}
+      >
+        <PartnerLogo source={partner.logo} resizeMode="contain" />
+        <PartnerName>{partner.name}</PartnerName>
+      </Container>
+    );
+  }
+);
+
+PartnerItem.displayName = "PartnerItem";

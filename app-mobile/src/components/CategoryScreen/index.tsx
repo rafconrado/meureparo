@@ -13,9 +13,6 @@ import { ProviderListItem } from "../../components/ProviderListItem";
 // Estilos
 import {
   Container,
-  Header,
-  BackButton,
-  HeaderTitle,
   LoadingContainer,
   EmptyContainer,
   EmptyText,

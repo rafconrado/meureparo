@@ -1,10 +1,16 @@
 import React, { useState } from "react";
-import { StatusBar, TouchableOpacity, Platform, Alert } from "react-native";
+import { StatusBar, TouchableOpacity, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { AntDesign, Feather, FontAwesome } from "@expo/vector-icons";
 
+// Contexts & Hooks
 import { useAuth } from "../../../contexts/AuthContext";
 
+// Components
+import { BackButton } from "../../../components/BackButton";
+
+// Styles
 import {
   Container,
   Header,
@@ -26,23 +32,18 @@ import {
   SignUpContainer,
   SignUpText,
   SignUpLink,
-} from "./style";
+} from "./styles";
 
-import { AntDesign, Feather, FontAwesome } from "@expo/vector-icons";
-import { BackButton } from "../../../components/BackButton";
-
-interface NavigationProps {
-  navigate: (screen: string) => void;
-}
+import { LoginClientNavigationProp, LoginCredentials } from "./types";
 
 const LoginClienteScreen: React.FC = () => {
+  const navigation = useNavigation<LoginClientNavigationProp>();
+  const { signIn } = useAuth();
+
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
-
-  const { signIn } = useAuth();
-  const navigation = useNavigation<NavigationProps>();
 
   const handleLogin = async (): Promise<void> => {
     if (!email || !password) {
@@ -53,16 +54,25 @@ const LoginClienteScreen: React.FC = () => {
     setIsLoading(true);
 
     try {
-      await signIn({ email, password }, "client");
-      Alert.alert("Sucesso", "Login realizado!");
+      const credentials: LoginCredentials = {
+        email: email.trim(),
+        password: password,
+      };
+
+      await signIn(credentials, "client");
     } catch (error: any) {
+      console.error(error);
       Alert.alert(
         "Erro de Login",
-        error.message || "Usuário ou senha inválidos."
+        error.message || "Usuário ou senha inválidos. Tente novamente."
       );
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleForgotPassword = () => {
+    Alert.alert("Em breve", "Funcionalidade sendo trabalhada!");
   };
 
   return (
@@ -89,6 +99,7 @@ const LoginClienteScreen: React.FC = () => {
         <FormContainer>
           <Subtitle>Bem-vindo de volta!</Subtitle>
 
+          {/* Input de Email */}
           <InputContainer>
             <Feather name="mail" size={20} color="#df692b" />
             <StyledInput
@@ -97,11 +108,13 @@ const LoginClienteScreen: React.FC = () => {
               value={email}
               onChangeText={setEmail}
               autoCapitalize="none"
+              autoCorrect={false}
               editable={!isLoading}
               returnKeyType="next"
             />
           </InputContainer>
 
+          {/* Input de Senha */}
           <InputContainer>
             <Feather name="lock" size={20} color="#df692b" />
             <StyledInput
@@ -125,7 +138,7 @@ const LoginClienteScreen: React.FC = () => {
             </TouchableOpacity>
           </InputContainer>
 
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handleForgotPassword}>
             <ForgotPasswordText>Esqueceu sua senha?</ForgotPasswordText>
           </TouchableOpacity>
 

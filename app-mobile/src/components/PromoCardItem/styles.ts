@@ -3,7 +3,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Dimensions } from "react-native";
 
 const { width: screenWidth } = Dimensions.get("window");
-const CARD_WIDTH = screenWidth * 0.85; // 85% da largura da tela
+const CARD_WIDTH = screenWidth * 0.85;
 
 export const PromoCard = styled(LinearGradient)`
   width: ${CARD_WIDTH}px;

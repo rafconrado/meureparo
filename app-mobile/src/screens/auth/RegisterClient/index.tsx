@@ -7,7 +7,6 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
 
@@ -30,22 +29,11 @@ import {
 
 import { BackButton } from "../../../components/BackButton";
 
-type RootStackParamList = {
-  RegisterClientStep2: {
-    name: string;
-    cpf: string;
-    email: string;
-    password: string;
-  };
-};
+import { RegisterClientNavigationProp } from "./types";
 
-type RegisterClientScreenProp = NativeStackNavigationProp<
-  RootStackParamList,
-  "RegisterClientStep2"
->;
-
-interface NavigationProps extends RegisterClientScreenProp {}
-
+// ==============================
+// FUNÇÕES AUXILIARES
+// ==============================
 const capitalizeName = (text: string): string => {
   return text
     .toLowerCase()
@@ -97,8 +85,11 @@ const isValidEmail = (email: string): boolean => {
   return regex.test(email.toLowerCase());
 };
 
+// ==============================
+// COMPONENTE PRINCIPAL
+// ==============================
 const RegisterClient: React.FC = () => {
-  const navigation = useNavigation<NavigationProps>();
+  const navigation = useNavigation<RegisterClientNavigationProp>();
 
   const [name, setName] = useState<string>("");
   const [cpf, setCpf] = useState<string>("");
@@ -108,7 +99,8 @@ const RegisterClient: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] =
+    useState<boolean>(false);
 
   const handleCpfChange = (text: string) => {
     const formattedCpf = formatCPF(text);
@@ -154,7 +146,7 @@ const RegisterClient: React.FC = () => {
     setTimeout(() => {
       navigation.navigate("RegisterClientStep2", {
         name,
-        cpf,
+        cpf: cpf.replace(/\D/g, ""),
         email,
         password,
       });
@@ -201,9 +193,8 @@ const RegisterClient: React.FC = () => {
             </InputContainer>
 
             <InputContainer>
-              {/* Ícone de escudo sempre fixo à esquerda */}
               <Feather name="shield" size={20} color="#df692b" />
-              
+
               <StyledInput
                 placeholder="Digite seu CPF"
                 keyboardType="number-pad"
@@ -213,8 +204,6 @@ const RegisterClient: React.FC = () => {
                 returnKeyType="next"
                 editable={!isLoading}
               />
-
-              {/* Ícones de validação aparecem condicionalmente à direita */}
               {isCpfValid === true && (
                 <Feather name="check-circle" size={20} color="#28a745" />
               )}
@@ -223,7 +212,6 @@ const RegisterClient: React.FC = () => {
               )}
             </InputContainer>
 
-            {/* Mensagem de erro que só aparece se o CPF for inválido */}
             {isCpfValid === false && (
               <LoginText
                 style={{
@@ -303,7 +291,9 @@ const RegisterClient: React.FC = () => {
 
             <LoginContainer>
               <LoginText>Já tem uma conta? </LoginText>
-              <TouchableOpacity onPress={() => navigation.goBack()}>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("LoginClient")}
+              >
                 <LoginLink>Entrar aqui</LoginLink>
               </TouchableOpacity>
             </LoginContainer>

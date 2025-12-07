@@ -2,12 +2,17 @@ import React, { useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { Container, Logo } from "./style";
 
+import { SplashScreenNavigationProp } from "./types";
+
 const SplashScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<SplashScreenNavigationProp>();
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigation.navigate("Selection" as never);
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "SelectionScreen" }],
+      });
     }, 2000);
 
     return () => clearTimeout(timer);

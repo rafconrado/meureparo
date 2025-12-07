@@ -1,44 +1,33 @@
 import React from "react";
-import { View, TouchableOpacity, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { styles } from "./style";
 
-type TabItem = {
-  label: string;
-  icon: keyof typeof Ionicons.glyphMap;
-  onPress: () => void;
-};
+import { TabBarProps } from "./types";
+import { Container, TabButton, Icon, Label } from "./styles";
 
-type Props = {
-  tabs: TabItem[];
-  activeIndex: number;
-};
+const ACTIVE_COLOR = "#57B2C5";
+const INACTIVE_COLOR = "#0C0C0C";
+const ICON_SIZE = 24;
 
-export function TabBar({ tabs, activeIndex }: Props) {
+export function TabBar({ tabs, activeIndex }: TabBarProps) {
   return (
-    <View style={styles.container}>
-      {tabs.map((tab, index) => (
-        <TouchableOpacity
-          key={index}
-          onPress={tab.onPress}
-          style={styles.tabButton}
-        >
-          <Ionicons
-            name={tab.icon}
-            size={24}
-            color={index === activeIndex ? "#57B2C5" : "#0C0C0C"}
-            style={styles.icon}
-          />
-          <Text
-            style={[
-              styles.label,
-              { color: index === activeIndex ? "#57B2C5" : "#0C0C0C" },
-            ]}
+    <Container>
+      {tabs.map((tab, index) => {
+        const isActive = index === activeIndex;
+        const iconColor = isActive ? ACTIVE_COLOR : INACTIVE_COLOR;
+
+        return (
+          <TabButton
+            key={`${tab.label}-${index}`}
+            onPress={tab.onPress}
+            activeOpacity={0.7}
           >
-            {tab.label}
-          </Text>
-        </TouchableOpacity>
-      ))}
-    </View>
+            <Icon>
+              <Ionicons name={tab.icon} size={ICON_SIZE} color={iconColor} />
+            </Icon>
+            <Label isActive={isActive}>{tab.label}</Label>
+          </TabButton>
+        );
+      })}
+    </Container>
   );
 }

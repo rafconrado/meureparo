@@ -18,6 +18,7 @@ export const Content = styled.View`
 export const UserInfo = styled.View`
   flex-direction: row;
   align-items: center;
+  flex: 1;
 `;
 
 export const AvatarButton = styled.TouchableOpacity``;
@@ -26,11 +27,13 @@ export const Avatar = styled.Image`
   width: 52px;
   height: 52px;
   border-radius: 26px;
-  border: 2px solid #ffffff;
+  border-width: 2px;
+  border-color: #ffffff;
 `;
 
 export const TextContainer = styled.View`
   margin-left: 15px;
+  flex: 1;
 `;
 
 export const Greeting = styled.Text`

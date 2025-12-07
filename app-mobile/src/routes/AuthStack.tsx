@@ -8,7 +8,8 @@ import RegisterClient from "../screens/auth/RegisterClient";
 import RegisterClientStep2 from "../screens/auth/RegisterClientStep2";
 
 import LoginProviderScreen from "../screens/auth/LoginProviderScreen";
-import RegisterProvider from "../screens/auth/RegisterProvider";
+
+import RegisterProviderStep1 from "../screens/auth/RegisterProvider";
 import RegisterProviderStep2 from "../screens/auth/RegisterProviderStep2";
 
 const Stack = createNativeStackNavigator();
@@ -20,18 +21,26 @@ export default function AuthStack() {
       initialRouteName="Splash"
     >
       <Stack.Screen name="Splash" component={SplashScreen} />
-      <Stack.Screen name="Selection" component={SelectionScreen} />
-      <Stack.Screen name="LoginCliente" component={LoginClienteScreen} />
+
+      <Stack.Screen name="SelectionScreen" component={SelectionScreen} />
+
+      <Stack.Screen name="LoginClient" component={LoginClienteScreen} />
+
       <Stack.Screen name="LoginProvider" component={LoginProviderScreen} />
+
       <Stack.Screen name="RegisterClient" component={RegisterClient} />
-      <Stack.Screen name="RegisterProvider" component={RegisterProvider} />
-      <Stack.Screen
-        name="RegisterProviderStep2"
-        component={RegisterProviderStep2}
-      />
       <Stack.Screen
         name="RegisterClientStep2"
         component={RegisterClientStep2}
+      />
+
+      <Stack.Screen
+        name="RegisterProviderStep1"
+        component={RegisterProviderStep1}
+      />
+      <Stack.Screen
+        name="RegisterProviderStep2"
+        component={RegisterProviderStep2}
       />
     </Stack.Navigator>
   );

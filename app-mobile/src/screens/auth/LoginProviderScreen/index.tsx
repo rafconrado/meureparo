@@ -1,9 +1,5 @@
 import React, { useState } from "react";
-import {
-  StatusBar,
-  TouchableOpacity,
-  Alert,
-} from "react-native";
+import { StatusBar, TouchableOpacity, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useAuth } from "../../../contexts/AuthContext";
@@ -28,7 +24,7 @@ import {
   SignUpContainer,
   SignUpText,
   SignUpLink,
-} from "./style";
+} from "./styles";
 import { AntDesign, Feather, FontAwesome } from "@expo/vector-icons";
 import { BackButton } from "../../../components/BackButton";
 
@@ -63,6 +59,10 @@ const LoginProviderScreen: React.FC = () => {
     }
   };
 
+  const handleForgotPassword = () => {
+    Alert.alert("Em breve", "Funcionalidade sendo trabalhada!");
+  };
+
   return (
     <Container>
       <StatusBar barStyle="light-content" backgroundColor="#57b2c5" />
@@ -76,7 +76,7 @@ const LoginProviderScreen: React.FC = () => {
       </Header>
 
       <KeyboardAwareScrollView
-        contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
+        contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
         enableOnAndroid
         extraScrollHeight={20}
         keyboardShouldPersistTaps="handled"
@@ -121,7 +121,7 @@ const LoginProviderScreen: React.FC = () => {
             </TouchableOpacity>
           </InputContainer>
 
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handleForgotPassword}>
             <ForgotPasswordText>Esqueceu sua senha?</ForgotPasswordText>
           </TouchableOpacity>
 

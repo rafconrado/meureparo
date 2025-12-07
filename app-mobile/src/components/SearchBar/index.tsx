@@ -1,25 +1,28 @@
 import React from "react";
 import { Ionicons } from "@expo/vector-icons";
-import { SearchContainer, SearchInput, SearchButton } from "./style";
 
-interface SearchBarProps {
-  searchText: string;
-  setSearchText: (text: string) => void;
-  onSearch: () => void;
-}
+import { SearchBarProps } from "./types";
+import { SearchContainer, SearchInput, SearchButton } from "./styles";
 
-export const SearchBar: React.FC<SearchBarProps> = ({
+const DEFAULT_PLACEHOLDER = "Buscar serviços ou profissionais...";
+const DEFAULT_PLACEHOLDER_COLOR = "#999";
+
+export const SearchBar = ({
   searchText,
   setSearchText,
   onSearch,
-}) => {
+  placeholder = DEFAULT_PLACEHOLDER,
+  placeholderColor = DEFAULT_PLACEHOLDER_COLOR,
+}: SearchBarProps) => {
   return (
     <SearchContainer>
       <SearchInput
-        placeholder="Buscar serviços ou profissionais..."
+        placeholder={placeholder}
         value={searchText}
         onChangeText={setSearchText}
-        placeholderTextColor="#999"
+        placeholderTextColor={placeholderColor}
+        returnKeyType="search"
+        onSubmitEditing={onSearch}
       />
       <SearchButton onPress={onSearch} activeOpacity={0.8}>
         <Ionicons name="search" size={22} color="#FFF" />

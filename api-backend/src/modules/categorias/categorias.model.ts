@@ -1,5 +1,9 @@
 import { db } from "../../config/database";
-import { ICategory, ICreateCategoryDTO, IDbResult } from "./categorias.interface";
+import {
+  ICategory,
+  ICreateCategoryDTO,
+  IDbResult,
+} from "./categorias.interface";
 
 export class Category {
   static create(data: ICreateCategoryDTO): Promise<ICategory> {
@@ -12,7 +16,8 @@ export class Category {
       db.run(sql, params, function (err: Error | null) {
         if (err) reject(err);
         // 'this' aqui se refere ao contexto do statement do sqlite3
-        else resolve({ id: this.lastID, name, icon: icon || null } as ICategory);
+        else
+          resolve({ id: this.lastID, name, icon: icon || null } as ICategory);
       });
     });
   }

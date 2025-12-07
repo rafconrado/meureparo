@@ -1,7 +1,9 @@
 import React from "react";
 import { Ionicons } from "@expo/vector-icons";
-import { Provider } from "../../types";
+
 import theme from "../../theme";
+import { ProviderListItemProps, RatingProps } from "./types";
+
 import {
   CardContainer,
   CardWrapper,
@@ -21,16 +23,12 @@ import {
   RatingText,
   ReviewCount,
   FavButton,
-} from "./style";
+} from "./styles";
 
-interface ProviderListItemProps {
-  provider: Provider;
-  onPress: (provider: Provider) => void;
-  isFavorite?: boolean;
-  onToggleFavorite?: (provider: Provider) => void;
-}
+const POPULAR_THRESHOLD = 50;
+const DEFAULT_AVATAR_BASE_URL = "https://i.pravatar.cc/150?u=";
 
-const Rating = ({ rating, reviews }: { rating?: number; reviews?: number }) => {
+const Rating = ({ rating, reviews }: RatingProps) => {
   if (!rating || rating === 0) {
     return null;
   }
@@ -51,19 +49,25 @@ export const ProviderListItem = React.memo(
     isFavorite = false,
     onToggleFavorite,
   }: ProviderListItemProps) => {
-    const isPopular = (provider.reviews || 0) > 50;
+    const isPopular = (provider.reviews || 0) > POPULAR_THRESHOLD;
+    const hasDiscount = (provider.discount || 0) > 0;
+    const imageUri =
+      provider.image || `${DEFAULT_AVATAR_BASE_URL}${provider.id}`;
+
+    const handlePress = () => {
+      onPress(provider);
+    };
+
+    const handleToggleFavorite = () => {
+      onToggleFavorite?.(provider);
+    };
 
     return (
       <CardWrapper>
-        <CardContainer onPress={() => onPress(provider)} activeOpacity={0.85}>
+        <CardContainer onPress={handlePress} activeOpacity={0.85}>
           <ImageWrapper>
-            <ProviderImage
-              source={{
-                uri:
-                  provider.image ||
-                  `https://i.pravatar.cc/150?u=${provider.id}`,
-              }}
-            />
+            <ProviderImage source={{ uri: imageUri }} />
+
             <BadgeOverlay>
               {isPopular && (
                 <PopularBadge>
@@ -72,7 +76,7 @@ export const ProviderListItem = React.memo(
                 </PopularBadge>
               )}
 
-              {(provider.discount || 0) > 0 && (
+              {hasDiscount && (
                 <DiscountBadge>
                   <DiscountText>{provider.discount}% OFF</DiscountText>
                 </DiscountBadge>
@@ -80,10 +84,7 @@ export const ProviderListItem = React.memo(
             </BadgeOverlay>
 
             {onToggleFavorite && (
-              <FavButton
-                onPress={() => onToggleFavorite(provider)}
-                activeOpacity={0.6}
-              >
+              <FavButton onPress={handleToggleFavorite} activeOpacity={0.6}>
                 <Ionicons
                   name={isFavorite ? "heart" : "heart-outline"}
                   size={20}
@@ -99,6 +100,7 @@ export const ProviderListItem = React.memo(
             <HeaderRow>
               <ProviderName numberOfLines={1}>{provider.title}</ProviderName>
             </HeaderRow>
+
             <ProviderSpecialty numberOfLines={1}>
               {provider.providerName}
             </ProviderSpecialty>
@@ -112,5 +114,3 @@ export const ProviderListItem = React.memo(
     );
   }
 );
-
-ProviderListItem.displayName = "ProviderListItem";

@@ -3,6 +3,7 @@ import { Feather } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
 import { useAuth } from "../../contexts/AuthContext";
+import { ProviderNavigationProp } from "../../@types/navigation";
 
 import {
   Container,
@@ -14,46 +15,63 @@ import {
   Greeting,
   UserName,
   ActionButton,
-} from "./style";
+} from "./styles";
 
-const defaultAvatar = "https://avatars.githubusercontent.com/u/156972984?v=4";
+import { ProviderHeaderProps } from "./types";
 
-interface ProviderHeaderProps {
-  onActionPress?: () => void;
-  actionIcon?: keyof typeof Feather.glyphMap;
-}
+const DEFAULT_AVATAR = "https://avatars.githubusercontent.com/u/156972984?v=4";
 
 export function ProviderHeader({
   onActionPress,
   actionIcon,
+  defaultAvatarUrl = DEFAULT_AVATAR,
 }: ProviderHeaderProps) {
   const { user } = useAuth();
-  const navigation = useNavigation();
+  const navigation = useNavigation<ProviderNavigationProp>();
 
   const handleProfileNavigation = () => {
-    navigation.navigate("Perfil" as never);
+    navigation.navigate("ProfileScreen");
   };
+
+  const avatarUrl = user?.avatarUrl || defaultAvatarUrl;
+  const userName: string = user?.name || "Prestador";
+  const shouldRenderActionButton: boolean = Boolean(
+    onActionPress && actionIcon
+  );
 
   return (
     <Container>
       <Content>
         <UserInfo>
-          <AvatarButton onPress={handleProfileNavigation}>
+          <AvatarButton
+            onPress={handleProfileNavigation}
+            activeOpacity={0.7}
+            accessible
+            accessibilityLabel="Ir para perfil"
+            accessibilityHint="Navega para a tela de perfil"
+          >
             <Avatar
-              source={{
-                uri: user?.avatarUrl || defaultAvatar,
-              }}
+              source={{ uri: avatarUrl }}
+              accessible
+              accessibilityLabel={`Foto de ${userName}`}
             />
           </AvatarButton>
+
           <TextContainer>
             <Greeting>Bem-vindo,</Greeting>
-            <UserName>{user?.name || "Prestador"}</UserName>
+            <UserName numberOfLines={1}>{userName}</UserName>
           </TextContainer>
         </UserInfo>
 
-        {onActionPress && actionIcon && (
-          <ActionButton onPress={onActionPress}>
-            <Feather name={actionIcon} size={26} color="#ffffff" />
+        {shouldRenderActionButton && (
+          <ActionButton
+            onPress={onActionPress}
+            activeOpacity={0.7}
+            accessible
+            accessibilityLabel="Botão de ação"
+            accessibilityHint="Pressione para executar uma ação"
+          >
+            <Feather name={actionIcon!} size={26} color="#ffffff" />
           </ActionButton>
         )}
       </Content>

@@ -8,10 +8,10 @@ import { ClientHeader } from "../components/ClientHeader";
 
 // Telas
 import HomeClient from "../screens/client/HomeClient";
-import ProfileScreen from "../screens/client/ProfileScreen";
-import MessagesScreen from "../screens/client/MessagesScreen";
-import HistoryScreen from "../screens/client/HistoryScreen";
-import InvoicesClients from "../screens/client/InvoicesClients";
+import { ProfileScreen } from "../screens/client/ProfileScreen";
+import { MessagesScreen } from "../screens/client/MessagesScreen";
+import { HistoryScreen } from "../screens/client/HistoryScreen";
+import { InvoicesClients } from "../screens/client/InvoicesClients";
 
 const Tab = createBottomTabNavigator();
 

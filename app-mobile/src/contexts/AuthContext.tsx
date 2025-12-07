@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import api from "../services/api";
 
+// Services
 import {
   loginClient,
   loginProvider,
@@ -71,6 +72,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   async function setAuthState(data: UserData, type: "client" | "provider") {
     setUser(data);
     setUserType(type);
+
+    api.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
+
     await AsyncStorage.setItem("@app:user", JSON.stringify(data));
     await AsyncStorage.setItem("@app:userType", type);
   }
@@ -88,27 +92,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
       const fetchedUser = apiResponse.user;
 
-      console.log("Role do usuário:", fetchedUser.role);
-      console.log("Type esperado:", type);
-
       const roleMap: Record<string, string> = {
         CLIENTE: "client",
         PRESTADOR: "provider",
         client: "client",
         provider: "provider",
+        ADMIN: "admin",
       };
 
       const userRole = roleMap[fetchedUser.role?.trim() || ""];
 
-      console.log("Role mapeado:", userRole);
-
+      // Segurança: Verifica se o usuário está tentando logar no app certo
       if (!userRole || userRole !== type) {
-        throw new Error("Acesso inválido para este ambiente.");
+        throw new Error(
+          `Esta conta não é de ${
+            type === "client" ? "Cliente" : "Prestador"
+          }. Verifique o app ou seu cadastro.`
+        );
       }
-
-      api.defaults.headers.common[
-        "Authorization"
-      ] = `Bearer ${apiResponse.token}`;
 
       const userDataWithToken = {
         ...apiResponse.user,
@@ -122,7 +123,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       const message =
         error.response?.data?.message ||
         error.message ||
-        "Não foi possível realizar o login. Tente novamente mais tarde.";
+        "Não foi possível realizar o login. Verifique suas credenciais.";
 
       throw new Error(message);
     }
@@ -144,37 +145,35 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   async function register(data: RegisterClientDTO) {
     try {
       const apiResponse = await registerClient(data);
-
-      api.defaults.headers.common[
-        "Authorization"
-      ] = `Bearer ${apiResponse.token}`;
-
       const userDataWithToken = {
         ...apiResponse.user,
         token: apiResponse.token,
       };
       await setAuthState(userDataWithToken, "client");
-    } catch (error) {
-      console.error("Erro no contexto de registro do cliente:", error);
+    } catch (error: any) {
+      console.error(
+        "Erro no contexto de registro do cliente:",
+        error.response?.data || error.message
+      );
       throw error;
     }
   }
 
   async function registerProvider(data: RegisterProviderDTO) {
     try {
-      const apiResponse = await registerProviderService(data);
+      console.log("Enviando dados para API Provider:", data);
 
-      api.defaults.headers.common[
-        "Authorization"
-      ] = `Bearer ${apiResponse.token}`;
+      const apiResponse = await registerProviderService(data);
 
       const userDataWithToken = {
         ...apiResponse.user,
         token: apiResponse.token,
       };
       await setAuthState(userDataWithToken, "provider");
-    } catch (error) {
-      console.error("Erro no contexto de registro do prestador:", error);
+    } catch (error: any) {
+      const errorMsg = error.response?.data?.message || error.message;
+      console.error("Erro no contexto de registro do prestador:", errorMsg);
+
       throw error;
     }
   }
@@ -183,13 +182,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       if (!user) throw new Error("Não há usuário logado para atualizar.");
 
-      // Chama a API para atualizar o usuário no banco de dados
       const updatedUserFromApi = await updateUserService(data);
 
-      // Atualiza o estado local e o AsyncStorage
       const updatedSessionUser = {
-        ...user, // Mantém o token e outras infos da sessão
-        ...updatedUserFromApi, // Atualiza com os novos dados retornados pela API
+        ...user,
+        ...updatedUserFromApi,
       };
 
       setUser(updatedSessionUser);
@@ -200,10 +197,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
       console.log("<- [CONTEXTO] Perfil atualizado com sucesso.");
     } catch (error) {
-      console.error(
-        "### ERRO no CONTEXTO ao tentar atualizar o perfil ###",
-        error
-      );
+      console.error("Erro ao atualizar perfil:", error);
       throw error;
     }
   }
@@ -228,5 +222,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
 export function useAuth(): AuthContextData {
   const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth deve ser usado dentro de um AuthProvider");
+  }
   return context;
 }

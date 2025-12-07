@@ -9,6 +9,7 @@ import {
   Dimensions,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Ionicons } from "@expo/vector-icons";
 
 // Contexts & Hooks
@@ -18,6 +19,8 @@ import { useAuth } from "../../../contexts/AuthContext";
 import api from "../../../services/api";
 import { promosData, partnersData } from "../../../data/mockData";
 
+// Types
+import { ClientStackParamList } from "../../../@types/navigation";
 import type { Provider, Category, Promo, Partner } from "../../../types";
 
 // Components
@@ -38,13 +41,19 @@ import {
   LoadingContainer,
 } from "./style";
 
+type HomeClientNavigationProp = NativeStackNavigationProp<
+  ClientStackParamList,
+  "HomeClient"
+>;
+
 const { width: screenWidth } = Dimensions.get("window");
 const CARD_WIDTH = screenWidth * 0.8;
 const HORIZONTAL_PADDING = (screenWidth - CARD_WIDTH) / 2 - 4;
 
 const HomeClient = () => {
   const { user } = useAuth();
-  const navigation = useNavigation<any>();
+  const navigation = useNavigation<HomeClientNavigationProp>();
+
   const [searchText, setSearchText] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -120,9 +129,9 @@ const HomeClient = () => {
   }, [searchText]);
 
   const handleCategoryPress = useCallback(
-    (category: Category) => {
+    (category: any) => {
       navigation.navigate("CategoryScreen", {
-        categoryId: category.id,
+        categoryId: String(category.id),
         categoryName: category.name,
       });
     },
@@ -133,7 +142,7 @@ const HomeClient = () => {
     (provider: Provider) => {
       if (provider.advertisementId) {
         navigation.navigate("AdvertisementDetail", {
-          adId: provider.advertisementId,
+          adId: String(provider.advertisementId),
         });
       } else {
         console.warn(
@@ -179,7 +188,7 @@ const HomeClient = () => {
         <Title>Olá, {user?.name || "Usuário"} 👋</Title>
         <Subtitle>Encontre os melhores profissionais perto de você</Subtitle>
 
-        {/* Usando o componente SearchBar */}
+        {/* Componente SearchBar */}
         <SearchBar
           searchText={searchText}
           setSearchText={setSearchText}
@@ -192,9 +201,12 @@ const HomeClient = () => {
 
           <FlatList
             data={apiData.categories.slice(0, 8)}
-            keyExtractor={(item) => item.id.toString()}
+            keyExtractor={(item) => String(item.id)}
             renderItem={({ item }) => (
-              <CategoryCardItem item={item} onPress={handleCategoryPress} />
+              <CategoryCardItem
+                item={{ ...item, id: String(item.id) } as any}
+                onPress={() => handleCategoryPress(item)}
+              />
             )}
             numColumns={4}
             scrollEnabled={false}
@@ -212,8 +224,10 @@ const HomeClient = () => {
           <SectionTitle>🔥 Ofertas Especiais</SectionTitle>
           <FlatList
             data={apiData.promos}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => <PromoCardItem item={item} />}
+            keyExtractor={(item) => String(item.id)}
+            renderItem={({ item }) => (
+              <PromoCardItem item={{ ...item, id: String(item.id) } as any} />
+            )}
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={{ paddingLeft: 16 }}
@@ -225,11 +239,11 @@ const HomeClient = () => {
           <SectionTitle>⭐ Profissionais em Destaque</SectionTitle>
           <FlatList
             data={featuredProviders}
-            keyExtractor={(item) => item.id.toString()}
+            keyExtractor={(item) => String(item.id)}
             renderItem={({ item }) => (
               <FeaturedProviderCard
-                provider={item}
-                onPress={handleProviderPress}
+                provider={{ ...item, id: String(item.id) } as any}
+                onPress={() => handleProviderPress(item)}
               />
             )}
             horizontal
@@ -243,11 +257,11 @@ const HomeClient = () => {
           <SectionTitle>🚀 Anúncios Mais Populares</SectionTitle>
           <FlatList
             data={mostPopularProviders}
-            keyExtractor={(item) => item.id.toString()}
+            keyExtractor={(item) => String(item.id)}
             renderItem={({ item }) => (
               <ProviderCarouselCard
-                provider={item}
-                onPress={handleProviderPress}
+                provider={{ ...item, id: String(item.id) } as any}
+                onPress={() => handleProviderPress(item)}
                 cardWidth={CARD_WIDTH}
               />
             )}
@@ -266,8 +280,10 @@ const HomeClient = () => {
           <SectionTitle>Parceiros de confiança</SectionTitle>
           <FlatList
             data={apiData.partners}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => <PartnerItem partner={item} />}
+            keyExtractor={(item) => String(item.id)}
+            renderItem={({ item }) => (
+              <PartnerItem partner={{ ...item, id: String(item.id) } as any} />
+            )}
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={{ paddingLeft: 16 }}

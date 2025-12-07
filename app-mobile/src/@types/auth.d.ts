@@ -1,12 +1,18 @@
+// ==========================================
+// USUÁRIO LOGADO (SESSÃO)
+// ==========================================
 export interface UserData {
-  id: string;
+  id: string | number;
   name: string;
   email: string;
   token: string;
   avatarUrl?: string;
-  role: "client" | "provider";
+  role: "client" | "provider" | "PRESTADORES" | "CLIENTES";
 }
 
+// ==========================================
+// DTO DE REGISTRO - CLIENTE
+// ==========================================
 export interface RegisterClientDTO {
   name: string;
   cpf: string;
@@ -24,13 +30,33 @@ export interface RegisterClientDTO {
   userType: "client";
 }
 
+// ==========================================
+// DTO DE REGISTRO - PRESTADOR
+// ==========================================
 export interface RegisterProviderDTO {
-  name: string;
+  razaoSocial: string;
+  nomeFantasia: string;
+  cnpj: string;
   email: string;
   password: string;
   phone: string;
+  inscricaoEstadual?: string;
+  cep?: string;
+  logradouro?: string;
+  numero?: string;
+  complemento?: string;
+  bairro?: string;
+  cidade?: string;
+  uf?: string;
+  descricaoEmpresa?: string;
+  logo?: string;
+  comoFicouSabendo?: string;
+  userType: "provider";
 }
 
+// ==========================================
+// DTO DE ATUALIZAÇÃO
+// ==========================================
 export interface UpdateUserData {
   name?: string;
   phone?: string;
@@ -41,4 +67,5 @@ export interface UpdateUserData {
   bairro?: string;
   cidade?: string;
   uf?: string;
+  avatarUrl?: string;
 }

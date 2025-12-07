@@ -1,6 +1,7 @@
 import React from "react";
-import { View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+
+import { ProviderCarouselCardProps } from "./types";
 import {
   ServiceCard,
   ServiceTitle,
@@ -11,67 +12,51 @@ import {
   ServicePrice,
   ServiceButton,
   ServiceButtonText,
-} from "./style";
-
-interface ProviderCarouselCardProps {
-  provider: any;
-  onPress: (provider: any) => void;
-  cardWidth: number;
-}
+  VerifiedBadge,
+  ImagePlaceholder,
+  RatingWrapper,
+} from "./styles";
 
 export const ProviderCarouselCard = React.memo(
   ({ provider, onPress, cardWidth }: ProviderCarouselCardProps) => {
+    const hasRating = provider.rating > 0 && provider.reviews > 0;
+
+    const handlePress = () => {
+      onPress(provider);
+    };
+
     return (
       <ServiceCard style={{ width: cardWidth, marginRight: 8 }}>
         {provider.isVerified && (
-          <View
-            style={{
-              position: "absolute",
-              top: 12,
-              right: 12,
-              zIndex: 1,
-              backgroundColor: "#FFF",
-              borderRadius: 12,
-              padding: 4,
-              elevation: 2,
-            }}
-          >
+          <VerifiedBadge>
             <Ionicons name="checkmark-circle" size={20} color="#4A90E2" />
-          </View>
+          </VerifiedBadge>
         )}
 
-        <View
-          style={{
-            width: "100%",
-            height: 140,
-            backgroundColor: "#f0f0f0",
-            borderRadius: 16,
-            justifyContent: "center",
-            alignItems: "center",
-            marginBottom: 12,
-          }}
-        >
+        <ImagePlaceholder>
           <Ionicons name="image-outline" size={40} color="#cccccc" />
-        </View>
+        </ImagePlaceholder>
 
         <ServiceTitle numberOfLines={1}>{provider.providerName}</ServiceTitle>
         <ProviderCategory numberOfLines={1}>
           {provider.category}
         </ProviderCategory>
 
-        {provider.rating > 0 && provider.reviews > 0 && (
-          <RatingContainer style={{ marginTop: 6, marginBottom: 4 }}>
-            <Ionicons name="star" size={16} color="#FFB800" />
-            <RatingText>
-              {provider.rating.toFixed(1)} • {provider.reviews} avaliações
-            </RatingText>
-          </RatingContainer>
+        {hasRating && (
+          <RatingWrapper>
+            <RatingContainer>
+              <Ionicons name="star" size={16} color="#FFB800" />
+              <RatingText>
+                {provider.rating.toFixed(1)} • {provider.reviews} avaliações
+              </RatingText>
+            </RatingContainer>
+          </RatingWrapper>
         )}
 
         <ServiceFromText>A partir de</ServiceFromText>
         <ServicePrice>R$ {provider.price}</ServicePrice>
 
-        <ServiceButton activeOpacity={0.8} onPress={() => onPress(provider)}>
+        <ServiceButton activeOpacity={0.8} onPress={handlePress}>
           <ServiceButtonText>Ver Anúncio</ServiceButtonText>
         </ServiceButton>
       </ServiceCard>

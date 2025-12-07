@@ -1,10 +1,14 @@
 import React from "react";
-import { View, Text } from "react-native";
+// import { HistoryScreenProps } from "./types"; // Pronto para uso futuro
+import { Container, CenterContainer, Title, Subtitle } from "./styles";
 
-export default function HistoryScreen() {
+export function HistoryScreen() {
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Histórico</Text>
-    </View>
+    <Container>
+      <CenterContainer>
+        <Title>Histórico de Serviços</Title>
+        <Subtitle>Seu histórico de contratações aparecerá aqui.</Subtitle>
+      </CenterContainer>
+    </Container>
   );
 }

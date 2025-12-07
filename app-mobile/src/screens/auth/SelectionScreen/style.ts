@@ -2,7 +2,7 @@ import styled from "styled-components/native";
 
 export const Container = styled.View`
   flex: 1;
-  background-color: #ffffffff;
+  background-color: #ffffff;
   align-items: center;
   justify-content: center;
   padding: 20px;
@@ -30,24 +30,20 @@ export const Subtitle = styled.Text`
 `;
 
 export const OptionCard = styled.View`
-  background-color: #ffffffff;
+  background-color: #ffffff;
   width: 85%;
   padding: 25px;
   margin-bottom: 20px;
   border-radius: 20px;
   align-items: center;
   justify-content: center;
+  gap: 15px;
 
-  /* Sombra para iOS */
   shadow-color: #000;
-  shadow-offset: {
-    width: 0;
-    height: 2;
-  }
+  shadow-offset: 0px 2px;
   shadow-opacity: 0.1;
   shadow-radius: 8px;
 
-  /* Sombra para Android */
   elevation: 5;
 `;
 
@@ -55,10 +51,12 @@ export const ClientText = styled.Text`
   font-size: 18px;
   font-weight: 600;
   color: #df692b;
+  margin-bottom: 10px;
 `;
 
 export const ProviderText = styled.Text`
   font-size: 18px;
   font-weight: 600;
   color: #57b2c5;
+  margin-bottom: 10px;
 `;

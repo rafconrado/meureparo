@@ -1,104 +1,123 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { FlatList, ActivityIndicator } from "react-native";
-import { useRoute, useNavigation } from "@react-navigation/native";
-import type { Provider } from "../../../types";
+import { FlatList, ActivityIndicator, ListRenderItem } from "react-native";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { Ionicons } from "@expo/vector-icons";
+
 import api from "../../../services/api";
+import { Provider } from "../../../types";
+import { ProviderListItem } from "../../../components/ProviderListItem";
+import { CategoryScreenProps } from "./types";
 
-import { FeaturedProviderCard } from "../../../components/FeaturedProviderCard";
 import {
-    Container,
-    Title,
-    LoadingContainer,
-    ErrorText,
-    EmptyListContainer,
-    EmptyListText,
-} from "./style";
+  Container,
+  LoadingContainer,
+  EmptyContainer,
+  EmptyText,
+} from "./styles";
 
-const CategoryScreen = () => {
-    const route = useRoute<any>();
-    const navigation = useNavigation<any>();
-    const { categoryId, categoryName } = route.params;
+const LOADING_COLOR = "#ff8724";
+const ICON_SIZE = 48;
+const ICON_COLOR = "#999";
 
-    const [providers, setProviders] = useState<Provider[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+export function CategoryScreen() {
+  const navigation = useNavigation<CategoryScreenProps["navigation"]>();
+  const route = useRoute<CategoryScreenProps["route"]>();
+  const { categoryId, categoryName } = route.params;
 
-    useEffect(() => {
-        const fetchProvidersByCategory = async () => {
-            if (!categoryId) {
-                setIsLoading(false);
-                setError("ID da categoria não encontrado.");
-                return;
-            }
+  const [providers, setProviders] = useState<Provider[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-            setIsLoading(true);
-            setError(null);
-            try {
-                const response = await api.get(`/ads?categoryId=${categoryId}`);
-                setProviders(response.data);
-            } catch (err) {
-                console.error("Erro ao buscar provedores por categoria:", err);
-                setError("Não foi possível carregar os profissionais.");
-            } finally {
-                setIsLoading(false);
-            }
-        };
+  useEffect(() => {
+    const fetchProvidersByCategory = async () => {
+      setIsLoading(true);
+      setError(null);
 
-        fetchProvidersByCategory();
-    }, [categoryId]);
-
-    const handleProviderPress = useCallback(
-        (provider: Provider) => {
-            if (provider.advertisementId) {
-                navigation.navigate("AdvertisementDetail", {
-                    adId: provider.advertisementId,
-                });
-            }
-        },
-        [navigation]
-    );
-
-
-    if (isLoading) {
-        return (
-            <LoadingContainer>
-                <ActivityIndicator size="large" color="#ff8724" />
-            </LoadingContainer>
+      try {
+        const response = await api.get(`/ads?categoryId=${categoryId}`);
+        setProviders(response.data);
+      } catch (err) {
+        console.error("Erro ao buscar prestadores por categoria:", err);
+        setError(
+          "Não foi possível carregar os profissionais. Tente novamente."
         );
-    }
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-    if (error) {
-        return (
-            <LoadingContainer>
-                <ErrorText>{error}</ErrorText>
-            </LoadingContainer>
-        );
+    if (categoryId) {
+      fetchProvidersByCategory();
     }
+  }, [categoryId]);
 
+  const handleProviderPress = useCallback(
+    (provider: Provider) => {
+      if (provider.advertisementId) {
+        navigation.navigate("AdvertisementDetail", {
+          adId: provider.advertisementId,
+        });
+      }
+    },
+    [navigation]
+  );
+
+  const renderItem: ListRenderItem<Provider> = useCallback(
+    ({ item }) => (
+      <ProviderListItem provider={item} onPress={handleProviderPress} />
+    ),
+    [handleProviderPress]
+  );
+
+  const keyExtractor = useCallback((item: Provider) => item.id.toString(), []);
+
+  if (isLoading) {
     return (
-        <Container>
-            <Title>{categoryName || "Categoria"}</Title>
-
-            <FlatList
-                data={providers}
-                keyExtractor={(item) => item.id}
-                renderItem={({ item }) => (
-                    <FeaturedProviderCard
-                        provider={item}
-                        onPress={handleProviderPress}
-                    />
-                )}
-                ListEmptyComponent={
-                    <EmptyListContainer>
-                        <EmptyListText>
-                            Nenhum profissional encontrado nesta categoria.
-                        </EmptyListText>
-                    </EmptyListContainer>
-                }
-                contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 20 }}
-            />
-        </Container>
+      <Container>
+        <LoadingContainer>
+          <ActivityIndicator size="large" color={LOADING_COLOR} />
+        </LoadingContainer>
+      </Container>
     );
-};
+  }
 
-export default CategoryScreen;
+  if (error) {
+    return (
+      <Container>
+        <EmptyContainer>
+          <Ionicons
+            name="cloud-offline-outline"
+            size={ICON_SIZE}
+            color={ICON_COLOR}
+          />
+          <EmptyText>{error}</EmptyText>
+        </EmptyContainer>
+      </Container>
+    );
+  }
+
+  if (providers.length === 0) {
+    return (
+      <Container>
+        <EmptyContainer>
+          <Ionicons name="search-outline" size={ICON_SIZE} color={ICON_COLOR} />
+          <EmptyText>
+            Nenhum profissional encontrado nesta categoria ainda.
+          </EmptyText>
+        </EmptyContainer>
+      </Container>
+    );
+  }
+
+  return (
+    <Container>
+      <FlatList
+        data={providers}
+        keyExtractor={keyExtractor}
+        renderItem={renderItem}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingTop: 8, paddingBottom: 16 }}
+      />
+    </Container>
+  );
+}

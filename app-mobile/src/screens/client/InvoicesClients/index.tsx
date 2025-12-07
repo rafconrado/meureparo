@@ -1,10 +1,14 @@
 import React from "react";
-import { View, Text } from "react-native";
+// import { InvoicesClientsProps } from "./types"; // Deixei comentado para uso futuro se precisar navegar
+import { Container, CenterContainer, Title, Subtitle } from "./styles";
 
-export default function InvoicesClients() {
+export function InvoicesClients() {
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Pedidos</Text>
-    </View>
+    <Container>
+      <CenterContainer>
+        <Title>Meus Pedidos</Title>
+        <Subtitle>Você ainda não realizou nenhum pedido.</Subtitle>
+      </CenterContainer>
+    </Container>
   );
 }

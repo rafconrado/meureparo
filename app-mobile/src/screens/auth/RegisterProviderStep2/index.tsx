@@ -1,10 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
-import {
-  StatusBar,
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-} from "react-native";
+import React, { useState, useEffect } from "react";
+import { StatusBar, Alert, Platform, KeyboardAvoidingView } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
 import { Picker } from "@react-native-picker/picker";
@@ -26,9 +21,10 @@ import {
   ButtonText,
   StyledPicker,
   PickerContainer,
-} from "./style";
+} from "./styles";
 
 import { BackButton } from "../../../components/BackButton";
+import { RegisterProviderStep2RouteProp } from "./types";
 
 const servicos = [
   { label: "Selecione um serviço", value: "" },
@@ -42,38 +38,48 @@ const servicos = [
   { label: "Outro", value: "outro" },
 ];
 
-interface RouteParams {
-  name: string;
-  cnpj: string;
-  email: string;
-  password: string;
-}
-
 const RegisterProviderStep2: React.FC = () => {
-  const route = useRoute();
-  const { name, cnpj, email, password } = route.params as RouteParams;
+  const route = useRoute<RegisterProviderStep2RouteProp>();
+
+  const {
+    razaoSocial,
+    nomeFantasia,
+    cnpj,
+    inscricaoEstadual,
+    email,
+    password,
+  } = route.params;
+
   const { registerProvider } = useAuth();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [phone, setPhone] = useState<string>("");
   const [cep, setCep] = useState<string>("");
+
   const [logradouro, setLogradouro] = useState<string>("");
   const [numero, setNumero] = useState<string>("");
   const [complemento, setComplemento] = useState<string>("");
   const [bairro, setBairro] = useState<string>("");
   const [cidade, setCidade] = useState<string>("");
   const [uf, setUf] = useState<string>("");
+
   const [servico, setServico] = useState<string>("");
   const [isLoadingCep, setIsLoadingCep] = useState<boolean>(false);
 
+  // Formatação de telefone
   const formatPhone = (value: string): string => {
     const cleaned = value.replace(/\D/g, "");
     if (cleaned.length <= 2) return `(${cleaned}`;
     if (cleaned.length <= 6)
       return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2)}`;
     if (cleaned.length <= 10)
-      return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 6)}-${cleaned.slice(6)}`;
-    return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 7)}-${cleaned.slice(7, 11)}`;
+      return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 6)}-${cleaned.slice(
+        6
+      )}`;
+    return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 7)}-${cleaned.slice(
+      7,
+      11
+    )}`;
   };
 
   const formatCep = (value: string): string => {
@@ -87,6 +93,7 @@ const RegisterProviderStep2: React.FC = () => {
     setCep(formattedCep);
   };
 
+  // Busca de CEP (ViaCEP)
   useEffect(() => {
     const rawCep = cep.replace(/\D/g, "");
 
@@ -125,7 +132,9 @@ const RegisterProviderStep2: React.FC = () => {
       };
       fetchAddress();
     } else if (rawCep.length > 0) {
-      clearAddressFields();
+      if (rawCep.length < 8 && (logradouro || cidade)) {
+        clearAddressFields();
+      }
     }
   }, [cep]);
 
@@ -140,24 +149,31 @@ const RegisterProviderStep2: React.FC = () => {
       !uf ||
       !servico
     ) {
-      Alert.alert("Campos obrigatórios", "Preencha todos os campos obrigatórios.");
+      Alert.alert(
+        "Campos obrigatórios",
+        "Preencha todos os campos de endereço e contato."
+      );
       return;
     }
 
     if (phone.replace(/\D/g, "").length < 10) {
-      Alert.alert("Telefone inválido", "Digite um telefone válido.");
+      Alert.alert("Telefone inválido", "Digite um telefone válido com DDD.");
       return;
     }
 
     setIsLoading(true);
 
     try {
-      const providerData = {
-        name,
+      await registerProvider({
+        razaoSocial,
+        nomeFantasia,
         cnpj,
+        inscricaoEstadual: inscricaoEstadual || undefined,
         email,
         password,
+
         phone: phone.replace(/\D/g, ""),
+
         cep: cep.replace(/\D/g, ""),
         logradouro,
         numero,
@@ -165,17 +181,25 @@ const RegisterProviderStep2: React.FC = () => {
         bairro,
         cidade,
         uf,
-        servico,
-        userType: "provider" as const,
-      };
-      await registerProvider(providerData);
-      Alert.alert("Sucesso!", "Cadastro realizado com sucesso!");
-    } catch (error) {
+
+        descricaoEmpresa: servico,
+
+        userType: "provider",
+      });
+
+      Alert.alert("Sucesso!", "Cadastro realizado com sucesso!", [
+        {
+          text: "OK",
+          onPress: () => {},
+        },
+      ]);
+    } catch (error: any) {
       console.error(error);
-      Alert.alert(
-        "Erro no Cadastro",
-        "Não foi possível criar a conta. Verifique os dados e tente novamente."
-      );
+      const msg =
+        error.response?.data?.message ||
+        error.message ||
+        "Não foi possível criar a conta. Tente novamente.";
+      Alert.alert("Erro no Cadastro", msg);
     } finally {
       setIsLoading(false);
     }
@@ -210,6 +234,7 @@ const RegisterProviderStep2: React.FC = () => {
           <FormContainer>
             <Subtitle>Contato e endereço</Subtitle>
 
+            {/* Input Telefone */}
             <InputContainer>
               <Feather name="phone" size={20} color="#57b2c5" />
               <StyledInput
@@ -223,6 +248,7 @@ const RegisterProviderStep2: React.FC = () => {
               />
             </InputContainer>
 
+            {/* Input CEP */}
             <InputContainer>
               <Feather name="search" size={20} color="#57b2c5" />
               <StyledInput
@@ -239,6 +265,7 @@ const RegisterProviderStep2: React.FC = () => {
               )}
             </InputContainer>
 
+            {/* Logradouro */}
             <InputContainer>
               <Feather name="map-pin" size={20} color="#57b2c5" />
               <StyledInput
@@ -250,6 +277,7 @@ const RegisterProviderStep2: React.FC = () => {
               />
             </InputContainer>
 
+            {/* Número */}
             <InputContainer>
               <Feather name="hash" size={20} color="#57b2c5" />
               <StyledInput
@@ -262,6 +290,7 @@ const RegisterProviderStep2: React.FC = () => {
               />
             </InputContainer>
 
+            {/* Complemento */}
             <InputContainer>
               <Feather name="info" size={20} color="#57b2c5" />
               <StyledInput
@@ -273,6 +302,7 @@ const RegisterProviderStep2: React.FC = () => {
               />
             </InputContainer>
 
+            {/* Bairro */}
             <InputContainer>
               <Feather name="map" size={20} color="#57b2c5" />
               <StyledInput
@@ -284,6 +314,7 @@ const RegisterProviderStep2: React.FC = () => {
               />
             </InputContainer>
 
+            {/* Cidade */}
             <InputContainer>
               <Feather name="map" size={20} color="#57b2c5" />
               <StyledInput
@@ -295,6 +326,7 @@ const RegisterProviderStep2: React.FC = () => {
               />
             </InputContainer>
 
+            {/* UF */}
             <InputContainer>
               <Feather name="map" size={20} color="#57b2c5" />
               <StyledInput
@@ -308,6 +340,7 @@ const RegisterProviderStep2: React.FC = () => {
               />
             </InputContainer>
 
+            {/* Picker de Serviço */}
             <PickerContainer>
               <Feather name="tool" size={20} color="#57b2c5" />
               <StyledPicker

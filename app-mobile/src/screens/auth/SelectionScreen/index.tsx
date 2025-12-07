@@ -1,9 +1,10 @@
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
-import { Pressable } from "react-native"; 
+import { Pressable } from "react-native";
+import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
+
 import {
   Container,
-  Logo,
   Title,
   Subtitle,
   OptionCard,
@@ -11,11 +12,10 @@ import {
   ProviderText,
 } from "./style";
 
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import { SelectionScreenNavigationProp } from "./types";
 
 const SelectionScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<SelectionScreenNavigationProp>();
 
   return (
     <Container>
@@ -23,7 +23,7 @@ const SelectionScreen = () => {
       <Subtitle>Para continuar, escolha seu perfil.</Subtitle>
 
       <Pressable
-        onPress={() => navigation.navigate("LoginCliente" as never)}
+        onPress={() => navigation.navigate("LoginClient")}
         style={({ pressed }) => ({
           transform: [{ scale: pressed ? 0.98 : 1 }],
           width: "100%",
@@ -37,7 +37,7 @@ const SelectionScreen = () => {
       </Pressable>
 
       <Pressable
-        onPress={() => navigation.navigate("LoginProvider" as never)}
+        onPress={() => navigation.navigate("LoginProvider")}
         style={({ pressed }) => ({
           transform: [{ scale: pressed ? 0.98 : 1 }],
           width: "100%",

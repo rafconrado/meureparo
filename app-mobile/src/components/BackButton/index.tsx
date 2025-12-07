@@ -1,22 +1,30 @@
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
-import { ButtonContainer } from "./style";
 
-export interface BackButtonProps {
-  color?: string;
-  size?: number;
-  onPress?: () => void;
-}
+import { BackButtonProps } from "./types";
+import { ButtonContainer } from "./styles";
 
-export const BackButton: React.FC<BackButtonProps> = ({
-  color = "#ffffff",
-  size = 24,
-}) => {
+const DEFAULT_COLOR = "#ffffff";
+const DEFAULT_SIZE = 24;
+
+export const BackButton = ({
+  color = DEFAULT_COLOR,
+  size = DEFAULT_SIZE,
+  onPress,
+}: BackButtonProps) => {
   const navigation = useNavigation();
 
+  const handlePress = () => {
+    if (onPress) {
+      onPress();
+    } else {
+      navigation.goBack();
+    }
+  };
+
   return (
-    <ButtonContainer onPress={() => navigation.goBack()}>
+    <ButtonContainer onPress={handlePress} activeOpacity={0.7}>
       <Feather name="arrow-left" size={size} color={color} />
     </ButtonContainer>
   );

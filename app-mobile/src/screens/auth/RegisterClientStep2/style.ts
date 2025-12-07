@@ -10,7 +10,8 @@ export const Container = styled.View`
 export const Header = styled.View`
   justify-content: center;
   align-items: center;
-  padding: ${verticalScale(60)}px ${scale(30)}px ${verticalScale(30)}px ${scale(30)}px;
+  padding: ${verticalScale(60)}px ${scale(30)}px ${verticalScale(30)}px
+    ${scale(30)}px;
 `;
 
 export const HeaderContent = styled.View`
@@ -99,7 +100,7 @@ export const StyledPicker = styled(Picker)`
   color: #2c2c2c;
 `;
 
-export const RegisterButton = styled.TouchableOpacity`
+export const RegisterButton = styled.TouchableOpacity<{ disabled?: boolean }>`
   background-color: #df692b;
   border-radius: ${moderateScale(15)}px;
   margin-top: ${verticalScale(10)}px;
@@ -112,6 +113,7 @@ export const RegisterButton = styled.TouchableOpacity`
   min-height: ${verticalScale(52)}px;
   justify-content: center;
   align-items: center;
+  opacity: ${(props) => (props.disabled ? 0.7 : 1)};
 `;
 
 export const ButtonText = styled.Text`
