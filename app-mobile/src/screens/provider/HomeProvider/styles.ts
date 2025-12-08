@@ -1,6 +1,5 @@
 import styled from "styled-components/native";
 import { FlatList } from "react-native";
-import { ServiceRequest } from "./types";
 
 export const Container = styled.View`
   flex: 1;
@@ -93,12 +92,6 @@ export const SectionTitle = styled.Text`
   font-weight: bold;
   color: #333;
   margin: 60px 20px 15px 20px; /* Margem top grande por causa do card flutuante */
-`;
-
-export const RequestList = styled(
-  FlatList as new () => FlatList<ServiceRequest>
-)`
-  padding: 0 20px;
 `;
 
 export const RequestCard = styled.View`

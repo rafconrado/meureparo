@@ -38,37 +38,9 @@ import {
   EmptySubtext,
   FAB,
   FABIcon,
-} from "./style";
+} from "./styles";
 
-interface Ad {
-  id: number;
-  title: string;
-  description: string;
-  price: number;
-  categoryId: number;
-  category: string;
-  providerId: number;
-  imageUrl?: string;
-}
-
-interface AdFormData {
-  id?: number;
-  title: string;
-  description: string;
-  price: number;
-  category: string;
-  image?: string | null;
-}
-
-interface AdFromApi {
-  id: number;
-  title: string;
-  description: string;
-  price: number;
-  categoryId: number;
-  providerId: number;
-  imageUrl?: string;
-}
+import { Ad, AdFormData, AdFromApi } from "./types";
 
 const categories = [
   "Pedreiro",

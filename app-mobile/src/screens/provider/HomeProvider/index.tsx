@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StatusBar, Switch, Alert } from "react-native";
+import { StatusBar, Switch, Alert, FlatList } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
 
@@ -19,7 +19,6 @@ import {
   StatValue,
   StatLabel,
   SectionTitle,
-  RequestList,
   RequestCard,
   RequestHeader,
   ClientInfo,
@@ -35,7 +34,7 @@ import {
   ButtonLabel,
   EmptyContainer,
   EmptyText,
-} from "./style";
+} from "./styles";
 
 import { HomeProviderNavigationProp, ServiceRequest } from "./types";
 
@@ -52,9 +51,9 @@ const MOCK_REQUESTS: ServiceRequest[] = [
   {
     id: "2",
     clientName: "Roberto Carlos",
-    serviceType: "Elétrica",
+    serviceType: "Pintura",
     distance: "5.0 km",
-    price: "R$ 80,00",
+    price: "R$ 150,00",
     date: "Amanhã, 09:00",
   },
 ];
@@ -167,12 +166,12 @@ const HomeProvider = () => {
       {/* Lista de Novos Pedidos */}
       <SectionTitle>Novos Pedidos</SectionTitle>
 
-      <RequestList
+      <FlatList
         data={requests}
         keyExtractor={(item) => item.id}
         renderItem={renderRequestItem}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 20 }}
+        contentContainerStyle={{ paddingBottom: 20, paddingHorizontal: 20 }}
         ListEmptyComponent={() => (
           <EmptyContainer>
             <Feather name="inbox" size={40} color="#ccc" />

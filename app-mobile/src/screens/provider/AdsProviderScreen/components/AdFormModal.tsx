@@ -3,18 +3,14 @@ import {
   Modal,
   TouchableOpacity,
   ScrollView,
-  Platform,
   TouchableWithoutFeedback,
   Alert,
   TextInput,
-  Image,
 } from "react-native";
 
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import * as ImagePicker from "expo-image-picker";
-
 import { Feather } from "@expo/vector-icons";
-import theme from "../../../../theme";
 
 import {
   ModalOverlay,
@@ -46,9 +42,11 @@ import {
   ImagePickerText,
   ImagePreviewContainer,
   ImagePreview,
-} from "./../style";
+} from "../styles";
 
-interface AdData {
+import theme from "../../../../theme";
+
+export interface AdData {
   id?: number;
   title: string;
   description: string;
@@ -110,31 +108,22 @@ export const AdFormModal: React.FC<AdFormModalProps> = ({
     setIsPickingImage(true);
 
     try {
-      const existingStatus =
-        await ImagePicker.getMediaLibraryPermissionsAsync();
-      let finalStatus = existingStatus;
+      const { status } =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
 
-      if (existingStatus.status !== "granted") {
-        const newStatus =
-          await ImagePicker.requestMediaLibraryPermissionsAsync();
-        finalStatus = newStatus;
-      }
-
-      if (finalStatus.status !== "granted") {
+      if (status !== "granted") {
         Alert.alert(
           "Permissão Necessária",
           "Para selecionar uma imagem, você precisa permitir o acesso à galeria."
         );
-        setIsPickingImage(false);
         return;
       }
 
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
-        aspect: [16, 9],
+        aspect: [4, 3],
         quality: 0.7,
-        exif: false,
       });
 
       if (!result.canceled && result.assets && result.assets.length > 0) {
@@ -165,7 +154,9 @@ export const AdFormModal: React.FC<AdFormModalProps> = ({
   const selectCategory = (category: string) => {
     handleInputChange("category", category);
     setCategoryModalVisible(false);
-    priceInputRef.current?.focus();
+    setTimeout(() => {
+      priceInputRef.current?.focus();
+    }, 100);
   };
 
   const validateForm = (): boolean => {
@@ -195,11 +186,10 @@ export const AdFormModal: React.FC<AdFormModalProps> = ({
   };
 
   const isEditMode = !!initialData?.id;
-  const isLoadingImage = ad.image && isPickingImage;
 
   return (
     <Modal
-      animationType="slide"
+      animationType="fade"
       transparent={true}
       visible={visible}
       onRequestClose={onClose}
@@ -255,11 +245,8 @@ export const AdFormModal: React.FC<AdFormModalProps> = ({
                     contentContainerStyle={{ flexGrow: 1 }}
                     keyboardShouldPersistTaps="handled"
                     showsVerticalScrollIndicator={false}
-                    extraScrollHeight={Platform.select({
-                      ios: 20,
-                      android: 100,
-                    })}
                     enableOnAndroid={true}
+                    extraScrollHeight={100}
                   >
                     <ModalBody>
                       {/* --- CAMPO IMAGEM --- */}
@@ -284,7 +271,7 @@ export const AdFormModal: React.FC<AdFormModalProps> = ({
                             >
                               <Feather
                                 name="x"
-                                size={20}
+                                size={16}
                                 color={theme.COLORS.WHITE}
                               />
                             </TouchableOpacity>
@@ -385,6 +372,7 @@ export const AdFormModal: React.FC<AdFormModalProps> = ({
                             precision={2}
                             placeholder="R$ 0,00"
                             editable={!isSaving}
+                            // @ts-ignore
                             ref={priceInputRef}
                             returnKeyType="next"
                             onSubmitEditing={() =>
@@ -417,7 +405,7 @@ export const AdFormModal: React.FC<AdFormModalProps> = ({
                           error={!!validationErrors.description}
                           ref={descriptionInputRef}
                           returnKeyType="done"
-                          onSubmitEditing={handleSave}
+                          blurOnSubmit={true}
                         />
                         <ValidationText
                           style={{
