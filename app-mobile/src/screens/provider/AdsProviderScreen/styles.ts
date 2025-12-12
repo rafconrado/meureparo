@@ -73,17 +73,20 @@ export const Subtitle = styled.Text`
 // ============================================
 // AD CARD
 // ============================================
-export const AdCard = styled.View`
+export const AdCard = styled.View.attrs({
+  style: {
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+})`
   background-color: ${theme.COLORS.WHITE};
   border: 1px solid ${theme.COLORS.GRAY_200};
   border-radius: 12px;
   margin-bottom: 12px;
   overflow: hidden;
-  shadow-color: #000;
-  shadow-offset: 0px 1px;
-  shadow-opacity: 0.08;
-  shadow-radius: 4px;
-  elevation: 2;
 `;
 
 export const AdImage = styled.Image`

@@ -18,17 +18,18 @@ export const Title = styled.Text`
   color: #0c0c0c;
 `;
 
-export const Card = styled.View`
+export const Card = styled.View.attrs({
+  style: {
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+    elevation: 3,
+  },
+})`
   background-color: #ffffff;
   padding: 15px;
   border-radius: 12px;
-  elevation: 3;
-
-  shadow-color: #000;
-  shadow-opacity: 0.1;
-  shadow-offset: 0px 2px;
-  shadow-radius: 4px;
-
   margin-bottom: 30px;
 `;
 

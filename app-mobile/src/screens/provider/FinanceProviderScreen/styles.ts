@@ -19,16 +19,19 @@ export const HeaderTitle = styled.Text`
   text-align: center;
 `;
 
-export const BalanceCard = styled.View`
+export const BalanceCard = styled.View.attrs({
+  style: {
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 8,
+    elevation: 5,
+  },
+})`
   background-color: #fff;
-  margin: -60px 20px 20px 20px; /* Margem negativa para subir */
+  margin: -60px 20px 20px 20px;
   padding: 20px;
   border-radius: 16px;
-  elevation: 5;
-  shadow-color: #000;
-  shadow-opacity: 0.1;
-  shadow-offset: 0px 4px;
-  shadow-radius: 8px;
 `;
 
 export const BalanceLabel = styled.Text`
@@ -74,21 +77,23 @@ export const SectionTitle = styled.Text`
   margin: 10px 20px 15px 20px;
 `;
 
-export const TransactionContainer = styled.View`
+export const TransactionContainer = styled.View.attrs({
+  style: {
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+    elevation: 2,
+  },
+})`
   flex-direction: row;
   align-items: center;
   background-color: #fff;
   padding: 15px;
   margin-bottom: 12px;
   border-radius: 12px;
-  elevation: 2;
-  shadow-color: #000;
-  shadow-opacity: 0.05;
-  shadow-offset: 0px 2px;
-  shadow-radius: 4px;
 `;
 
-// O ícone tem fundo verde claro se for entrada, vermelho claro se saída
 export const IconBox = styled.View<{ type: "income" | "outcome" }>`
   width: 45px;
   height: 45px;

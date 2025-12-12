@@ -5,16 +5,19 @@ export const Container = styled.View`
   background-color: #f8f9fa;
 `;
 
-export const Header = styled.View`
+export const Header = styled.View.attrs({
+  style: {
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 8,
+    elevation: 4,
+  },
+})`
   background-color: #57b2c5;
   padding: 50px 20px 20px 20px;
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
-  elevation: 4;
-  shadow-color: #000;
-  shadow-opacity: 0.1;
-  shadow-offset: 0px 4px;
-  shadow-radius: 8px;
 `;
 
 export const HeaderTitle = styled.Text`
@@ -23,7 +26,15 @@ export const HeaderTitle = styled.Text`
   color: #fff;
 `;
 
-export const SearchContainer = styled.View`
+export const SearchContainer = styled.View.attrs({
+  style: {
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+    elevation: 3,
+  },
+})`
   background-color: #fff;
   margin: -25px 20px 20px 20px;
   padding: 0 15px;
@@ -31,11 +42,6 @@ export const SearchContainer = styled.View`
   flex-direction: row;
   align-items: center;
   height: 50px;
-  elevation: 3;
-  shadow-color: #000;
-  shadow-opacity: 0.05;
-  shadow-offset: 0px 2px;
-  shadow-radius: 4px;
 `;
 
 export const SearchIcon = styled.View`

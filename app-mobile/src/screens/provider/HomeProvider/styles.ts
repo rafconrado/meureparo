@@ -1,5 +1,4 @@
 import styled from "styled-components/native";
-import { FlatList } from "react-native";
 
 export const Container = styled.View`
   flex: 1;
@@ -8,7 +7,7 @@ export const Container = styled.View`
 
 export const Header = styled.View`
   background-color: #57b2c5;
-  padding: 20px 20px 60px 20px; /* Padding bottom maior para caber o card */
+  padding: 20px 20px 60px 20px;
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
 `;
@@ -47,22 +46,21 @@ export const StatusText = styled.Text`
   font-weight: 600;
 `;
 
-export const DashboardCard = styled.View`
+export const DashboardCard = styled.View.attrs({
+  style: {
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+})`
   flex-direction: row;
   background-color: #fff;
   border-radius: 15px;
   padding: 20px 0;
   margin-top: 10px;
 
-  /* Sombra para efeito flutuante */
-  shadow-color: #000;
-  shadow-offset: 0px 4px;
-  shadow-opacity: 0.1;
-  shadow-radius: 8px;
-  elevation: 5;
-
-  /* Posicionamento absoluto ou margem negativa pode ser usado, 
-     mas aqui usaremos o fluxo normal com margem no container pai */
   position: absolute;
   bottom: -40px;
   left: 20px;
@@ -91,19 +89,22 @@ export const SectionTitle = styled.Text`
   font-size: 18px;
   font-weight: bold;
   color: #333;
-  margin: 60px 20px 15px 20px; /* Margem top grande por causa do card flutuante */
+  margin: 60px 20px 15px 20px;
 `;
 
-export const RequestCard = styled.View`
+export const RequestCard = styled.View.attrs({
+  style: {
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+    elevation: 2,
+  },
+})`
   background-color: #fff;
   border-radius: 12px;
   padding: 15px;
   margin-bottom: 15px;
-  elevation: 2;
-  shadow-color: #000;
-  shadow-opacity: 0.05;
-  shadow-offset: 0px 2px;
-  shadow-radius: 4px;
 `;
 
 export const RequestHeader = styled.View`

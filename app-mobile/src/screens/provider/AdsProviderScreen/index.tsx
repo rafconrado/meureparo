@@ -110,7 +110,7 @@ const AdsProviderScreen: React.FC = () => {
       title: ad.title,
       description: ad.description,
       price: ad.price,
-      category: ad.category, // Agora 'ad.category' terá o nome correto!
+      category: ad.category,
       image: ad.imageUrl || null,
     });
     setModalVisible(true);
@@ -129,17 +129,10 @@ const AdsProviderScreen: React.FC = () => {
       formData.append("description", adData.description.trim());
       formData.append("price", String(adData.price));
 
-      // ================== CORREÇÃO 2 INICIA AQUI ==================
-      // Precisamos "traduzir" de volta a category (texto) para o categoryId (número) que a API espera.
-
-      // Encontra o índice da categoria selecionada (ex: "Pedreiro" -> 0)
       const categoryIndex = categories.indexOf(adData.category);
-      // Converte o índice do array para o ID do banco (ex: 0 -> 1)
       const categoryId = categoryIndex + 1;
 
-      // Envia o ID numérico para o backend, que é o que ele espera
       formData.append("category", String(categoryId));
-      // =================== CORREÇÃO 2 TERMINA AQUI ===================
 
       if (adData.image && adData.image.startsWith("file://")) {
         console.log("📸 Enviando nova imagem:", adData.image);
@@ -164,13 +157,13 @@ const AdsProviderScreen: React.FC = () => {
       };
 
       if (adData.id) {
-        console.log("✏️ Atualizando anúncio ID:", adData.id);
+        console.log(" Atualizando anúncio ID:", adData.id);
         await api.put(`/ads/${adData.id}`, formData, config);
-        Alert.alert("✅ Sucesso!", "Anúncio atualizado com sucesso.");
+        Alert.alert(" Sucesso!", "Anúncio atualizado com sucesso.");
       } else {
-        console.log("➕ Criando novo anúncio");
+        console.log(" Criando novo anúncio");
         await api.post("/ads", formData, config);
-        Alert.alert("✅ Sucesso!", "Anúncio criado com sucesso.");
+        Alert.alert(" Sucesso!", "Anúncio criado com sucesso.");
       }
 
       setModalVisible(false);
@@ -178,7 +171,7 @@ const AdsProviderScreen: React.FC = () => {
       fetchAds();
     } catch (error) {
       const err = error as AxiosError<{ message: string }>;
-      console.error("❌ Erro ao salvar:", err.response?.data || err.message);
+      console.error(" Erro ao salvar:", err.response?.data || err.message);
       Alert.alert(
         "Erro ao Salvar",
         err.response?.data?.message || "Não foi possível salvar o anúncio."
@@ -197,12 +190,12 @@ const AdsProviderScreen: React.FC = () => {
         onPress: async () => {
           try {
             await api.delete(`/ads/${id}`);
-            Alert.alert("✅ Sucesso!", "Anúncio deletado.");
+            Alert.alert(" Sucesso!", "Anúncio deletado.");
             setAds((prevAds) => prevAds.filter((ad) => ad.id !== id));
           } catch (error) {
             const err = error as AxiosError<{ message: string }>;
             Alert.alert(
-              "❌ Erro ao Deletar",
+              " Erro ao Deletar",
               err.response?.data?.message ||
                 "Não foi possível deletar o anúncio."
             );
